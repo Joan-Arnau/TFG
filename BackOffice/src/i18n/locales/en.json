@@ -1,0 +1,16 @@
+{
+  "app": {
+    "title": "Promo Rural management panel",
+    "sectionAdmin": "Administration area",
+    "sectionAdminDescription": "Manage municipality configuration, white-label branding and public content.",
+    "sectionMerchant": "Merchant area",
+    "sectionMerchantDescription": "Manage profile, promotions and commercial publications.",
+    "apiBaseUrl": "API base URL"
+  },
+  "language": {
+    "label": "Language",
+    "ca": "Catalan",
+    "es": "Spanish",
+    "en": "English"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "app": {
+    "title": "Panell de gestió Promo Rural",
+    "sectionAdmin": "Espai d'administració",
+    "sectionAdminDescription": "Gestiona la configuració del municipi, marca blanca i contingut públic.",
+    "sectionMerchant": "Espai del comerciant",
+    "sectionMerchantDescription": "Gestiona perfil, promocions i publicacions comercials.",
+    "apiBaseUrl": "API base URL"
+  },
+  "language": {
+    "label": "Idioma",
+    "ca": "Català",
+    "es": "Espanyol",
+    "en": "Anglès"
+  }
+}

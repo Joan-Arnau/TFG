@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: promo-rural-api
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/promorural}
+    username: ${SPRING_DATASOURCE_USERNAME:promorural}
+    password: ${SPRING_DATASOURCE_PASSWORD:promorural}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+  jackson:
+    time-zone: UTC
+
+server:
+  error:
+    include-message: always
+
+app:
+  default-language: ${DEFAULT_MUNICIPALITY_LANGUAGE:ca}
+  supported-languages: ${SUPPORTED_LANGUAGES:ca,es,en}
+  jwt:
+    secret: ${JWT_SECRET:change-this-secret-key-with-at-least-32-characters}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000}

@@ -1,0 +1,47 @@
+services:
+  db-server:
+    image: postgis/postgis:16-3.4
+    container_name: promo-rural-db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  api-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: promo-rural-api
+    depends_on:
+      - db-server
+    environment:
+      DEFAULT_MUNICIPALITY_LANGUAGE: ${DEFAULT_MUNICIPALITY_LANGUAGE}
+      SUPPORTED_LANGUAGES: ${SUPPORTED_LANGUAGES}
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS}
+      SEED_ADMIN_USERNAME: ${SEED_ADMIN_USERNAME}
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD}
+      SEED_MERCHANT_USERNAME: ${SEED_MERCHANT_USERNAME}
+      SEED_MERCHANT_PASSWORD: ${SEED_MERCHANT_PASSWORD}
+    ports:
+      - "8080:8080"
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: promo-rural-nginx
+    depends_on:
+      - api-server
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+
+volumes:
+  db_data:

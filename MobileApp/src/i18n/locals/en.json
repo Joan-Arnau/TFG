@@ -1,0 +1,12 @@
+{
+  "app": {
+    "title": "Promo Rural aplication",
+    "apiBaseUrl": "API base URL"
+  },
+  "language": {
+    "label": "Language",
+    "ca": "Catalan",
+    "es": "Spanish",
+    "en": "English"
+  }
+}
