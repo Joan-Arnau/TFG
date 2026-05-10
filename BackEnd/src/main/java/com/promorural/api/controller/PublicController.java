@@ -21,6 +21,11 @@ public class PublicController {
         this.publicService = publicService;
     }
 
+    /**
+     * Endpoint to retrieve the general configuration for the white-label application.
+     * This includes branding information, default language, and supported languages.
+     * @return ResponseEntity containing the ConfigResponse DTO.
+     */
     @GetMapping("/config")
     public ResponseEntity<ConfigResponse> getConfig() {
         return ResponseEntity.ok(publicService.getConfig());

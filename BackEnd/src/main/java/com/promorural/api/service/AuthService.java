@@ -8,8 +8,10 @@ import com.promorural.api.entity.User;
 import com.promorural.api.repository.UserRepository;
 import com.promorural.api.security.JwtService;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -33,19 +35,34 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * Authenticates a user and returns a JWT upon successful login.
+     * @param request Login credentials (username and password).
+     * @return LoginResponse containing the JWT and user role.
+     * @throws BadCredentialsException if authentication fails.
+     */
     public LoginResponse login(LoginRequest request) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.username(), request.password())
-        );
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.username(), request.password())
+            );
 
-        User user = (User) authentication.getPrincipal();
-        String token = jwtService.generateToken(user);
-        return new LoginResponse(token, user.getRole().name());
+            User user = (User) authentication.getPrincipal();
+            String token = jwtService.generateToken(user);
+            return new LoginResponse(token, user.getRole().name()); 
+        } catch (AuthenticationException e) {
+            throw new BadCredentialsException("Invalid username or password", e);
+        }
     }
 
+    /**
+     * Registers a new merchant user.
+     * @param request Registration details (username, password).
+     * @throws IllegalArgumentException if username already exists.
+     */
     public void register(RegisterRequest request) {
         if (userRepository.findByUsername(request.username()).isPresent()) {
-            throw new RuntimeException("Username already exists");
+            throw new IllegalArgumentException("Username already exists");
         }
 
         User user = new User();

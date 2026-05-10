@@ -1,6 +1,11 @@
 package com.promorural.api.service;
 
-import com.promorural.api.dto.MerchantDtos;
+import com.promorural.api.dto.MerchantDtos.PromotionCreateDto;
+import com.promorural.api.dto.MerchantDtos.ShopUpdateDto;
+import com.promorural.api.dto.PublicDtos.CategoryResponse;
+import com.promorural.api.dto.PublicDtos.PromotionResponse;
+import com.promorural.api.dto.PublicDtos.ShopResponse;
+import com.promorural.api.entity.Category;
 import com.promorural.api.entity.Promotion;
 import com.promorural.api.entity.Shop;
 import com.promorural.api.entity.User;
@@ -31,27 +36,28 @@ public class MerchantService {
     private PromotionRepository promotionRepository;
 
     /**
-     * Retrieves the shop associated with the authenticated merchant.
-     * @return The Shop entity.
+     * Retrieves the shop associated with the authenticated merchant, mapped to ShopResponse DTO.
+     * @return ShopResponse DTO representing the shop.
      * @throws IllegalStateException if the merchant does not have an associated shop.
      */
-    public Shop getShopForMerchant() {
+    public ShopResponse getShopForMerchant() {
         User currentUser = getCurrentUser();
-        return shopRepository.findByOwnerUsername(currentUser.getUsername())
-                .orElseThrow(() -> new IllegalStateException("Merchant does not have an associated shop."));
+        Shop shop = Objects.requireNonNull(shopRepository.findByOwnerUsername(currentUser.getUsername())
+                .orElseThrow(() -> new IllegalStateException("Merchant does not have an associated shop.")), "Shop object is null");
+        return mapToShopResponse(shop);
     }
 
     /**
-     * Updates the shop details for the authenticated merchant.
+     * Updates the shop details for the authenticated merchant and returns the updated shop as ShopResponse DTO.
      * @param shopUpdateDto The DTO containing updated shop information.
-     * @return The updated Shop entity.
+     * @return ShopResponse DTO of the updated shop.
      * @throws IllegalStateException if the merchant does not have an associated shop.
      */
     @Transactional
-    public Shop updateShopForMerchant(MerchantDtos.ShopUpdateDto shopUpdateDto) {
+    public ShopResponse updateShopForMerchant(ShopUpdateDto shopUpdateDto) {
         User currentUser = getCurrentUser();
-        Shop shop = shopRepository.findByOwnerUsername(currentUser.getUsername())
-                .orElseThrow(() -> new IllegalStateException("Merchant does not have an associated shop."));
+        Shop shop = Objects.requireNonNull(shopRepository.findByOwnerUsername(currentUser.getUsername())
+                .orElseThrow(() -> new IllegalStateException("Merchant does not have an associated shop.")), "Shop object is null");
 
         if (shopUpdateDto.getName() != null) {
             shop.setName(shopUpdateDto.getName());
@@ -67,33 +73,36 @@ public class MerchantService {
             shop.setPhoneNumber(shopUpdateDto.getPhoneNumber());
         }
         
-        return shopRepository.save(shop);
+        Shop savedShop = shopRepository.save(shop);
+        return mapToShopResponse(savedShop);
     }
 
     /**
-     * Retrieves all promotions for the authenticated merchant's shop.
-     * @return A list of Promotion entities.
+     * Retrieves all promotions for the authenticated merchant's shop, mapped to PromotionResponse DTOs.
+     * @return A list of PromotionResponse DTOs.
      * @throws IllegalStateException if the merchant does not have an associated shop.
      */
-    public List<Promotion> getMerchantPromotions() {
+    public List<PromotionResponse> getMerchantPromotions() {
         User currentUser = getCurrentUser();
-        Shop shop = shopRepository.findByOwnerUsername(currentUser.getUsername())
-                .orElseThrow(() -> new IllegalStateException("Merchant does not have an associated shop."));
+        Shop shop = Objects.requireNonNull(shopRepository.findByOwnerUsername(currentUser.getUsername())
+                .orElseThrow(() -> new IllegalStateException("Merchant does not have an associated shop.")), "Shop object is null");
 
-        return promotionRepository.findByShopId(shop.getId());
+        return promotionRepository.findByShopId(shop.getId()).stream()
+                .map(this::mapToPromotionResponse)
+                .toList();
     }
 
     /**
      * Creates a new promotion for the authenticated merchant's shop.
      * @param promotionCreateDto The DTO containing promotion details.
-     * @return The created Promotion entity.
+     * @return The created PromotionResponse DTO.
      * @throws IllegalStateException if the merchant does not have an associated shop.
      */
     @Transactional
-    public Promotion createMerchantPromotion(MerchantDtos.PromotionCreateDto promotionCreateDto) {
+    public PromotionResponse createMerchantPromotion(PromotionCreateDto promotionCreateDto) {
         User currentUser = getCurrentUser();
-        Shop shop = shopRepository.findByOwnerUsername(currentUser.getUsername())
-                .orElseThrow(() -> new IllegalStateException("Merchant does not have an associated shop."));
+        Shop shop = Objects.requireNonNull(shopRepository.findByOwnerUsername(currentUser.getUsername())
+                .orElseThrow(() -> new IllegalStateException("Merchant does not have an associated shop.")), "Shop object is null");
 
         Promotion promotion = new Promotion();
         promotion.setTitle(promotionCreateDto.getTitle());
@@ -105,7 +114,8 @@ public class MerchantService {
         
         promotion.setShop(shop);
 
-        return promotionRepository.save(promotion);
+        Promotion savedPromotion = promotionRepository.save(promotion);
+        return mapToPromotionResponse(savedPromotion);
     }
 
     /**
@@ -161,5 +171,38 @@ public class MerchantService {
                  throw new IllegalStateException("Authentication principal is not a User or UserDetails object.");
             }
         }
+    }
+    
+    private ShopResponse mapToShopResponse(Shop shop) {
+        if (shop == null) return null;
+        return new ShopResponse(
+                shop.getId(),
+                shop.getName(),
+                shop.getDescription(),
+                shop.getAddress(),
+                shop.getPhoneNumber(),
+                shop.getHeaderImageUrl(),
+                mapToCategoryResponse(shop.getCategory()),
+                shop.getLocation() != null ? shop.getLocation().getY() : null,
+                shop.getLocation() != null ? shop.getLocation().getX() : null
+        );
+    }
+
+    private PromotionResponse mapToPromotionResponse(Promotion p) {
+        if (p == null) return null;
+        return new PromotionResponse(
+                p.getId(),
+                p.getShop().getId(),
+                p.getTitle(),
+                p.getDescription(),
+                p.getImageUrl(),
+                p.getStartsAt(),
+                p.getEndsAt()
+        );
+    }
+    
+    private CategoryResponse mapToCategoryResponse(Category category) {
+        if (category == null) return null;
+        return new CategoryResponse(category.getId(), category.getName(), category.getType().name());
     }
 }

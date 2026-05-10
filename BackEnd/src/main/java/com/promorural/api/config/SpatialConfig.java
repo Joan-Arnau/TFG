@@ -10,7 +10,6 @@ public class SpatialConfig {
 
     @Bean
     public GeometryFactory geometryFactory() {
-        // SRID 4326 is WGS 84 (GPS coordinates)
         return new GeometryFactory(new PrecisionModel(), 4326);
     }
 }

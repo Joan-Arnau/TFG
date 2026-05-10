@@ -1,7 +1,7 @@
 package com.promorural.api.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.Map;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -29,10 +29,10 @@ public class Promotion {
     private String imageUrl;
 
     @Column(nullable = false)
-    private LocalDate startsAt;
+    private OffsetDateTime startsAt;
 
     @Column(nullable = false)
-    private LocalDate endsAt;
+    private OffsetDateTime endsAt;
 
     public Long getId() {
         return id;
@@ -70,19 +70,19 @@ public class Promotion {
         this.imageUrl = imageUrl;
     }
 
-    public LocalDate getStartsAt() {
+    public OffsetDateTime getStartsAt() {
         return startsAt;
     }
 
-    public void setStartsAt(LocalDate startsAt) {
+    public void setStartsAt(OffsetDateTime startsAt) {
         this.startsAt = startsAt;
     }
 
-    public LocalDate getEndsAt() {
+    public OffsetDateTime getEndsAt() {
         return endsAt;
     }
 
-    public void setEndsAt(LocalDate endsAt) {
+    public void setEndsAt(OffsetDateTime endsAt) {
         this.endsAt = endsAt;
     }
 }

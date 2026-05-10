@@ -37,6 +37,7 @@ public class Event {
     @Column(nullable = false)
     private OffsetDateTime startsAt;
 
+    @Column(nullable = false)
     private OffsetDateTime endsAt;
 
     @Column(columnDefinition = "geometry(Point,4326)")

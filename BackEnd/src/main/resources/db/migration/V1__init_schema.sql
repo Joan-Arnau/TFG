@@ -47,8 +47,8 @@ CREATE TABLE promotion (
     title JSONB NOT NULL,
     description JSONB NOT NULL,
     image_url VARCHAR(500),
-    starts_at DATE NOT NULL,
-    ends_at DATE NOT NULL
+    starts_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    ends_at TIMESTAMP WITH TIME ZONE NOT NULL
 );
 
 -- 6. Municipal Announcements

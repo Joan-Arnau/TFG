@@ -37,7 +37,6 @@ public class SeedDataConfig {
             @Value("${SEED_MERCHANT_PASSWORD:merchant1234}") String merchantPassword
     ) {
         return args -> {
-            // Seed Categories
             if (categoryRepository.count() == 0) {
                 Category shopCat = new Category();
                 Map<String, String> shopCatNames = new HashMap<>();
@@ -77,7 +76,6 @@ public class SeedDataConfig {
                 branding.put("logoUrl", "");
                 config.setBranding(branding);
                 
-                // Default location (e.g. some coordinates)
                 Point center = geometryFactory.createPoint(new Coordinate(1.2345, 41.1234));
                 config.setLocation(center);
                 

@@ -1,8 +1,9 @@
 package com.promorural.api.controller;
 
-import com.promorural.api.dto.MerchantDtos;
-import com.promorural.api.entity.Promotion;
-import com.promorural.api.entity.Shop;
+import com.promorural.api.dto.MerchantDtos.PromotionCreateDto;
+import com.promorural.api.dto.MerchantDtos.ShopUpdateDto;
+import com.promorural.api.dto.PublicDtos.PromotionResponse;
+import com.promorural.api.dto.PublicDtos.ShopResponse;
 import com.promorural.api.service.MerchantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,43 +22,49 @@ public class MerchantController {
     private MerchantService merchantService;
 
     /**
-     * Get the shop associated with the authenticated merchant.
-     * @return ResponseEntity with the shop details or an error.
+     * Get the shop associated with the authenticated merchant, returned as ShopResponse DTO.
+     * @return ResponseEntity with ShopResponse details or an error.
      */
     @GetMapping("/my-shop")
-    public ResponseEntity<Shop> getMyShop() {
+    public ResponseEntity<ShopResponse> getMyShop() {
         try {
-            Shop shop = merchantService.getShopForMerchant();
-            return ResponseEntity.ok(shop);
-        } catch (RuntimeException e) {
+            ShopResponse shopDto = merchantService.getShopForMerchant();
+            return ResponseEntity.ok(shopDto);
+        } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-    }
-
-    /**
-     * Update the shop associated with the authenticated merchant.
-     * @param shopUpdateDto The DTO containing updated shop information.
-     * @return ResponseEntity with the updated shop details or an error.
-     */
-    @PutMapping("/my-shop")
-    public ResponseEntity<Shop> updateMyShop(@RequestBody MerchantDtos.ShopUpdateDto shopUpdateDto) {
-        try {
-            Shop updatedShop = merchantService.updateShopForMerchant(shopUpdateDto);
-            return ResponseEntity.ok(updatedShop);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
     /**
-     * Get all promotions associated with the authenticated merchant's shop.
-     * @return ResponseEntity with a list of promotions or an empty list.
+     * Update the shop associated with the authenticated merchant.
+     * @param shopUpdateDto The DTO containing updated shop information.
+     * @return ResponseEntity with the updated ShopResponse DTO or an error.
+     */
+    @PutMapping("/my-shop")
+    public ResponseEntity<ShopResponse> updateMyShop(@RequestBody ShopUpdateDto shopUpdateDto) {
+        try {
+            ShopResponse updatedShopDto = merchantService.updateShopForMerchant(shopUpdateDto);
+            return ResponseEntity.ok(updatedShopDto);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    /**
+     * Get all promotions associated with the authenticated merchant's shop, returned as PromotionResponse DTOs.
+     * @return ResponseEntity with a list of PromotionResponse DTOs or an empty list.
      */
     @GetMapping("/promotions")
-    public ResponseEntity<List<Promotion>> getMyPromotions() {
+    public ResponseEntity<List<PromotionResponse>> getMyPromotions() {
         try {
-            List<Promotion> promotions = merchantService.getMerchantPromotions();
-            return ResponseEntity.ok(promotions);
+            List<PromotionResponse> promotionsDto = merchantService.getMerchantPromotions();
+            return ResponseEntity.ok(promotionsDto);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
@@ -66,13 +73,15 @@ public class MerchantController {
     /**
      * Create a new promotion for the authenticated merchant's shop.
      * @param promotionCreateDto The DTO containing the new promotion details.
-     * @return ResponseEntity with the created promotion or an error.
+     * @return ResponseEntity with the created PromotionResponse DTO or an error.
      */
     @PostMapping("/promotions")
-    public ResponseEntity<Promotion> createPromotion(@RequestBody MerchantDtos.PromotionCreateDto promotionCreateDto) {
+    public ResponseEntity<PromotionResponse> createPromotion(@RequestBody PromotionCreateDto promotionCreateDto) {
         try {
-            Promotion createdPromotion = merchantService.createMerchantPromotion(promotionCreateDto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdPromotion);
+            PromotionResponse createdPromotionDto = merchantService.createMerchantPromotion(promotionCreateDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdPromotionDto);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }

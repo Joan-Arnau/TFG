@@ -1,11 +1,32 @@
 package com.promorural.api.service;
 
-import com.promorural.api.dto.PublicDtos.*;
-import com.promorural.api.entity.*;
-import com.promorural.api.repository.*;
-import java.time.LocalDate;
-import java.util.List;
+import com.promorural.api.dto.PublicDtos.AnnouncementResponse;
+import com.promorural.api.dto.PublicDtos.CategoryResponse;
+import com.promorural.api.dto.PublicDtos.ConfigResponse;
+import com.promorural.api.dto.PublicDtos.ContactResponse;
+import com.promorural.api.dto.PublicDtos.EventResponse;
+import com.promorural.api.dto.PublicDtos.PointOfInterestResponse;
+import com.promorural.api.dto.PublicDtos.PromotionResponse;
+import com.promorural.api.dto.PublicDtos.ShopDetailResponse;
+import com.promorural.api.dto.PublicDtos.ShopResponse;
+import com.promorural.api.entity.Category;
+import com.promorural.api.entity.CategoryType;
+import com.promorural.api.entity.MunicipalityConfig;
+import com.promorural.api.entity.Shop;
+import com.promorural.api.entity.ShopStatus;
+import com.promorural.api.entity.Promotion;
+import com.promorural.api.repository.AnnouncementRepository;
+import com.promorural.api.repository.CategoryRepository;
+import com.promorural.api.repository.ContactRepository;
+import com.promorural.api.repository.EventRepository;
+import com.promorural.api.repository.ShopRepository;
+import com.promorural.api.repository.MunicipalityConfigRepository;
+import com.promorural.api.repository.PointOfInterestRepository;
+import com.promorural.api.repository.PromotionRepository;
 import org.springframework.stereotype.Service;
+
+import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -40,8 +61,14 @@ public class PublicService {
         this.contactRepository = contactRepository;
     }
 
+    /**
+     * Retrieves the municipality configuration for branding and display.
+     * @return ConfigResponse containing branding details.
+     * @throws IllegalStateException if the municipality configuration is not found.
+     */
     public ConfigResponse getConfig() {
-        MunicipalityConfig config = getMunicipalityConfig();
+        MunicipalityConfig config = Objects.requireNonNull(getMunicipalityConfig(), "MunicipalityConfig is null");
+        
         return new ConfigResponse(
                 config.getDefaultLanguage(),
                 config.getSupportedLanguages(),
@@ -83,7 +110,7 @@ public class PublicService {
         }
 
         List<PromotionResponse> promotions = promotionRepository.findByShopId(shop.getId()).stream()
-                .filter(p -> LocalDate.now().isAfter(p.getStartsAt()) && LocalDate.now().isBefore(p.getEndsAt()))
+                .filter(p -> OffsetDateTime.now().isAfter(p.getStartsAt()) && OffsetDateTime.now().isBefore(p.getEndsAt()))
                 .map(this::mapToPromotionResponse)
                 .toList();
 
@@ -175,6 +202,7 @@ public class PublicService {
     }
 
     private PromotionResponse mapToPromotionResponse(Promotion p) {
+        if (p == null) return null;
         return new PromotionResponse(
                 p.getId(),
                 p.getShop().getId(),
@@ -187,7 +215,7 @@ public class PublicService {
     }
 
     private MunicipalityConfig getMunicipalityConfig() {
-        return municipalityConfigRepository.findFirstByOrderByIdAsc()
-                .orElseThrow(() -> new IllegalStateException("Municipality config not found"));
+        return Objects.requireNonNull(municipalityConfigRepository.findFirstByOrderByIdAsc()
+                .orElseThrow(() -> new IllegalStateException("Municipality config not found")), "MunicipalityConfig is null");
     }
 }
