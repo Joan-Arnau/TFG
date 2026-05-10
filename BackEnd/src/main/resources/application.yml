@@ -2,21 +2,21 @@ spring:
   application:
     name: promo-rural-api
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/promorural}
-    username: ${SPRING_DATASOURCE_USERNAME:promorural}
-    password: ${SPRING_DATASOURCE_PASSWORD:promorural}
+    'url': ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/promorural}
+    'username': ${SPRING_DATASOURCE_USERNAME:promorural}
+    'password': ${SPRING_DATASOURCE_PASSWORD:promorural}
   jpa:
     hibernate:
       ddl-auto: validate
     properties:
       hibernate:
-        format_sql: true
+        format-sql: true
         jdbc:
-          time_zone: UTC
+          'time-zone': CET
   flyway:
     enabled: true
   jackson:
-    time-zone: UTC
+    'time-zone': CET
 
 server:
   error:

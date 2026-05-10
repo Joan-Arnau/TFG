@@ -4,8 +4,13 @@ import jakarta.validation.constraints.NotBlank;
 
 public class AuthDtos {
     public record LoginRequest(
-            @NotBlank(message = "El nom d'usuari és obligatori") String username,
-            @NotBlank(message = "La contrasenya és obligatòria") String password
+            @NotBlank(message = "Username is required") String username,
+            @NotBlank(message = "Password is required") String password
+    ) {}
+
+    public record RegisterRequest(
+            @NotBlank(message = "Username is required") String username,
+            @NotBlank(message = "Password is required") String password
     ) {}
 
     public record LoginResponse(String token, String role) {}

@@ -1,0 +1,24 @@
+{
+  "properties": [
+    {
+      "name": "app.default-language",
+      "type": "java.lang.String",
+      "description": "Idioma per defecte de l'aplicació (ca, es, en)."
+    },
+    {
+      "name": "app.supported-languages",
+      "type": "java.lang.String",
+      "description": "Llista d'idiomes suportats separats per coma."
+    },
+    {
+      "name": "app.jwt.secret",
+      "type": "java.lang.String",
+      "description": "Clau secreta per a la signatura de tokens JWT."
+    },
+    {
+      "name": "app.jwt.expiration-ms",
+      "type": "java.lang.Long",
+      "description": "Temps d'expiració del token JWT en mil·lisegons."
+    }
+  ]
+}

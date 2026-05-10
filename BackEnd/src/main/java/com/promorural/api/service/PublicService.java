@@ -3,8 +3,10 @@ package com.promorural.api.service;
 import com.promorural.api.dto.PublicDtos.*;
 import com.promorural.api.entity.*;
 import com.promorural.api.repository.*;
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import java.util.Objects;
 
 @Service
 public class PublicService {
@@ -71,6 +73,34 @@ public class PublicService {
                 .toList();
     }
 
+    public ShopDetailResponse getShop(Long id) {
+        Long shopId = Objects.requireNonNull(id, "Shop ID cannot be null");
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new RuntimeException("Shop not found"));
+
+        if (shop.getStatus() != ShopStatus.APPROVED) {
+            throw new RuntimeException("Shop is not approved");
+        }
+
+        List<PromotionResponse> promotions = promotionRepository.findByShopId(shop.getId()).stream()
+                .filter(p -> LocalDate.now().isAfter(p.getStartsAt()) && LocalDate.now().isBefore(p.getEndsAt()))
+                .map(this::mapToPromotionResponse)
+                .toList();
+
+        return new ShopDetailResponse(
+                shop.getId(),
+                shop.getName(),
+                shop.getDescription(),
+                shop.getAddress(),
+                shop.getPhoneNumber(),
+                shop.getHeaderImageUrl(),
+                mapToCategoryResponse(shop.getCategory()),
+                shop.getLocation() != null ? shop.getLocation().getY() : null,
+                shop.getLocation() != null ? shop.getLocation().getX() : null,
+                promotions
+        );
+    }
+
     public List<PromotionResponse> getPromotions(Long shopId) {
         List<Promotion> promotions;
         if (shopId != null) {
@@ -79,15 +109,7 @@ public class PublicService {
             promotions = promotionRepository.findAll();
         }
         return promotions.stream()
-                .map(p -> new PromotionResponse(
-                        p.getId(),
-                        p.getShop().getId(),
-                        p.getTitle(),
-                        p.getDescription(),
-                        p.getImageUrl(),
-                        p.getStartsAt(),
-                        p.getEndsAt()
-                ))
+                .map(this::mapToPromotionResponse)
                 .toList();
     }
 
@@ -150,6 +172,18 @@ public class PublicService {
     private CategoryResponse mapToCategoryResponse(Category category) {
         if (category == null) return null;
         return new CategoryResponse(category.getId(), category.getName(), category.getType().name());
+    }
+
+    private PromotionResponse mapToPromotionResponse(Promotion p) {
+        return new PromotionResponse(
+                p.getId(),
+                p.getShop().getId(),
+                p.getTitle(),
+                p.getDescription(),
+                p.getImageUrl(),
+                p.getStartsAt(),
+                p.getEndsAt()
+        );
     }
 
     private MunicipalityConfig getMunicipalityConfig() {

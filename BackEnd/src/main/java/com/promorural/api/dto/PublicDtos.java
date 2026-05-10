@@ -32,6 +32,19 @@ public class PublicDtos {
             Double longitude
     ) {}
 
+    public record ShopDetailResponse(
+            Long id,
+            Map<String, String> name,
+            Map<String, String> description,
+            String address,
+            String phoneNumber,
+            String headerImageUrl,
+            CategoryResponse category,
+            Double latitude,
+            Double longitude,
+            List<PromotionResponse> promotions
+    ) {}
+
     public record PromotionResponse(
             Long id,
             Long shopId,

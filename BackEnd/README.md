@@ -27,20 +27,31 @@ Spring Boot 3 (Java 21) backend providing a robust API for rural municipality di
 - Docker & Docker Compose
 - Maven
 
-### Installation
+### Installation & Running
 
 1. Clone the repository.
 2. Copy the environment template:
    ```bash
    cp .env.example .env
    ```
-3. Start the infrastructure (Database):
+
+#### Development Mode (Recommended for coding)
+In this mode, you run the database and an Nginx proxy in Docker, while the application runs natively for faster restarts. The Nginx proxy allows the frontend to access the API at `http://localhost/api`.
+
+1. Start the database and Nginx proxy:
    ```bash
    docker compose up -d
    ```
-4. Run the application:
+2. Run the application:
    ```bash
    mvn spring-boot:run
+   ```
+
+#### Production Mode (Full Stack)
+In this mode, the entire system (Database, API, and Nginx) runs inside Docker containers.
+1. Build and start everything:
+   ```bash
+   docker compose -f docker-compose.prod.yml up --build -d
    ```
 
 ## Public API Endpoints
@@ -53,6 +64,15 @@ Spring Boot 3 (Java 21) backend providing a robust API for rural municipality di
 - `GET /api/public/events`: List agenda and festivals.
 - `GET /api/public/points-of-interest`: List touristic sites.
 - `GET /api/public/contacts`: Municipal directory.
+
+## API Documentation
+
+Interactive API documentation is available via Swagger UI when the application is running:
+
+- **Swagger UI:** [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+- **OpenAPI Spec:** [http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs)
+
+The Swagger UI includes a "Authorize" button to test protected endpoints using a JWT Bearer token.
 
 ## Localization
 

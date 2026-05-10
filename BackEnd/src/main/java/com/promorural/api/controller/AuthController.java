@@ -2,6 +2,7 @@ package com.promorural.api.controller;
 
 import com.promorural.api.dto.AuthDtos.LoginRequest;
 import com.promorural.api.dto.AuthDtos.LoginResponse;
+import com.promorural.api.dto.AuthDtos.RegisterRequest;
 import com.promorural.api.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -20,5 +21,11 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<Void> register(@Valid @RequestBody RegisterRequest request) {
+        authService.register(request);
+        return ResponseEntity.ok().build();
     }
 }
