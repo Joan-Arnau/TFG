@@ -1,5 +1,6 @@
 package com.promorural.api.controller;
 
+import com.promorural.api.dto.MerchantDtos.ProductImageResponse;
 import com.promorural.api.dto.MerchantDtos.PromotionCreateDto;
 import com.promorural.api.dto.MerchantDtos.ShopUpdateDto;
 import com.promorural.api.dto.PublicDtos.PromotionResponse;
@@ -8,9 +9,12 @@ import com.promorural.api.service.MerchantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -105,6 +109,49 @@ public class MerchantController {
             } else {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             }
+        }
+    }
+
+    /**
+     * Uploads a new image to the authenticated merchant's shop gallery.
+     * @param file The image file to upload.
+     * @return ResponseEntity with the ProductImageResponse DTO of the uploaded image.
+     */
+    @PostMapping("/my-shop/images")
+    public ResponseEntity<ProductImageResponse> uploadImage(@RequestParam("file") MultipartFile file) {
+        try {
+            ProductImageResponse imageResponse = merchantService.uploadImageForShop(file);
+            return ResponseEntity.status(HttpStatus.CREATED).body(imageResponse);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    /**
+     * Deletes an image from the authenticated merchant's shop gallery.
+     * @param imageId The ID of the image to delete.
+     * @return ResponseEntity indicating success or failure.
+     */
+    @DeleteMapping("/my-shop/images/{id}")
+    public ResponseEntity<Void> deleteImage(@PathVariable("id") Long imageId) {
+        try {
+            merchantService.deleteImageForShop(imageId);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        } catch (RuntimeException e) {
+            if (e.getMessage().equals("Image not found.")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,8 +39,12 @@ public class CategoryService {
      * @return The created CategoryResponse DTO.
      */
     public CategoryResponse createCategory(CategoryRequestDto request) {
-        Objects.requireNonNull(request.name(), "Category name cannot be null");
-        Objects.requireNonNull(request.type(), "Category type cannot be null");
+        if (request.name() == null) {
+            throw new IllegalArgumentException("Category name cannot be null");
+        }
+        if (request.type() == null) {
+            throw new IllegalArgumentException("Category type cannot be null");
+        }
         
         CategoryType categoryType = CategoryType.valueOf(request.type());
 
@@ -59,7 +62,9 @@ public class CategoryService {
      * @throws RuntimeException if the category is not found or cannot be deleted.
      */
     public void deleteCategory(Long id) {
-        Objects.requireNonNull(id, "Category ID cannot be null");
+        if (id == null) {
+            throw new IllegalArgumentException("Category ID cannot be null");
+        }
         categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Category not found with ID: " + id));
         categoryRepository.deleteById(id);
     }

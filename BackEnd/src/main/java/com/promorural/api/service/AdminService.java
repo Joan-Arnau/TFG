@@ -4,11 +4,14 @@ import com.promorural.api.dto.AdminDtos.CreateAnnouncementRequest;
 import com.promorural.api.dto.AdminDtos.CreateEventRequest;
 import com.promorural.api.dto.AdminDtos.UpdateConfigRequest;
 import com.promorural.api.dto.AdminDtos.UpdateShopStatusRequest;
+import com.promorural.api.dto.PublicDtos.CategoryResponse;
+import com.promorural.api.dto.PublicDtos.ShopResponse;
 import com.promorural.api.entity.Announcement;
 import com.promorural.api.entity.Category;
 import com.promorural.api.entity.Event;
 import com.promorural.api.entity.MunicipalityConfig;
 import com.promorural.api.entity.Shop;
+import com.promorural.api.entity.ShopStatus;
 import com.promorural.api.repository.AnnouncementRepository;
 import com.promorural.api.repository.CategoryRepository;
 import com.promorural.api.repository.EventRepository;
@@ -21,7 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZoneOffset;
-import java.util.Objects;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -56,9 +60,11 @@ public class AdminService {
      * @throws RuntimeException if the municipality configuration is not found.
      */
     public void updateConfig(UpdateConfigRequest request) {
-        MunicipalityConfig config = Objects.requireNonNull(municipalityConfigRepository.findFirstByOrderByIdAsc()
-                .orElseThrow(() -> new RuntimeException("Municipality configuration not found")), "MunicipalityConfig is null");
-
+        MunicipalityConfig config = municipalityConfigRepository.findFirstByOrderByIdAsc()
+                .orElse(null);
+        if (config == null) {
+            throw new RuntimeException("Municipality configuration not found");
+        }
         if (request.branding() != null) {
             config.setBranding(request.branding());
         }
@@ -77,7 +83,10 @@ public class AdminService {
     }
 
     public void createAnnouncement(CreateAnnouncementRequest request) {
-        Long categoryId = Objects.requireNonNull(request.categoryId(), "CategoryId cannot be null");
+        Long categoryId = request.categoryId();
+        if (categoryId == null) {
+            throw new IllegalArgumentException("CategoryId cannot be null");
+        }
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
 
@@ -91,7 +100,10 @@ public class AdminService {
     }
 
     public void createEvent(CreateEventRequest request) {
-        Long categoryId = Objects.requireNonNull(request.categoryId(), "CategoryId cannot be null");
+        Long categoryId = request.categoryId();
+        if (categoryId == null) {
+            throw new IllegalArgumentException("CategoryId cannot be null");
+        }
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
 
@@ -118,11 +130,47 @@ public class AdminService {
     }
 
     public void updateShopStatus(Long id, UpdateShopStatusRequest request) {
-        Long shopId = Objects.requireNonNull(id, "Shop ID cannot be null");
-        Shop shop = shopRepository.findById(shopId)
+        if (id == null) {
+            throw new IllegalArgumentException("Shop ID cannot be null");
+        }
+        Shop shop = shopRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Shop not found"));
 
-        shop.setStatus(Objects.requireNonNull(request.status(), "Shop status cannot be null"));
+        if (request.status() == null) {
+            throw new IllegalArgumentException("Shop status cannot be null");
+        }
+        shop.setStatus(request.status());
         shopRepository.save(shop);
+    }
+
+    /**
+     * Retrieves a list of shops that are in PENDING status.
+     * @return A list of ShopResponse DTOs representing pending shops.
+     */
+    public List<ShopResponse> getPendingShops() {
+        List<Shop> pendingShops = shopRepository.findByStatusOrderByCreatedAtDesc(ShopStatus.PENDING);
+        return pendingShops.stream()
+                .map(this::mapToShopResponse)
+                .collect(Collectors.toList());
+    }
+
+    private ShopResponse mapToShopResponse(Shop shop) {
+        if (shop == null) return null;
+        return new ShopResponse(
+                shop.getId(),
+                shop.getName(),
+                shop.getDescription(),
+                shop.getAddress(),
+                shop.getPhoneNumber(),
+                shop.getHeaderImageUrl(),
+                mapToCategoryResponse(shop.getCategory()),
+                shop.getLocation() != null ? shop.getLocation().getY() : null,
+                shop.getLocation() != null ? shop.getLocation().getX() : null
+        );
+    }
+
+    private CategoryResponse mapToCategoryResponse(Category category) {
+        if (category == null) return null;
+        return new CategoryResponse(category.getId(), category.getName(), category.getType().name());
     }
 }

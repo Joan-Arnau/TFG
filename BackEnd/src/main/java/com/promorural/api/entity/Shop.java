@@ -2,6 +2,7 @@ package com.promorural.api.entity;
 
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Map;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -43,6 +44,9 @@ public class Shop {
 
     @Column(columnDefinition = "geometry(Point,4326)")
     private Point location;
+
+    @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductImage> images;
 
     @Column(nullable = false)
     private OffsetDateTime createdAt;
@@ -128,6 +132,14 @@ public class Shop {
 
     public void setLocation(Point location) {
         this.location = location;
+    }
+
+    public List<ProductImage> getImages() {
+        return images;
+    }
+
+    public void setImages(List<ProductImage> images) {
+        this.images = images;
     }
 
     public OffsetDateTime getCreatedAt() {

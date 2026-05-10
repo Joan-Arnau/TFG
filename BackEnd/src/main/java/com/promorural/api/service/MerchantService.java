@@ -1,27 +1,38 @@
 package com.promorural.api.service;
 
 import com.promorural.api.dto.MerchantDtos.PromotionCreateDto;
+import com.promorural.api.dto.MerchantDtos.ProductImageResponse;
 import com.promorural.api.dto.MerchantDtos.ShopUpdateDto;
 import com.promorural.api.dto.PublicDtos.CategoryResponse;
 import com.promorural.api.dto.PublicDtos.PromotionResponse;
 import com.promorural.api.dto.PublicDtos.ShopResponse;
 import com.promorural.api.entity.Category;
 import com.promorural.api.entity.Promotion;
+import com.promorural.api.entity.ProductImage;
 import com.promorural.api.entity.Shop;
 import com.promorural.api.entity.User;
+import com.promorural.api.repository.ProductImageRepository;
 import com.promorural.api.repository.PromotionRepository;
 import com.promorural.api.repository.ShopRepository;
 import com.promorural.api.repository.UserRepository;
+
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class MerchantService {
@@ -35,16 +46,22 @@ public class MerchantService {
     @Autowired
     private PromotionRepository promotionRepository;
 
+    @Autowired
+    private ProductImageRepository productImageRepository;
+
+    @Value("${app.fileupload.upload-dir}")
+    private String uploadDir;
+
+    @Value("${app.fileupload.base-url}")
+    private String baseUrl;
+
     /**
      * Retrieves the shop associated with the authenticated merchant, mapped to ShopResponse DTO.
      * @return ShopResponse DTO representing the shop.
      * @throws IllegalStateException if the merchant does not have an associated shop.
      */
     public ShopResponse getShopForMerchant() {
-        User currentUser = getCurrentUser();
-        Shop shop = Objects.requireNonNull(shopRepository.findByOwnerUsername(currentUser.getUsername())
-                .orElseThrow(() -> new IllegalStateException("Merchant does not have an associated shop.")), "Shop object is null");
-        return mapToShopResponse(shop);
+        return mapToShopResponse(getCurrentUserShop());
     }
 
     /**
@@ -55,9 +72,10 @@ public class MerchantService {
      */
     @Transactional
     public ShopResponse updateShopForMerchant(ShopUpdateDto shopUpdateDto) {
-        User currentUser = getCurrentUser();
-        Shop shop = Objects.requireNonNull(shopRepository.findByOwnerUsername(currentUser.getUsername())
-                .orElseThrow(() -> new IllegalStateException("Merchant does not have an associated shop.")), "Shop object is null");
+        Shop shop = getCurrentUserShop();
+        if (shop == null) {
+            throw new EntityNotFoundException("Merchant does not have an associated shop.");
+        }
 
         if (shopUpdateDto.getName() != null) {
             shop.setName(shopUpdateDto.getName());
@@ -73,8 +91,7 @@ public class MerchantService {
             shop.setPhoneNumber(shopUpdateDto.getPhoneNumber());
         }
         
-        Shop savedShop = shopRepository.save(shop);
-        return mapToShopResponse(savedShop);
+        return mapToShopResponse(shopRepository.save(shop));
     }
 
     /**
@@ -83,9 +100,7 @@ public class MerchantService {
      * @throws IllegalStateException if the merchant does not have an associated shop.
      */
     public List<PromotionResponse> getMerchantPromotions() {
-        User currentUser = getCurrentUser();
-        Shop shop = Objects.requireNonNull(shopRepository.findByOwnerUsername(currentUser.getUsername())
-                .orElseThrow(() -> new IllegalStateException("Merchant does not have an associated shop.")), "Shop object is null");
+        Shop shop = getCurrentUserShop();
 
         return promotionRepository.findByShopId(shop.getId()).stream()
                 .map(this::mapToPromotionResponse)
@@ -100,9 +115,7 @@ public class MerchantService {
      */
     @Transactional
     public PromotionResponse createMerchantPromotion(PromotionCreateDto promotionCreateDto) {
-        User currentUser = getCurrentUser();
-        Shop shop = Objects.requireNonNull(shopRepository.findByOwnerUsername(currentUser.getUsername())
-                .orElseThrow(() -> new IllegalStateException("Merchant does not have an associated shop.")), "Shop object is null");
+        Shop shop = getCurrentUserShop();
 
         Promotion promotion = new Promotion();
         promotion.setTitle(promotionCreateDto.getTitle());
@@ -127,30 +140,86 @@ public class MerchantService {
      */
     @Transactional
     public void deleteMerchantPromotion(Long promotionId) {
-        User currentUser = getCurrentUser();
-        
-        Shop shop = Objects.requireNonNull(shopRepository.findByOwnerUsername(currentUser.getUsername())
-                .orElseThrow(() -> new IllegalStateException("Merchant does not have an associated shop.")), "Shop object is null");
-
-        Long nonNullPromotionId = Objects.requireNonNull(promotionId, "Promotion ID cannot be null");
-        Optional<Promotion> promotionOptional = promotionRepository.findById(nonNullPromotionId);
-        
-        if (promotionOptional.isPresent()) {
-            Promotion promotion = promotionOptional.get();
-            
-            Shop promotionShop = Objects.requireNonNull(promotion.getShop(), "Promotion's shop cannot be null");
-            Long promotionShopId = Objects.requireNonNull(promotionShop.getId(), "Promotion's shop ID cannot be null");
-
-            Long currentShopId = Objects.requireNonNull(shop.getId(), "Current shop ID cannot be null");
-
-            if (promotionShopId.equals(currentShopId)) {
-                promotionRepository.deleteById(nonNullPromotionId);
-            } else {
-                throw new AccessDeniedException("Promotion does not belong to this merchant.");
-            }
-        } else {
-            throw new RuntimeException("Promotion not found.");
+        if (promotionId == null) {
+            throw new IllegalArgumentException("Promotion ID cannot be null");
         }
+
+        Shop shop = getCurrentUserShop();
+        Promotion promotion = promotionRepository.findById(promotionId)
+                .orElseThrow(() -> new RuntimeException("Promotion not found."));
+
+        if (!shop.getId().equals(promotion.getShop().getId())) {
+            throw new AccessDeniedException("Promotion does not belong to this merchant.");
+        }
+
+        promotionRepository.delete(promotion);
+    }
+
+    /**
+     * Uploads an image for the authenticated merchant's shop.
+     * @param file The image file to upload.
+     * @return ProductImageResponse DTO of the uploaded image.
+     * @throws IllegalStateException if the merchant does not have an associated shop.
+     * @throws IOException if there is an error storing the file.
+     */
+    @Transactional
+    public ProductImageResponse uploadImageForShop(MultipartFile file) throws IOException {
+        Shop shop = getCurrentUserShop();
+
+        Path uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
+        Files.createDirectories(uploadPath);
+
+        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        Path filePath = uploadPath.resolve(fileName);
+
+        Files.copy(file.getInputStream(), filePath);
+
+        ProductImage image = new ProductImage();
+        image.setImageUrl(baseUrl + "/" + fileName);
+        image.setShop(shop);
+
+        ProductImage savedImage = productImageRepository.save(image);
+        return mapToProductImageResponse(savedImage);
+    }
+
+    /**
+     * Deletes an image from the authenticated merchant's shop.
+     * @param imageId The ID of the image to delete.
+     * @throws IllegalStateException if the merchant does not have an associated shop.
+     * @throws AccessDeniedException if the image does not belong to the merchant.
+     * @throws RuntimeException if the image is not found or cannot be deleted.
+     */
+    @Transactional
+    public void deleteImageForShop(Long imageId) throws IOException {
+        if (imageId == null) {
+            throw new IllegalArgumentException("Image ID cannot be null");
+        }
+
+        Shop shop = getCurrentUserShop();
+        ProductImage image = productImageRepository.findById(imageId)
+                .orElseThrow(() -> new RuntimeException("Image not found."));
+
+        if (!shop.getId().equals(image.getShop().getId())) {
+            throw new AccessDeniedException("Image does not belong to this merchant's shop.");
+        }
+
+        String fileName = image.getImageUrl().substring(baseUrl.length() + 1);
+        Path filePath = Paths.get(uploadDir).resolve(fileName);
+        Files.deleteIfExists(filePath);
+
+        productImageRepository.delete(image);
+    }
+
+
+    /**
+     * Retrieves the shop associated with the current authenticated merchant.
+     * @return The Shop entity.
+     * @throws IllegalStateException if the merchant does not have an associated shop.
+     */
+    private Shop getCurrentUserShop() {
+        User currentUser = getCurrentUser();
+        return shopRepository.findByOwnerUsername(currentUser.getUsername())
+                .orElseThrow(() -> new IllegalStateException("Merchant does not have an associated shop."));
     }
 
     /**
@@ -204,5 +273,14 @@ public class MerchantService {
     private CategoryResponse mapToCategoryResponse(Category category) {
         if (category == null) return null;
         return new CategoryResponse(category.getId(), category.getName(), category.getType().name());
+    }
+
+    private ProductImageResponse mapToProductImageResponse(ProductImage image) {
+        if (image == null) return null;
+        return new ProductImageResponse(
+                image.getId(),
+                image.getImageUrl(),
+                image.getUploadedAt()
+        );
     }
 }

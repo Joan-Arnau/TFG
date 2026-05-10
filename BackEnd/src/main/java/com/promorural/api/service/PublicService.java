@@ -27,7 +27,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class PublicService {
@@ -67,7 +66,7 @@ public class PublicService {
      * @throws IllegalStateException if the municipality configuration is not found.
      */
     public ConfigResponse getConfig() {
-        MunicipalityConfig config = Objects.requireNonNull(getMunicipalityConfig(), "MunicipalityConfig is null");
+        MunicipalityConfig config = getMunicipalityConfig();
         
         return new ConfigResponse(
                 config.getDefaultLanguage(),
@@ -101,8 +100,10 @@ public class PublicService {
     }
 
     public ShopDetailResponse getShop(Long id) {
-        Long shopId = Objects.requireNonNull(id, "Shop ID cannot be null");
-        Shop shop = shopRepository.findById(shopId)
+        if (id == null) {
+            throw new IllegalArgumentException("Shop ID cannot be null");
+        }
+        Shop shop = shopRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Shop not found"));
 
         if (shop.getStatus() != ShopStatus.APPROVED) {
@@ -215,7 +216,7 @@ public class PublicService {
     }
 
     private MunicipalityConfig getMunicipalityConfig() {
-        return Objects.requireNonNull(municipalityConfigRepository.findFirstByOrderByIdAsc()
-                .orElseThrow(() -> new IllegalStateException("Municipality config not found")), "MunicipalityConfig is null");
+        return municipalityConfigRepository.findFirstByOrderByIdAsc()
+                .orElseThrow(() -> new IllegalStateException("Municipality config not found"));
     }
 }

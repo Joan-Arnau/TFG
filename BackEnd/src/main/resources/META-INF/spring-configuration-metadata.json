@@ -19,6 +19,16 @@
       "name": "app.jwt.expiration-ms",
       "type": "java.lang.Long",
       "description": "Temps d'expiració del token JWT en mil·lisegons."
+    },
+    {
+      "name": "app.fileupload.upload-dir",
+      "type": "java.lang.String",
+      "description": "Directori on es guarden els fitxers pujats."
+    },
+    {
+      "name": "app.fileupload.base-url",
+      "type": "java.lang.String",
+      "description": "URL base per accedir als fitxers pujats."
     }
   ]
 }
