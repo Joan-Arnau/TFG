@@ -1,6 +1,6 @@
 package com.promorural.api.controller;
 
-import com.promorural.api.dto.AdminDtos.CategoryRequestDto;
+import com.promorural.api.dto.AdminDtos.CategoryRequest;
 import com.promorural.api.dto.PublicDtos.CategoryResponse;
 import com.promorural.api.service.CategoryService;
 import jakarta.validation.Valid;
@@ -39,7 +39,7 @@ public class CategoryController {
      */
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/categories")
-    public ResponseEntity<CategoryResponse> createCategory(@Valid @RequestBody CategoryRequestDto request) {
+    public ResponseEntity<CategoryResponse> createCategory(@Valid @RequestBody CategoryRequest request) {
         try {
             CategoryResponse createdCategoryDto = categoryService.createCategory(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdCategoryDto);

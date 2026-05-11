@@ -1,8 +1,8 @@
 package com.promorural.api.controller;
 
 import com.promorural.api.dto.MerchantDtos.ProductImageResponse;
-import com.promorural.api.dto.MerchantDtos.PromotionCreateDto;
-import com.promorural.api.dto.MerchantDtos.ShopUpdateDto;
+import com.promorural.api.dto.MerchantDtos.CreatePromotionRequest;
+import com.promorural.api.dto.MerchantDtos.UpdateShopRequest;
 import com.promorural.api.dto.PublicDtos.PromotionResponse;
 import com.promorural.api.dto.PublicDtos.ShopResponse;
 import com.promorural.api.service.MerchantService;
@@ -47,7 +47,7 @@ public class MerchantController {
      * @return ResponseEntity with the updated ShopResponse DTO or an error.
      */
     @PutMapping("/my-shop")
-    public ResponseEntity<ShopResponse> updateMyShop(@RequestBody ShopUpdateDto shopUpdateDto) {
+    public ResponseEntity<ShopResponse> updateMyShop(@RequestBody UpdateShopRequest shopUpdateDto) {
         try {
             ShopResponse updatedShopDto = merchantService.updateShopForMerchant(shopUpdateDto);
             return ResponseEntity.ok(updatedShopDto);
@@ -80,7 +80,7 @@ public class MerchantController {
      * @return ResponseEntity with the created PromotionResponse DTO or an error.
      */
     @PostMapping("/promotions")
-    public ResponseEntity<PromotionResponse> createPromotion(@RequestBody PromotionCreateDto promotionCreateDto) {
+    public ResponseEntity<PromotionResponse> createPromotion(@RequestBody CreatePromotionRequest promotionCreateDto) {
         try {
             PromotionResponse createdPromotionDto = merchantService.createMerchantPromotion(promotionCreateDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdPromotionDto);

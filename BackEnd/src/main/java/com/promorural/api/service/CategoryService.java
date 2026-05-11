@@ -1,6 +1,6 @@
 package com.promorural.api.service;
 
-import com.promorural.api.dto.AdminDtos.CategoryRequestDto;
+import com.promorural.api.dto.AdminDtos.CategoryRequest;
 import com.promorural.api.dto.PublicDtos.CategoryResponse;
 import com.promorural.api.entity.Category;
 import com.promorural.api.entity.CategoryType;
@@ -38,7 +38,7 @@ public class CategoryService {
      * @param request The CategoryRequestDto containing category details.
      * @return The created CategoryResponse DTO.
      */
-    public CategoryResponse createCategory(CategoryRequestDto request) {
+    public CategoryResponse createCategory(CategoryRequest request) {
         if (request.name() == null) {
             throw new IllegalArgumentException("Category name cannot be null");
         }

@@ -1,30 +1,17 @@
 package com.promorural.api.service;
 
-import com.promorural.api.dto.AdminDtos.CreateAnnouncementRequest;
-import com.promorural.api.dto.AdminDtos.CreateEventRequest;
-import com.promorural.api.dto.AdminDtos.UpdateConfigRequest;
-import com.promorural.api.dto.AdminDtos.UpdateShopStatusRequest;
-import com.promorural.api.dto.PublicDtos.CategoryResponse;
-import com.promorural.api.dto.PublicDtos.ShopResponse;
-import com.promorural.api.entity.Announcement;
-import com.promorural.api.entity.Category;
-import com.promorural.api.entity.Event;
-import com.promorural.api.entity.MunicipalityConfig;
-import com.promorural.api.entity.Shop;
-import com.promorural.api.entity.ShopStatus;
-import com.promorural.api.repository.AnnouncementRepository;
-import com.promorural.api.repository.CategoryRepository;
-import com.promorural.api.repository.EventRepository;
-import com.promorural.api.repository.MunicipalityConfigRepository;
-import com.promorural.api.repository.ShopRepository;
-import org.locationtech.jts.geom.Coordinate;
+import com.promorural.api.dto.AdminDtos.*;
+import com.promorural.api.dto.PublicDtos.*;
+import com.promorural.api.entity.*;
+import com.promorural.api.repository.*;
 import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.time.ZoneOffset;
+import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,6 +23,9 @@ public class AdminService {
     private final EventRepository eventRepository;
     private final ShopRepository shopRepository;
     private final CategoryRepository categoryRepository;
+    private final PointOfInterestRepository pointOfInterestRepository;
+    private final ContactRepository contactRepository;
+    private final FileStorageService fileStorageService;
     private final GeometryFactory geometryFactory;
 
     public AdminService(
@@ -44,6 +34,9 @@ public class AdminService {
             EventRepository eventRepository,
             ShopRepository shopRepository,
             CategoryRepository categoryRepository,
+            PointOfInterestRepository pointOfInterestRepository,
+            ContactRepository contactRepository,
+            FileStorageService fileStorageService,
             GeometryFactory geometryFactory
     ) {
         this.municipalityConfigRepository = municipalityConfigRepository;
@@ -51,42 +44,25 @@ public class AdminService {
         this.eventRepository = eventRepository;
         this.shopRepository = shopRepository;
         this.categoryRepository = categoryRepository;
+        this.pointOfInterestRepository = pointOfInterestRepository;
+        this.contactRepository = contactRepository;
+        this.fileStorageService = fileStorageService;
         this.geometryFactory = geometryFactory;
     }
 
     /**
      * Updates the municipality configuration.
-     * @param request The UpdateConfigRequest containing the new configuration values.
-     * @throws RuntimeException if the municipality configuration is not found.
      */
     public void updateConfig(UpdateConfigRequest request) {
-        MunicipalityConfig config = municipalityConfigRepository.findFirstByOrderByIdAsc()
-                .orElse(null);
-        if (config == null) {
-            throw new RuntimeException("Municipality configuration not found");
-        }
-        if (request.branding() != null) {
-            config.setBranding(request.branding());
-        }
-        if (request.defaultLanguage() != null) {
-            config.setDefaultLanguage(request.defaultLanguage());
-        }
-        if (request.supportedLanguages() != null) {
-            config.setSupportedLanguages(request.supportedLanguages());
-        }
-        if (request.latitude() != null && request.longitude() != null) {
-            Point location = geometryFactory.createPoint(new Coordinate(request.longitude(), request.latitude()));
-            config.setLocation(location);
-        }
+        MunicipalityConfig config = Objects.requireNonNull(municipalityConfigRepository.findFirstByOrderByIdAsc()
+                .orElseThrow(() -> new RuntimeException("Municipality configuration not found")), "MunicipalityConfig is null");
 
+        request.updateEntity(config, geometryFactory);
         municipalityConfigRepository.save(config);
     }
 
     public void createAnnouncement(CreateAnnouncementRequest request) {
-        Long categoryId = request.categoryId();
-        if (categoryId == null) {
-            throw new IllegalArgumentException("CategoryId cannot be null");
-        }
+        Long categoryId = Objects.requireNonNull(request.categoryId(), "CategoryId cannot be null");
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
 
@@ -100,58 +76,112 @@ public class AdminService {
     }
 
     public void createEvent(CreateEventRequest request) {
-        Long categoryId = request.categoryId();
-        if (categoryId == null) {
-            throw new IllegalArgumentException("CategoryId cannot be null");
-        }
+        Long categoryId = Objects.requireNonNull(request.categoryId(), "CategoryId cannot be null");
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
 
         Event event = new Event();
-        event.setTitle(request.title());
-        event.setDescription(request.description());
-        event.setLocationText(request.locationText());
-        event.setCategory(category);
-        event.setFestival(request.festival());
-        
-        if (request.startsAt() != null) {
-            event.setStartsAt(request.startsAt().atStartOfDay().atOffset(ZoneOffset.UTC));
-        }
-        if (request.endsAt() != null) {
-            event.setEndsAt(request.endsAt().atStartOfDay().atOffset(ZoneOffset.UTC));
-        }
-
-        if (request.latitude() != null && request.longitude() != null) {
-            Point location = geometryFactory.createPoint(new Coordinate(request.longitude(), request.latitude()));
-            event.setLocationGeom(location);
-        }
+        request.applyToEntity(event, category, geometryFactory);
 
         eventRepository.save(event);
     }
 
     public void updateShopStatus(Long id, UpdateShopStatusRequest request) {
-        if (id == null) {
-            throw new IllegalArgumentException("Shop ID cannot be null");
-        }
-        Shop shop = shopRepository.findById(id)
+        Long shopId = Objects.requireNonNull(id, "Shop ID cannot be null");
+        Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new RuntimeException("Shop not found"));
 
-        if (request.status() == null) {
-            throw new IllegalArgumentException("Shop status cannot be null");
-        }
-        shop.setStatus(request.status());
+        shop.setStatus(Objects.requireNonNull(request.status(), "Shop status cannot be null"));
         shopRepository.save(shop);
     }
 
-    /**
-     * Retrieves a list of shops that are in PENDING status.
-     * @return A list of ShopResponse DTOs representing pending shops.
-     */
     public List<ShopResponse> getPendingShops() {
-        List<Shop> pendingShops = shopRepository.findByStatusOrderByCreatedAtDesc(ShopStatus.PENDING);
-        return pendingShops.stream()
+        return shopRepository.findByStatusOrderByCreatedAtDesc(ShopStatus.PENDING).stream()
                 .map(this::mapToShopResponse)
                 .collect(Collectors.toList());
+    }
+
+    public PointOfInterestResponse createPointOfInterest(PointOfInterestRequest request) {
+        Long categoryId = Objects.requireNonNull(request.categoryId(), "CategoryId cannot be null for POI");
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+
+        PointOfInterest poi = new PointOfInterest();
+        request.updateEntity(poi, category, geometryFactory);
+
+        PointOfInterest savedPoi = pointOfInterestRepository.save(poi);
+        return mapToPointOfInterestResponse(savedPoi);
+    }
+
+    @SuppressWarnings("null")
+    public PointOfInterestResponse updatePointOfInterest(Long id, PointOfInterestRequest request) {
+        PointOfInterest poi = pointOfInterestRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Point of Interest not found with ID: " + id));
+
+        Category category = null;
+        if (request.categoryId() != null) {
+            category = categoryRepository.findById(request.categoryId())
+                    .orElseThrow(() -> new RuntimeException("Category not found"));
+        }
+
+        request.updateEntity(poi, category, geometryFactory);
+
+        PointOfInterest updatedPoi = pointOfInterestRepository.save(poi);
+        return mapToPointOfInterestResponse(updatedPoi);
+    }
+
+    @SuppressWarnings("null")
+    public void deletePointOfInterest(Long id) {
+        pointOfInterestRepository.deleteById(id);
+    }
+
+    public ContactResponse createContact(ContactRequest request) {
+        Long categoryId = Objects.requireNonNull(request.categoryId(), "CategoryId cannot be null for Contact");
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+
+        Contact contact = new Contact();
+        contact.setServiceName(request.serviceName());
+        contact.setPhoneNumber(request.phoneNumber());
+        contact.setIconName(request.iconName());
+        contact.setCategory(category);
+
+        Contact savedContact = contactRepository.save(contact);
+        return mapToContactResponse(savedContact);
+    }
+
+    @SuppressWarnings("null")
+    public ContactResponse updateContact(Long id, ContactRequest request) {
+        Contact contact = contactRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Contact not found with ID: " + id));
+
+        if (request.categoryId() != null) {
+            Category category = categoryRepository.findById(request.categoryId())
+                    .orElseThrow(() -> new RuntimeException("Category not found"));
+            contact.setCategory(category);
+        }
+
+        if (request.serviceName() != null) {
+            contact.setServiceName(request.serviceName());
+        }
+        if (request.phoneNumber() != null) {
+            contact.setPhoneNumber(request.phoneNumber());
+        }
+        if (request.iconName() != null) {
+            contact.setIconName(request.iconName());
+        }
+
+        Contact updatedContact = contactRepository.save(contact);
+        return mapToContactResponse(updatedContact);
+    }
+
+    @SuppressWarnings("null")
+    public void deleteContact(Long id) {
+        contactRepository.deleteById(id);
+    }
+
+    public String uploadFile(MultipartFile file) throws IOException {
+        return fileStorageService.storeFile(file);
     }
 
     private ShopResponse mapToShopResponse(Shop shop) {
@@ -172,5 +202,29 @@ public class AdminService {
     private CategoryResponse mapToCategoryResponse(Category category) {
         if (category == null) return null;
         return new CategoryResponse(category.getId(), category.getName(), category.getType().name());
+    }
+
+    private PointOfInterestResponse mapToPointOfInterestResponse(PointOfInterest poi) {
+        if (poi == null) return null;
+        return new PointOfInterestResponse(
+                poi.getId(),
+                poi.getName(),
+                poi.getDescription(),
+                poi.getImageUrl(),
+                mapToCategoryResponse(poi.getCategory()),
+                poi.getLocation() != null ? poi.getLocation().getY() : null,
+                poi.getLocation() != null ? poi.getLocation().getX() : null
+        );
+    }
+
+    private ContactResponse mapToContactResponse(Contact contact) {
+        if (contact == null) return null;
+        return new ContactResponse(
+                contact.getId(),
+                contact.getServiceName(),
+                contact.getPhoneNumber(),
+                contact.getIconName(),
+                mapToCategoryResponse(contact.getCategory())
+        );
     }
 }
