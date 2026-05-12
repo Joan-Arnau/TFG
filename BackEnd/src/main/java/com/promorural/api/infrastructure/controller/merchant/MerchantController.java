@@ -5,14 +5,17 @@ import com.promorural.api.core.application.dto.merchant.promotion.PromotionMerch
 import com.promorural.api.core.application.dto.merchant.shop.ProductImageResponse;
 import com.promorural.api.core.application.dto.merchant.shop.ShopMerchantResponse;
 import com.promorural.api.core.application.dto.merchant.shop.ShopUpdateRequest;
-import com.promorural.api.core.application.service.MerchantService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.promorural.api.core.application.service.use_case.merchant.ProductImageUseCase;
+import com.promorural.api.core.application.service.use_case.merchant.PromotionUseCase;
+import com.promorural.api.core.application.service.use_case.merchant.ShopProfileUseCase;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import com.promorural.api.core.application.validation.ValidationGroups;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,13 +25,22 @@ import java.util.List;
 @PreAuthorize("hasAuthority('ROLE_MERCHANT')")
 public class MerchantController {
 
-    @Autowired
-    private MerchantService merchantService;
+    private final ShopProfileUseCase shopProfileUseCase;
+    private final PromotionUseCase promotionUseCase;
+    private final ProductImageUseCase productImageUseCase;
+
+    public MerchantController(ShopProfileUseCase shopProfileUseCase,
+                               PromotionUseCase promotionUseCase,
+                               ProductImageUseCase productImageUseCase) {
+        this.shopProfileUseCase = shopProfileUseCase;
+        this.promotionUseCase = promotionUseCase;
+        this.productImageUseCase = productImageUseCase;
+    }
 
     @GetMapping("/my-shop")
     public ResponseEntity<ShopMerchantResponse> getMyShop() {
         try {
-            ShopMerchantResponse shopDto = merchantService.getShopForMerchant();
+            ShopMerchantResponse shopDto = shopProfileUseCase.getMyShop();
             return ResponseEntity.ok(shopDto);
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -38,9 +50,10 @@ public class MerchantController {
     }
 
     @PutMapping("/my-shop")
-    public ResponseEntity<ShopMerchantResponse> updateMyShop(@RequestBody ShopUpdateRequest shopUpdateDto) {
+    public ResponseEntity<ShopMerchantResponse> updateMyShop(
+            @Validated(ValidationGroups.Update.class) @RequestBody ShopUpdateRequest shopUpdateDto) {
         try {
-            ShopMerchantResponse updatedShopDto = merchantService.updateShopForMerchant(shopUpdateDto);
+            ShopMerchantResponse updatedShopDto = shopProfileUseCase.updateMyShop(shopUpdateDto);
             return ResponseEntity.ok(updatedShopDto);
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -52,7 +65,7 @@ public class MerchantController {
     @GetMapping("/promotions")
     public ResponseEntity<List<PromotionMerchantResponse>> getMyPromotions() {
         try {
-            List<PromotionMerchantResponse> promotionsDto = merchantService.getMerchantPromotions();
+            List<PromotionMerchantResponse> promotionsDto = promotionUseCase.getMyPromotions();
             return ResponseEntity.ok(promotionsDto);
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -62,9 +75,10 @@ public class MerchantController {
     }
 
     @PostMapping("/promotions")
-    public ResponseEntity<PromotionMerchantResponse> createPromotion(@RequestBody PromotionCreateRequest promotionCreateDto) {
+    public ResponseEntity<PromotionMerchantResponse> createPromotion(
+            @Validated(ValidationGroups.Create.class) @RequestBody PromotionCreateRequest promotionCreateDto) {
         try {
-            PromotionMerchantResponse createdPromotionDto = merchantService.createMerchantPromotion(promotionCreateDto);
+            PromotionMerchantResponse createdPromotionDto = promotionUseCase.create(promotionCreateDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdPromotionDto);
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -76,7 +90,7 @@ public class MerchantController {
     @DeleteMapping("/promotions/{id}")
     public ResponseEntity<Void> deletePromotion(@PathVariable("id") Long promotionId) {
         try {
-            merchantService.deleteMerchantPromotion(promotionId);
+            promotionUseCase.delete(promotionId);
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
             if (e.getMessage().equals("Promotion not found.")) {
@@ -92,7 +106,7 @@ public class MerchantController {
     @PostMapping("/my-shop/images")
     public ResponseEntity<ProductImageResponse> uploadImage(@RequestParam("file") MultipartFile file) {
         try {
-            ProductImageResponse imageResponse = merchantService.uploadImageForShop(file);
+            ProductImageResponse imageResponse = productImageUseCase.upload(file);
             return ResponseEntity.status(HttpStatus.CREATED).body(imageResponse);
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -106,7 +120,7 @@ public class MerchantController {
     @DeleteMapping("/my-shop/images/{id}")
     public ResponseEntity<Void> deleteImage(@PathVariable("id") Long imageId) {
         try {
-            merchantService.deleteImageForShop(imageId);
+            productImageUseCase.delete(imageId);
             return ResponseEntity.noContent().build();
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

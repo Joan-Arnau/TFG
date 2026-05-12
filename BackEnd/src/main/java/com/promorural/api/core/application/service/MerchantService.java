@@ -3,7 +3,6 @@ package com.promorural.api.core.application.service;
 import com.promorural.api.core.application.dto.admin.CategoryRef;
 import com.promorural.api.core.application.dto.merchant.promotion.PromotionCreateRequest;
 import com.promorural.api.core.application.dto.merchant.promotion.PromotionMerchantResponse;
-import com.promorural.api.core.application.dto.merchant.promotion.PromotionUpdateRequest;
 import com.promorural.api.core.application.dto.merchant.shop.ProductImageResponse;
 import com.promorural.api.core.application.dto.merchant.shop.ShopMerchantResponse;
 import com.promorural.api.core.application.dto.merchant.shop.ShopUpdateRequest;

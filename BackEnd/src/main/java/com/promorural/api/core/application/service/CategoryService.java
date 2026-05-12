@@ -2,6 +2,7 @@ package com.promorural.api.core.application.service;
 
 import com.promorural.api.core.application.dto.admin.CategoryAdminResponse;
 import com.promorural.api.core.application.dto.admin.CategoryRequest;
+import com.promorural.api.core.application.mapper.CategoryMapper;
 import com.promorural.api.core.domain.entity.Category;
 import com.promorural.api.core.domain.entity.CategoryType;
 import com.promorural.api.core.domain.repository.CategoryRepository;
@@ -16,16 +17,14 @@ import java.util.stream.Collectors;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
-    private final CategoryMapper categoryMapper;
 
     public CategoryService(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
-        this.categoryMapper = new CategoryMapper(); 
     }
 
     public List<CategoryAdminResponse> getAllCategories() {
         return categoryRepository.findAll().stream()
-                .map(categoryMapper::toDto)
+                .map(CategoryMapper::toAdminResponse)
                 .collect(Collectors.toList());
     }
 
@@ -44,7 +43,7 @@ public class CategoryService {
         category.setType(categoryType);
         
         Category savedCategory = categoryRepository.save(category);
-        return categoryMapper.toDto(savedCategory);
+        return CategoryMapper.toAdminResponse(savedCategory);
     }
 
     public void deleteCategory(Long id) {
@@ -53,16 +52,5 @@ public class CategoryService {
         }
         categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Category not found with ID: " + id));
         categoryRepository.deleteById(id);
-    }
-    
-    private static class CategoryMapper {
-        public CategoryAdminResponse toDto(Category category) {
-            if (category == null) return null;
-            return new CategoryAdminResponse(
-                category.getId(),
-                category.getName(),
-                category.getType().name()
-            );
-        }
     }
 }

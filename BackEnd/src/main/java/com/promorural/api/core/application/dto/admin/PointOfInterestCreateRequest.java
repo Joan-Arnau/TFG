@@ -1,18 +1,20 @@
 package com.promorural.api.core.application.dto.admin;
 
 import com.promorural.api.core.application.mapper.GeometryMapper;
+import com.promorural.api.core.application.validation.ValidationGroups;
 import com.promorural.api.core.domain.entity.Category;
 import com.promorural.api.core.domain.entity.PointOfInterest;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import java.util.Map;
 import java.util.Optional;
 import org.locationtech.jts.geom.GeometryFactory;
 
-public record PointOfInterestRequest(
-        @NotBlank(message = "Name is required") Map<String, String> name,
+public record PointOfInterestCreateRequest(
+        @NotEmpty(message = "Name is required", groups = ValidationGroups.Create.class) Map<String, String> name,
         Map<String, String> description,
         String imageUrl,
-        Long categoryId,
+        @NotNull(message = "CategoryId is required", groups = ValidationGroups.Create.class) Long categoryId,
         Double latitude,
         Double longitude
 ) implements GeometryMapper {
@@ -25,7 +27,7 @@ public record PointOfInterestRequest(
         Optional.ofNullable(description).ifPresent(poi::setDescription);
         Optional.ofNullable(imageUrl).ifPresent(poi::setImageUrl);
         Optional.ofNullable(category).ifPresent(poi::setCategory);
-        
+
         if (latitude != null && longitude != null) {
             poi.setLocation(createPoint(latitude, longitude, geometryFactory));
         } else if (latitude == null && longitude == null) {

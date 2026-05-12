@@ -3,11 +3,12 @@ package com.promorural.api.infrastructure.controller.admin;
 import com.promorural.api.core.application.dto.admin.CategoryAdminResponse;
 import com.promorural.api.core.application.dto.admin.CategoryRequest;
 import com.promorural.api.core.application.service.CategoryService;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import com.promorural.api.core.application.validation.ValidationGroups;
 
 import java.util.List;
 
@@ -39,7 +40,8 @@ public class CategoryController {
      */
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/categories")
-    public ResponseEntity<CategoryAdminResponse> createCategory(@Valid @RequestBody CategoryRequest request) {
+    public ResponseEntity<CategoryAdminResponse> createCategory(
+            @Validated(ValidationGroups.Create.class) @RequestBody CategoryRequest request) {
         try {
             CategoryAdminResponse createdCategoryDto = categoryService.createCategory(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdCategoryDto);

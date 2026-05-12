@@ -4,9 +4,10 @@ import com.promorural.api.core.application.dto.auth.AuthResponse;
 import com.promorural.api.core.application.dto.auth.LoginRequest;
 import com.promorural.api.core.application.dto.auth.RegisterRequest;
 import com.promorural.api.core.application.service.AuthService;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import com.promorural.api.core.application.validation.ValidationGroups;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -19,12 +20,14 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<AuthResponse> login(
+            @Validated(ValidationGroups.Create.class) @RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@Valid @RequestBody RegisterRequest request) {
+    public ResponseEntity<Void> register(
+            @Validated(ValidationGroups.Create.class) @RequestBody RegisterRequest request) {
         authService.register(request);
         return ResponseEntity.ok().build();
     }

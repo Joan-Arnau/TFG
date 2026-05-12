@@ -1,9 +1,11 @@
 package com.promorural.api.core.application.dto.admin;
 
 import com.promorural.api.core.application.mapper.GeometryMapper;
+import com.promorural.api.core.application.validation.ValidationGroups;
 import com.promorural.api.core.domain.entity.Category;
 import com.promorural.api.core.domain.entity.Event;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.Map;
@@ -11,10 +13,10 @@ import java.util.Optional;
 import org.locationtech.jts.geom.GeometryFactory;
 
 public record CreateEventRequest(
-        @NotEmpty(message = "Title is required") Map<String, String> title,
+    @NotEmpty(message = "Title is required", groups = ValidationGroups.Create.class) Map<String, String> title,
         Map<String, String> description,
         Map<String, String> locationText,
-        Long categoryId,
+    @NotNull(message = "CategoryId is required", groups = ValidationGroups.Create.class) Long categoryId,
         boolean festival,
         LocalDate startsAt,
         LocalDate endsAt,

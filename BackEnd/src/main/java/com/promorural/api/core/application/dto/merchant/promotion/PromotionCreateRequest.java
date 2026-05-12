@@ -1,12 +1,14 @@
 package com.promorural.api.core.application.dto.merchant.promotion;
 
+import com.promorural.api.core.application.validation.ValidationGroups;
 import com.promorural.api.core.domain.entity.Promotion;
 import com.promorural.api.core.domain.entity.Shop;
+import jakarta.validation.constraints.NotEmpty;
 import java.time.OffsetDateTime;
 import java.util.Map;
 
 public record PromotionCreateRequest(
-    Map<String, String> title,
+    @NotEmpty(message = "Title is required", groups = ValidationGroups.Create.class) Map<String, String> title,
     Map<String, String> description,
     OffsetDateTime startsAt,
     OffsetDateTime endsAt,
