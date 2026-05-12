@@ -2,22 +2,28 @@ services:
   db-server:
     image: postgis/postgis:16-3.4
     container_name: promo-rural-db
+    restart: unless-stopped
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    ports:
-      - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   api-server:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: promo-rural-api
+    restart: unless-stopped
     depends_on:
-      - db-server
+      db-server:
+        condition: service_healthy
     environment:
       DEFAULT_MUNICIPALITY_LANGUAGE: ${DEFAULT_MUNICIPALITY_LANGUAGE}
       SUPPORTED_LANGUAGES: ${SUPPORTED_LANGUAGES}
@@ -30,18 +36,28 @@ services:
       SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD}
       SEED_MERCHANT_USERNAME: ${SEED_MERCHANT_USERNAME}
       SEED_MERCHANT_PASSWORD: ${SEED_MERCHANT_PASSWORD}
-    ports:
-      - "8080:8080"
+    expose:
+      - "8080"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:8080/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
 
   nginx:
     image: nginx:1.27-alpine
     container_name: promo-rural-nginx
+    restart: unless-stopped
     depends_on:
-      - api-server
+      api-server:
+        condition: service_healthy
     ports:
       - "80:80"
+    environment:
+      CORS_ALLOW_ORIGIN: ${CORS_ALLOW_ORIGIN}
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/nginx.conf:/etc/nginx/templates/default.conf.template:ro
 
 volumes:
   db_data:
