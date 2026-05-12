@@ -1,14 +1,18 @@
 package com.promorural.api.infrastructure.controller.admin;
 
+import com.promorural.api.core.application.dto.admin.AnnouncementAdminResponse;
+import com.promorural.api.core.application.dto.admin.CategoryAdminResponse;
 import com.promorural.api.core.application.dto.admin.ContactRequest;
 import com.promorural.api.core.application.dto.admin.CreateAnnouncementRequest;
 import com.promorural.api.core.application.dto.admin.CreateEventRequest;
+import com.promorural.api.core.application.dto.admin.EventAdminResponse;
+import com.promorural.api.core.application.dto.admin.POIAdminResponse;
 import com.promorural.api.core.application.dto.admin.PointOfInterestRequest;
+import com.promorural.api.core.application.dto.admin.ShopModerationResponse;
 import com.promorural.api.core.application.dto.admin.config.ConfigUpdateRequest;
 import com.promorural.api.core.application.dto.admin.moderation.ShopStatusUpdateRequest;
 import com.promorural.api.core.application.dto.guest.ContactResponse;
 import com.promorural.api.core.application.dto.guest.PointOfInterestResponse;
-import com.promorural.api.core.application.dto.guest.shop.ShopResponse;
 import com.promorural.api.core.application.service.AdminService;
 import jakarta.validation.Valid;
 import java.io.IOException;
@@ -25,17 +29,12 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api")
 public class AdminController {
 
-    private final AdminService adminService;;
+    private final AdminService adminService;
 
     public AdminController(AdminService adminService) {
         this.adminService = adminService;
     }
 
-    /**
-     * Endpoint for Admin to update the municipality configuration.
-     * @param request The UpdateConfigRequest containing the new configuration values.
-     * @return ResponseEntity indicating success.
-     */
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/admin/config")
     public ResponseEntity<Void> updateConfig(@RequestBody ConfigUpdateRequest request) {
@@ -64,22 +63,30 @@ public class AdminController {
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * Endpoint for Admin to retrieve a list of shops that are in PENDING status.
-     * @return ResponseEntity with a list of ShopResponse DTOs representing pending shops.
-     */
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin/shops/pending")
-    public ResponseEntity<List<ShopResponse>> getPendingShops() {
-        List<ShopResponse> pendingShops = adminService.getPendingShops();
-        return ResponseEntity.ok(pendingShops);
+    public ResponseEntity<List<ShopModerationResponse>> getPendingShops() {
+        return ResponseEntity.ok(adminService.getPendingShops());
     }
 
-    /**
-     * Endpoint for Admin to create a new Point of Interest.
-     * @param request The PointOfInterestRequest DTO.
-     * @return ResponseEntity with the created PointOfInterestResponse DTO.
-     */
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/admin/announcements")
+    public ResponseEntity<List<AnnouncementAdminResponse>> getAnnouncements() {
+        return ResponseEntity.ok(adminService.getAnnouncements());
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/admin/events")
+    public ResponseEntity<List<EventAdminResponse>> getEvents() {
+        return ResponseEntity.ok(adminService.getEvents());
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/admin/pois")
+    public ResponseEntity<List<POIAdminResponse>> getPointsOfInterest() {
+        return ResponseEntity.ok(adminService.getPointsOfInterest());
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/admin/pois")
     public ResponseEntity<PointOfInterestResponse> createPointOfInterest(@Valid @RequestBody PointOfInterestRequest request) {
@@ -91,12 +98,6 @@ public class AdminController {
         }
     }
 
-    /**
-     * Endpoint for Admin to update an existing Point of Interest.
-     * @param id The ID of the Point of Interest to update.
-     * @param request The PointOfInterestRequest DTO.
-     * @return ResponseEntity with the updated PointOfInterestResponse DTO.
-     */
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/admin/pois/{id}")
     public ResponseEntity<PointOfInterestResponse> updatePointOfInterest(@PathVariable Long id, @Valid @RequestBody PointOfInterestRequest request) {
@@ -111,11 +112,6 @@ public class AdminController {
         }
     }
 
-    /**
-     * Endpoint for Admin to delete a Point of Interest by its ID.
-     * @param id The ID of the Point of Interest to delete.
-     * @return ResponseEntity indicating success.
-     */
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/admin/pois/{id}")
     public ResponseEntity<Void> deletePointOfInterest(@PathVariable Long id) {
@@ -130,11 +126,6 @@ public class AdminController {
         }
     }
 
-    /**
-     * Endpoint for Admin to create a new Contact entry.
-     * @param request The ContactRequest DTO.
-     * @return ResponseEntity with the created ContactResponse DTO.
-     */
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/admin/contacts")
     public ResponseEntity<ContactResponse> createContact(@Valid @RequestBody ContactRequest request) {
@@ -146,12 +137,6 @@ public class AdminController {
         }
     }
 
-    /**
-     * Endpoint for Admin to update an existing Contact entry.
-     * @param id The ID of the Contact to update.
-     * @param request The ContactRequest DTO.
-     * @return ResponseEntity with the updated ContactResponse DTO.
-     */
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/admin/contacts/{id}")
     public ResponseEntity<ContactResponse> updateContact(@PathVariable Long id, @Valid @RequestBody ContactRequest request) {
@@ -166,11 +151,6 @@ public class AdminController {
         }
     }
 
-    /**
-     * Endpoint for Admin to delete a Contact entry by its ID.
-     * @param id The ID of the Contact to delete.
-     * @return ResponseEntity indicating success.
-     */
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/admin/contacts/{id}")
     public ResponseEntity<Void> deleteContact(@PathVariable Long id) {
@@ -185,11 +165,6 @@ public class AdminController {
         }
     }
 
-    /**
-     * Endpoint for Admin to upload a generic file.
-     * @param file The file to upload.
-     * @return ResponseEntity with the file URL in the body.
-     */
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/admin/upload")
     public ResponseEntity<Map<String, String>> uploadFile(@RequestParam("file") MultipartFile file) {

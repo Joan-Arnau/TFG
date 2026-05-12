@@ -1,7 +1,7 @@
 package com.promorural.api.infrastructure.controller.admin;
 
+import com.promorural.api.core.application.dto.admin.CategoryAdminResponse;
 import com.promorural.api.core.application.dto.admin.CategoryRequest;
-import com.promorural.api.core.application.dto.guest.CategoryResponse;
 import com.promorural.api.core.application.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -27,8 +27,8 @@ public class CategoryController {
      */
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/categories")
-    public ResponseEntity<List<CategoryResponse>> getAllCategories() {
-        List<CategoryResponse> categoriesDto = categoryService.getAllCategories();
+    public ResponseEntity<List<CategoryAdminResponse>> getAllCategories() {
+        List<CategoryAdminResponse> categoriesDto = categoryService.getAllCategories();
         return ResponseEntity.ok(categoriesDto);
     }
 
@@ -39,9 +39,9 @@ public class CategoryController {
      */
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/categories")
-    public ResponseEntity<CategoryResponse> createCategory(@Valid @RequestBody CategoryRequest request) {
+    public ResponseEntity<CategoryAdminResponse> createCategory(@Valid @RequestBody CategoryRequest request) {
         try {
-            CategoryResponse createdCategoryDto = categoryService.createCategory(request);
+            CategoryAdminResponse createdCategoryDto = categoryService.createCategory(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdCategoryDto);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
