@@ -4,11 +4,11 @@ import com.promorural.api.core.application.dto.admin.ContactRequest;
 import com.promorural.api.core.application.dto.admin.CreateAnnouncementRequest;
 import com.promorural.api.core.application.dto.admin.CreateEventRequest;
 import com.promorural.api.core.application.dto.admin.PointOfInterestRequest;
-import com.promorural.api.core.application.dto.admin.UpdateConfigRequest;
-import com.promorural.api.core.application.dto.admin.UpdateShopStatusRequest;
-import com.promorural.api.core.application.dto.publicapi.ContactResponse;
-import com.promorural.api.core.application.dto.publicapi.PointOfInterestResponse;
-import com.promorural.api.core.application.dto.publicapi.ShopResponse;
+import com.promorural.api.core.application.dto.admin.config.ConfigUpdateRequest;
+import com.promorural.api.core.application.dto.admin.moderation.ShopStatusUpdateRequest;
+import com.promorural.api.core.application.dto.guest.ContactResponse;
+import com.promorural.api.core.application.dto.guest.PointOfInterestResponse;
+import com.promorural.api.core.application.dto.guest.shop.ShopResponse;
 import com.promorural.api.core.application.service.AdminService;
 import jakarta.validation.Valid;
 import java.io.IOException;
@@ -38,7 +38,7 @@ public class AdminController {
      */
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/admin/config")
-    public ResponseEntity<Void> updateConfig(@RequestBody UpdateConfigRequest request) {
+    public ResponseEntity<Void> updateConfig(@RequestBody ConfigUpdateRequest request) {
         adminService.updateConfig(request);
         return ResponseEntity.ok().build();
     }
@@ -59,7 +59,7 @@ public class AdminController {
     
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/admin/shops/{id}/status")
-    public ResponseEntity<Void> updateShopStatus(@PathVariable Long id, @Valid @RequestBody UpdateShopStatusRequest request) {
+    public ResponseEntity<Void> updateShopStatus(@PathVariable Long id, @Valid @RequestBody ShopStatusUpdateRequest request) {
         adminService.updateShopStatus(id, request);
         return ResponseEntity.ok().build();
     }

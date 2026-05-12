@@ -1,10 +1,10 @@
-package com.promorural.api.core.application.dto.merchant;
+package com.promorural.api.core.application.dto.merchant.shop;
 
 import com.promorural.api.core.domain.entity.Shop;
 import java.util.Map;
 import java.util.Optional;
 
-public record UpdateShopRequest(
+public record ShopUpdateRequest(
     Map<String, String> name,
     Map<String, String> description,
     String address,

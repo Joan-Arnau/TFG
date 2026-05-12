@@ -1,4 +1,4 @@
-package com.promorural.api.core.application.dto.admin;
+package com.promorural.api.core.application.dto.admin.config;
 
 import com.promorural.api.core.application.mapper.GeometryMapper;
 import com.promorural.api.core.domain.entity.MunicipalityConfig;
@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public record UpdateConfigRequest(
+public record ConfigUpdateRequest(
         Map<String, String> branding,
         String defaultLanguage,
         List<String> supportedLanguages,

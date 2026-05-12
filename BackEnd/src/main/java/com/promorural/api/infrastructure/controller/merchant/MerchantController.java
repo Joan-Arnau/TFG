@@ -1,10 +1,10 @@
 package com.promorural.api.infrastructure.controller.merchant;
 
-import com.promorural.api.core.application.dto.merchant.ProductImageResponse;
-import com.promorural.api.core.application.dto.merchant.CreatePromotionRequest;
-import com.promorural.api.core.application.dto.merchant.UpdateShopRequest;
-import com.promorural.api.core.application.dto.publicapi.PromotionResponse;
-import com.promorural.api.core.application.dto.publicapi.ShopResponse;
+import com.promorural.api.core.application.dto.merchant.shop.ProductImageResponse;
+import com.promorural.api.core.application.dto.merchant.shop.ShopUpdateRequest;
+import com.promorural.api.core.application.dto.merchant.promotion.PromotionCreateRequest;
+import com.promorural.api.core.application.dto.guest.PromotionResponse;
+import com.promorural.api.core.application.dto.guest.shop.ShopResponse;
 import com.promorural.api.core.application.service.MerchantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,7 +47,7 @@ public class MerchantController {
      * @return ResponseEntity with the updated ShopResponse DTO or an error.
      */
     @PutMapping("/my-shop")
-    public ResponseEntity<ShopResponse> updateMyShop(@RequestBody UpdateShopRequest shopUpdateDto) {
+    public ResponseEntity<ShopResponse> updateMyShop(@RequestBody ShopUpdateRequest shopUpdateDto) {
         try {
             ShopResponse updatedShopDto = merchantService.updateShopForMerchant(shopUpdateDto);
             return ResponseEntity.ok(updatedShopDto);
@@ -80,7 +80,7 @@ public class MerchantController {
      * @return ResponseEntity with the created PromotionResponse DTO or an error.
      */
     @PostMapping("/promotions")
-    public ResponseEntity<PromotionResponse> createPromotion(@RequestBody CreatePromotionRequest promotionCreateDto) {
+    public ResponseEntity<PromotionResponse> createPromotion(@RequestBody PromotionCreateRequest promotionCreateDto) {
         try {
             PromotionResponse createdPromotionDto = merchantService.createMerchantPromotion(promotionCreateDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdPromotionDto);

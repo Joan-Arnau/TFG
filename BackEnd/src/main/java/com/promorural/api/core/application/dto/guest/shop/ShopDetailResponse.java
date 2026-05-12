@@ -1,5 +1,7 @@
-package com.promorural.api.core.application.dto.publicapi;
+package com.promorural.api.core.application.dto.guest.shop;
 
+import com.promorural.api.core.application.dto.guest.CategoryResponse;
+import com.promorural.api.core.application.dto.guest.PromotionResponse;
 import java.util.List;
 import java.util.Map;
 

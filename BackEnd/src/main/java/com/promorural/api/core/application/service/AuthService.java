@@ -1,7 +1,7 @@
 package com.promorural.api.core.application.service;
 
+import com.promorural.api.core.application.dto.auth.AuthResponse;
 import com.promorural.api.core.application.dto.auth.LoginRequest;
-import com.promorural.api.core.application.dto.auth.LoginResponse;
 import com.promorural.api.core.application.dto.auth.RegisterRequest;
 import com.promorural.api.core.domain.entity.Role;
 import com.promorural.api.core.domain.entity.User;
@@ -41,7 +41,7 @@ public class AuthService {
      * @return LoginResponse containing the JWT and user role.
      * @throws BadCredentialsException if authentication fails.
      */
-    public LoginResponse login(LoginRequest request) {
+    public AuthResponse login(LoginRequest request) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.username(), request.password())
@@ -49,7 +49,7 @@ public class AuthService {
 
             User user = (User) authentication.getPrincipal();
             String token = jwtService.generateToken(user);
-            return new LoginResponse(token, user.getRole().name()); 
+            return new AuthResponse(token, user.getRole().name()); 
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username or password", e);
         }

@@ -1,7 +1,7 @@
 package com.promorural.api.core.application.service;
 
 import com.promorural.api.core.application.dto.admin.CategoryRequest;
-import com.promorural.api.core.application.dto.publicapi.CategoryResponse;
+import com.promorural.api.core.application.dto.guest.CategoryResponse;
 import com.promorural.api.core.domain.entity.Category;
 import com.promorural.api.core.domain.entity.CategoryType;
 import com.promorural.api.core.domain.repository.CategoryRepository;

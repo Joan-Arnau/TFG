@@ -1,11 +1,11 @@
-package com.promorural.api.core.application.dto.merchant;
+package com.promorural.api.core.application.dto.merchant.promotion;
 
 import com.promorural.api.core.domain.entity.Promotion;
 import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.Optional;
 
-public record UpdatePromotionRequest(
+public record PromotionUpdateRequest(
     Map<String, String> title,
     Map<String, String> description,
     OffsetDateTime startsAt,

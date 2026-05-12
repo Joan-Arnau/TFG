@@ -1,7 +1,11 @@
 package com.promorural.api.core.application.service;
 
-import com.promorural.api.core.application.dto.merchant.*;
-import com.promorural.api.core.application.dto.publicapi.*;
+import com.promorural.api.core.application.dto.merchant.shop.ProductImageResponse;
+import com.promorural.api.core.application.dto.merchant.shop.ShopUpdateRequest;
+import com.promorural.api.core.application.dto.merchant.promotion.PromotionCreateRequest;
+import com.promorural.api.core.application.dto.guest.CategoryResponse;
+import com.promorural.api.core.application.dto.guest.PromotionResponse;
+import com.promorural.api.core.application.dto.guest.shop.ShopResponse;
 import com.promorural.api.core.domain.entity.*;
 import com.promorural.api.core.domain.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +47,7 @@ public class MerchantService {
     }
 
     @Transactional
-    public ShopResponse updateShopForMerchant(UpdateShopRequest request) {
+    public ShopResponse updateShopForMerchant(ShopUpdateRequest request) {
         User currentUser = getCurrentUser();
         Shop shop = Objects.requireNonNull(shopRepository.findByOwnerUsername(currentUser.getUsername())
                 .orElseThrow(() -> new IllegalStateException("Merchant does not have an associated shop.")), "Shop object is null");
@@ -65,7 +69,7 @@ public class MerchantService {
     }
 
     @Transactional
-    public PromotionResponse createMerchantPromotion(CreatePromotionRequest request) {
+    public PromotionResponse createMerchantPromotion(PromotionCreateRequest request) {
         User currentUser = getCurrentUser();
         Shop shop = Objects.requireNonNull(shopRepository.findByOwnerUsername(currentUser.getUsername())
                 .orElseThrow(() -> new IllegalStateException("Merchant does not have an associated shop.")), "Shop object is null");

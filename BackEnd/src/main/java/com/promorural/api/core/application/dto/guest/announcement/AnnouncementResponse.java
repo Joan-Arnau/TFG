@@ -1,5 +1,6 @@
-package com.promorural.api.core.application.dto.publicapi;
+package com.promorural.api.core.application.dto.guest.announcement;
 
+import com.promorural.api.core.application.dto.guest.CategoryResponse;
 import java.time.OffsetDateTime;
 import java.util.Map;
 

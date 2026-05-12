@@ -1,4 +1,4 @@
-package com.promorural.api.core.application.dto.publicapi;
+package com.promorural.api.core.application.dto.guest;
 
 import java.util.List;
 import java.util.Map;

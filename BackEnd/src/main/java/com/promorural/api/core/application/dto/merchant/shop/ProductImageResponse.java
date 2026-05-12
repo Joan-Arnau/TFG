@@ -1,4 +1,4 @@
-package com.promorural.api.core.application.dto.merchant;
+package com.promorural.api.core.application.dto.merchant.shop;
 
 import java.time.OffsetDateTime;
 

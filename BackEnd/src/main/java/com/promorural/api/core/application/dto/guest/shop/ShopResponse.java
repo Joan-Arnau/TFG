@@ -1,5 +1,6 @@
-package com.promorural.api.core.application.dto.publicapi;
+package com.promorural.api.core.application.dto.guest.shop;
 
+import com.promorural.api.core.application.dto.guest.CategoryResponse;
 import java.util.Map;
 
 public record ShopResponse(

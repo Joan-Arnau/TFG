@@ -1,11 +1,11 @@
-package com.promorural.api.core.application.dto.merchant;
+package com.promorural.api.core.application.dto.merchant.promotion;
 
 import com.promorural.api.core.domain.entity.Promotion;
 import com.promorural.api.core.domain.entity.Shop;
 import java.time.OffsetDateTime;
 import java.util.Map;
 
-public record CreatePromotionRequest(
+public record PromotionCreateRequest(
     Map<String, String> title,
     Map<String, String> description,
     OffsetDateTime startsAt,

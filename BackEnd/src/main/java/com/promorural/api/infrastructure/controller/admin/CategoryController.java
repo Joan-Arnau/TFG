@@ -1,7 +1,7 @@
 package com.promorural.api.infrastructure.controller.admin;
 
 import com.promorural.api.core.application.dto.admin.CategoryRequest;
-import com.promorural.api.core.application.dto.publicapi.CategoryResponse;
+import com.promorural.api.core.application.dto.guest.CategoryResponse;
 import com.promorural.api.core.application.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
