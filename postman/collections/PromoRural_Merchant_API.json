@@ -1,0 +1,374 @@
+{
+  "info": {
+    "_postman_id": "generated-merchant-collection-20240509-revised",
+    "name": "PromoRural Merchant API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('response status is not a server error', function () {",
+          "  pm.expect(pm.response.code).to.be.below(500);",
+          "});"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login Merchant",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const requestBody = {",
+                  "  username: pm.environment.get('merchantUsername') || pm.collectionVariables.get('merchantUsername'),",
+                  "  password: pm.environment.get('merchantPassword') || pm.collectionVariables.get('merchantPassword')",
+                  "};",
+                  "pm.request.body.update(JSON.stringify(requestBody));",
+                  "pm.request.headers.upsert({ key: 'Content-Type', value: 'application/json' });"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('login returns 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "const responseJson = pm.response.json();",
+                  "pm.test('JWT token received', function () {",
+                  "  pm.expect(responseJson.token).to.be.a('string').and.not.empty;",
+                  "});",
+                  "pm.environment.set('jwtToken', responseJson.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Merchant Shop Management",
+      "item": [
+        {
+          "name": "Get My Shop",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('get my shop returns 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "const responseJson = pm.response.json();",
+                  "pm.test('shop response has id and name', function () {",
+                  "  pm.expect(responseJson.id).to.exist;",
+                  "  pm.expect(responseJson.name).to.exist;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/merchant/my-shop",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "merchant",
+                "my-shop"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update My Shop",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('update my shop returns 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"address\": \"Nova Adreca del Comerc\",\n  \"phoneNumber\": \"+34 123 456 789\",\n  \"description\": \"Descripcio actualitzada del negoci.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/merchant/my-shop",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "merchant",
+                "my-shop"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Merchant Promotions Management",
+      "item": [
+        {
+          "name": "Get My Promotions",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('get my promotions returns 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('promotions response is an array', function () {",
+                  "  pm.expect(pm.response.json()).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/merchant/promotions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "merchant",
+                "promotions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Promotion",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const now = new Date();",
+                  "const future = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);",
+                  "pm.environment.set('currentDate', now.toISOString());",
+                  "pm.environment.set('futureDate', future.toISOString());"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('create promotion returns 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});",
+                  "const responseJson = pm.response.json();",
+                  "pm.test('created promotion has id', function () {",
+                  "  pm.expect(responseJson.id).to.exist;",
+                  "});",
+                  "pm.environment.set('promotionIdToDelete', responseJson.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": {\n    \"ca\": \"Promocio test\",\n    \"es\": \"Promocion test\",\n    \"en\": \"Test promotion\"\n  },\n  \"description\": {\n    \"ca\": \"Descripcio test\",\n    \"es\": \"Descripcion test\",\n    \"en\": \"Test description\"\n  },\n  \"startsAt\": \"{{currentDate}}\",\n  \"endsAt\": \"{{futureDate}}\",\n  \"imageUrl\": \"https://example.com/images/test.jpg\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/merchant/promotions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "merchant",
+                "promotions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Promotion",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('delete promotion returns 204', function () {",
+                  "  pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/merchant/promotions/{{promotionIdToDelete}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "merchant",
+                "promotions",
+                "{{promotionIdToDelete}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "merchantUsername",
+      "value": "merchant_user",
+      "type": "string"
+    },
+    {
+      "key": "merchantPassword",
+      "value": "password123",
+      "type": "string"
+    },
+    {
+      "key": "jwtToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "promotionIdToDelete",
+      "value": "1",
+      "type": "string"
+    }
+  ]
+}
