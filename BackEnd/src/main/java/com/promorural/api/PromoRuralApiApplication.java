@@ -1,6 +1,6 @@
 package com.promorural.api;
 
-import com.promorural.api.config.AppProperties;
+import com.promorural.api.infrastructure.config.AppProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
