@@ -4,7 +4,6 @@ import com.promorural.api.core.application.service.FileStorageService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Map;
 
 @Service
@@ -16,7 +15,7 @@ public class FileUploadUseCase {
         this.fileStorageService = fileStorageService;
     }
 
-    public Map<String, String> uploadFile(MultipartFile file) throws IOException {
+    public Map<String, String> uploadFile(MultipartFile file) {
         String fileUrl = fileStorageService.storeFile(file);
         return Map.of("url", fileUrl);
     }

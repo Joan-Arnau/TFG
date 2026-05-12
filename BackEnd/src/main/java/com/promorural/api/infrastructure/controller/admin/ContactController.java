@@ -25,38 +25,20 @@ public class ContactController {
     @PostMapping
     public ResponseEntity<ContactResponse> createContact(
             @Validated(ValidationGroups.Create.class) @RequestBody ContactCreateRequest request) {
-        try {
-            ContactResponse createdContact = contactUseCase.create(request);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdContact);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
+        ContactResponse createdContact = contactUseCase.create(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdContact);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ContactResponse> updateContact(@PathVariable Long id,
                                                           @Validated(ValidationGroups.Update.class) @RequestBody ContactUpdateRequest request) {
-        try {
-            ContactResponse updatedContact = contactUseCase.update(id, request);
-            return ResponseEntity.ok(updatedContact);
-        } catch (RuntimeException e) {
-            if (e.getMessage().contains("not found")) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
+        ContactResponse updatedContact = contactUseCase.update(id, request);
+        return ResponseEntity.ok(updatedContact);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteContact(@PathVariable Long id) {
-        try {
-            contactUseCase.delete(id);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            if (e.getMessage().contains("not found")) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        contactUseCase.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

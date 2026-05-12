@@ -64,6 +64,9 @@ public class ContactUseCase {
         if (id == null) {
             throw new BadRequestException("Contact ID cannot be null");
         }
+        if (!contactRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Contact not found with ID: " + id);
+        }
         contactRepository.deleteById(id);
     }
 

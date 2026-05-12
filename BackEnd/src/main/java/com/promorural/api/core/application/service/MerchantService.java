@@ -7,6 +7,8 @@ import com.promorural.api.core.application.dto.merchant.shop.ProductImageRespons
 import com.promorural.api.core.application.dto.merchant.shop.ShopMerchantResponse;
 import com.promorural.api.core.application.dto.merchant.shop.ShopUpdateRequest;
 import com.promorural.api.core.domain.entity.*;
+import com.promorural.api.core.domain.exception.BadRequestException;
+import com.promorural.api.core.domain.exception.ResourceNotFoundException;
 import com.promorural.api.core.domain.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -16,9 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -41,16 +41,16 @@ public class MerchantService {
 
     public ShopMerchantResponse getShopForMerchant() {
         User currentUser = getCurrentUser();
-        Shop shop = Objects.requireNonNull(shopRepository.findByOwnerUsername(currentUser.getUsername())
-                .orElseThrow(() -> new IllegalStateException("Merchant does not have an associated shop.")), "Shop object is null");
+        Shop shop = shopRepository.findByOwnerUsername(currentUser.getUsername())
+                .orElseThrow(() -> new ResourceNotFoundException("Merchant does not have an associated shop."));
         return mapToShopMerchantResponse(shop);
     }
 
     @Transactional
     public ShopMerchantResponse updateShopForMerchant(ShopUpdateRequest request) {
         User currentUser = getCurrentUser();
-        Shop shop = Objects.requireNonNull(shopRepository.findByOwnerUsername(currentUser.getUsername())
-                .orElseThrow(() -> new IllegalStateException("Merchant does not have an associated shop.")), "Shop object is null");
+        Shop shop = shopRepository.findByOwnerUsername(currentUser.getUsername())
+                .orElseThrow(() -> new ResourceNotFoundException("Merchant does not have an associated shop."));
 
         request.updateEntity(shop);
         
@@ -60,8 +60,8 @@ public class MerchantService {
 
     public List<PromotionMerchantResponse> getMerchantPromotions() {
         User currentUser = getCurrentUser();
-        Shop shop = Objects.requireNonNull(shopRepository.findByOwnerUsername(currentUser.getUsername())
-                .orElseThrow(() -> new IllegalStateException("Merchant does not have an associated shop.")), "Shop object is null");
+        Shop shop = shopRepository.findByOwnerUsername(currentUser.getUsername())
+                .orElseThrow(() -> new ResourceNotFoundException("Merchant does not have an associated shop."));
 
         return promotionRepository.findByShopId(shop.getId()).stream()
                 .map(this::mapToPromotionMerchantResponse)
@@ -71,8 +71,8 @@ public class MerchantService {
     @Transactional
     public PromotionMerchantResponse createMerchantPromotion(PromotionCreateRequest request) {
         User currentUser = getCurrentUser();
-        Shop shop = Objects.requireNonNull(shopRepository.findByOwnerUsername(currentUser.getUsername())
-                .orElseThrow(() -> new IllegalStateException("Merchant does not have an associated shop.")), "Shop object is null");
+        Shop shop = shopRepository.findByOwnerUsername(currentUser.getUsername())
+                .orElseThrow(() -> new ResourceNotFoundException("Merchant does not have an associated shop."));
 
         Promotion promotion = new Promotion();
         request.applyToEntity(promotion, shop);
@@ -84,29 +84,31 @@ public class MerchantService {
     @Transactional
     public void deleteMerchantPromotion(Long promotionId) {
         User currentUser = getCurrentUser();
-        Shop shop = Objects.requireNonNull(shopRepository.findByOwnerUsername(currentUser.getUsername())
-                .orElseThrow(() -> new IllegalStateException("Merchant does not have an associated shop.")), "Shop object is null");
+        Shop shop = shopRepository.findByOwnerUsername(currentUser.getUsername())
+                .orElseThrow(() -> new ResourceNotFoundException("Merchant does not have an associated shop."));
 
-        Long nonNullPromotionId = Objects.requireNonNull(promotionId, "Promotion ID cannot be null");
-        Optional<Promotion> promotionOptional = promotionRepository.findById(nonNullPromotionId);
+        if (promotionId == null) {
+            throw new BadRequestException("Promotion ID cannot be null");
+        }
+        Optional<Promotion> promotionOptional = promotionRepository.findById(promotionId);
         
         if (promotionOptional.isPresent()) {
             Promotion promotion = promotionOptional.get();
             if (promotion.getShop().getId().equals(shop.getId())) {
-                promotionRepository.deleteById(nonNullPromotionId);
+                promotionRepository.deleteById(promotionId);
             } else {
                 throw new AccessDeniedException("Promotion does not belong to this merchant.");
             }
         } else {
-            throw new RuntimeException("Promotion not found.");
+            throw new ResourceNotFoundException("Promotion not found with ID: " + promotionId);
         }
     }
 
     @Transactional
-    public ProductImageResponse uploadImageForShop(MultipartFile file) throws IOException {
+    public ProductImageResponse uploadImageForShop(MultipartFile file) {
         User currentUser = getCurrentUser();
-        Shop shop = Objects.requireNonNull(shopRepository.findByOwnerUsername(currentUser.getUsername())
-                .orElseThrow(() -> new IllegalStateException("Merchant does not have an associated shop.")), "Shop object is null");
+        Shop shop = shopRepository.findByOwnerUsername(currentUser.getUsername())
+                .orElseThrow(() -> new ResourceNotFoundException("Merchant does not have an associated shop."));
 
         String imageUrl = fileStorageService.storeFile(file);
 
@@ -119,14 +121,16 @@ public class MerchantService {
     }
 
     @Transactional
-    public void deleteImageForShop(Long imageId) throws IOException {
+    public void deleteImageForShop(Long imageId) {
         User currentUser = getCurrentUser();
-        Shop shop = Objects.requireNonNull(shopRepository.findByOwnerUsername(currentUser.getUsername())
-                .orElseThrow(() -> new IllegalStateException("Merchant does not have an associated shop.")), "Shop object is null");
+        Shop shop = shopRepository.findByOwnerUsername(currentUser.getUsername())
+                .orElseThrow(() -> new ResourceNotFoundException("Merchant does not have an associated shop."));
 
-        Long nonNullImageId = Objects.requireNonNull(imageId, "Image ID cannot be null");
-        ProductImage image = productImageRepository.findById(nonNullImageId)
-                .orElseThrow(() -> new RuntimeException("Image not found."));
+        if (imageId == null) {
+            throw new BadRequestException("Image ID cannot be null");
+        }
+        ProductImage image = productImageRepository.findById(imageId)
+                .orElseThrow(() -> new ResourceNotFoundException("Image not found with ID: " + imageId));
 
         if (!image.getShop().getId().equals(shop.getId())) {
             throw new AccessDeniedException("Image does not belong to this merchant's shop.");

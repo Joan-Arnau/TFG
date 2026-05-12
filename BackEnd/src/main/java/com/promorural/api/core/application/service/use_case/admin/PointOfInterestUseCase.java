@@ -74,6 +74,9 @@ public class PointOfInterestUseCase {
         if (id == null) {
             throw new BadRequestException("Point of Interest ID cannot be null");
         }
+        if (!pointOfInterestRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Point of Interest not found with ID: " + id);
+        }
         pointOfInterestRepository.deleteById(id);
     }
 }

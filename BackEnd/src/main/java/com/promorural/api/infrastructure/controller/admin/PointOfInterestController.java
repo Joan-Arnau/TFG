@@ -33,38 +33,20 @@ public class PointOfInterestController {
     @PostMapping
     public ResponseEntity<PointOfInterestResponse> createPointOfInterest(
             @Validated(ValidationGroups.Create.class) @RequestBody PointOfInterestCreateRequest request) {
-        try {
-            PointOfInterestResponse createdPoi = pointOfInterestUseCase.create(request);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdPoi);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
+        PointOfInterestResponse createdPoi = pointOfInterestUseCase.create(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdPoi);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<PointOfInterestResponse> updatePointOfInterest(@PathVariable Long id,
                                                                           @Validated(ValidationGroups.Update.class) @RequestBody PointOfInterestUpdateRequest request) {
-        try {
-            PointOfInterestResponse updatedPoi = pointOfInterestUseCase.update(id, request);
-            return ResponseEntity.ok(updatedPoi);
-        } catch (RuntimeException e) {
-            if (e.getMessage().contains("not found")) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
+        PointOfInterestResponse updatedPoi = pointOfInterestUseCase.update(id, request);
+        return ResponseEntity.ok(updatedPoi);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePointOfInterest(@PathVariable Long id) {
-        try {
-            pointOfInterestUseCase.delete(id);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            if (e.getMessage().contains("not found")) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        pointOfInterestUseCase.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

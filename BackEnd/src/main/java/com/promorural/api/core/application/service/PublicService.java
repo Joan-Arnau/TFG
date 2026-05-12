@@ -15,6 +15,8 @@ import com.promorural.api.core.domain.entity.MunicipalityConfig;
 import com.promorural.api.core.domain.entity.Shop;
 import com.promorural.api.core.domain.entity.ShopStatus;
 import com.promorural.api.core.domain.entity.Promotion;
+import com.promorural.api.core.domain.exception.BadRequestException;
+import com.promorural.api.core.domain.exception.ResourceNotFoundException;
 import com.promorural.api.core.domain.repository.AnnouncementRepository;
 import com.promorural.api.core.domain.repository.CategoryRepository;
 import com.promorural.api.core.domain.repository.ContactRepository;
@@ -63,7 +65,7 @@ public class PublicService {
     /**
      * Retrieves the municipality configuration for branding and display.
      * @return ConfigResponse containing branding details.
-     * @throws IllegalStateException if the municipality configuration is not found.
+     * @throws ResourceNotFoundException if the municipality configuration is not found.
      */
     public ConfigResponse getConfig() {
         MunicipalityConfig config = getMunicipalityConfig();
@@ -101,13 +103,13 @@ public class PublicService {
 
     public ShopDetailResponse getShop(Long id) {
         if (id == null) {
-            throw new IllegalArgumentException("Shop ID cannot be null");
+            throw new BadRequestException("Shop ID cannot be null");
         }
         Shop shop = shopRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Shop not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Shop not found with ID: " + id));
 
         if (shop.getStatus() != ShopStatus.APPROVED) {
-            throw new RuntimeException("Shop is not approved");
+            throw new ResourceNotFoundException("Shop not found with ID: " + id);
         }
 
         List<PromotionResponse> promotions = promotionRepository.findByShopId(shop.getId()).stream()
@@ -217,6 +219,6 @@ public class PublicService {
 
     private MunicipalityConfig getMunicipalityConfig() {
         return municipalityConfigRepository.findFirstByOrderByIdAsc()
-                .orElseThrow(() -> new IllegalStateException("Municipality config not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Municipality config not found"));
     }
 }

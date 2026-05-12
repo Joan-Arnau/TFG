@@ -32,11 +32,7 @@ public class UserController {
     @PutMapping("/change-password")
     public ResponseEntity<Void> changePassword(
             @Validated(ValidationGroups.Update.class) @RequestBody ChangePasswordRequest request) {
-        try {
-            userService.changePassword(request);
-            return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
-        }
+        userService.changePassword(request);
+        return ResponseEntity.ok().build();
     }
 }

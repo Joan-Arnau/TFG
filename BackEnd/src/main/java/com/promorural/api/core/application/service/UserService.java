@@ -3,6 +3,7 @@ package com.promorural.api.core.application.service;
 import com.promorural.api.core.application.dto.auth.ChangePasswordRequest;
 import com.promorural.api.core.application.dto.auth.UserProfileResponse;
 import com.promorural.api.core.domain.entity.User;
+import com.promorural.api.core.domain.exception.BadRequestException;
 import com.promorural.api.core.domain.repository.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -33,14 +34,14 @@ public class UserService {
     /**
      * Changes the password for the currently authenticated user.
      * @param request The ChangePasswordRequest containing old and new passwords.
-     * @throws IllegalArgumentException if the old password does not match.
+     * @throws BadRequestException if the old password does not match.
      */
     @Transactional
     public void changePassword(ChangePasswordRequest request) {
         User user = getCurrentUser();
 
         if (!passwordEncoder.matches(request.oldPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("Current password does not match");
+            throw new BadRequestException("Current password does not match");
         }
 
         user.setPassword(passwordEncoder.encode(request.newPassword()));

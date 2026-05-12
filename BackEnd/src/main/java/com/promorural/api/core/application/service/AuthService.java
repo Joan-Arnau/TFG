@@ -5,6 +5,7 @@ import com.promorural.api.core.application.dto.auth.LoginRequest;
 import com.promorural.api.core.application.dto.auth.RegisterRequest;
 import com.promorural.api.core.domain.entity.Role;
 import com.promorural.api.core.domain.entity.User;
+import com.promorural.api.core.domain.exception.ConflictException;
 import com.promorural.api.core.domain.repository.UserRepository;
 import com.promorural.api.infrastructure.security.JwtService;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -62,7 +63,7 @@ public class AuthService {
      */
     public void register(RegisterRequest request) {
         if (userRepository.findByUsername(request.username()).isPresent()) {
-            throw new IllegalArgumentException("Username already exists");
+            throw new ConflictException("Username already exists");
         }
 
         User user = new User();

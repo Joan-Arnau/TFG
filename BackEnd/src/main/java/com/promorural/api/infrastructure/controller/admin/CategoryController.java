@@ -42,14 +42,8 @@ public class CategoryController {
     @PostMapping("/categories")
     public ResponseEntity<CategoryAdminResponse> createCategory(
             @Validated(ValidationGroups.Create.class) @RequestBody CategoryRequest request) {
-        try {
-            CategoryAdminResponse createdCategoryDto = categoryService.createCategory(request);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdCategoryDto);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+        CategoryAdminResponse createdCategoryDto = categoryService.createCategory(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdCategoryDto);
     }
 
     /**
@@ -60,11 +54,7 @@ public class CategoryController {
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/categories/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
-        try {
-            categoryService.deleteCategory(id);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        categoryService.deleteCategory(id);
+        return ResponseEntity.noContent().build();
     }
 }

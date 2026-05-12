@@ -17,8 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-
 @Service
 @Transactional
 public class ProductImageUseCase {
@@ -38,7 +36,7 @@ public class ProductImageUseCase {
         this.userRepository = userRepository;
     }
 
-    public ProductImageResponse upload(MultipartFile file) throws IOException {
+    public ProductImageResponse upload(MultipartFile file) {
         Shop shop = getCurrentUserShop();
         String imageUrl = fileStorageService.storeFile(file);
 
@@ -50,7 +48,7 @@ public class ProductImageUseCase {
         return mapToResponse(savedImage);
     }
 
-    public void delete(Long imageId) throws IOException {
+    public void delete(Long imageId) {
         Shop shop = getCurrentUserShop();
         if (imageId == null) {
             throw new BadRequestException("Image ID cannot be null");
