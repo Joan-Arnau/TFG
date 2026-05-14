@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
+import LanguageSwitcher from '../components/common/LanguageSwitcher';
 
 const HomeScreen = () => {
   const { t } = useTranslation();
@@ -8,12 +9,15 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.title, { color: theme.primaryColor }]}>
-        {t('app.title')}
-      </Text>
-      <Text style={styles.subtitle}>
-        {t('app.welcome')}
-      </Text>
+      <LanguageSwitcher />
+      <View style={styles.content}>
+        <Text style={[styles.title, { color: theme.primaryColor }]}>
+          {t('app.title')}
+        </Text>
+        <Text style={styles.subtitle}>
+          {t('app.welcome')}
+        </Text>
+      </View>
     </View>
   );
 };
@@ -21,10 +25,13 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#f5f5f5',
+  },
+  content: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: '#f5f5f5',
   },
   title: {
     fontSize: 24,

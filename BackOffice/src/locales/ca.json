@@ -1,0 +1,38 @@
+{
+  "app": {
+    "title": "BackOffice Promo Rural",
+    "apiBaseUrl": "API base URL",
+    "sectionAdmin": "Administració",
+    "sectionAdminDescription": "Gestió integral de dades.",
+    "sectionMerchant": "Comerciant",
+    "sectionMerchantDescription": "Gestió del teu negoci."
+  },
+  "language": {
+    "label": "Idioma",
+    "ca": "Català",
+    "es": "Espanyol",
+    "en": "Anglès"
+  },
+  "auth": {
+    "login": "Iniciar Sessió",
+    "username": "Nom d'usuari",
+    "password": "Contrasenya",
+    "invalidCredentials": "Credencials invàlides"
+  },
+  "unauthorized": {
+    "title": "Accés No Autoritzat",
+    "message": "No tens permís per accedir a aquesta pàgina."
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Panell d'Administració",
+      "description": "Benvingut al panell d'administració. Aquí pots gestionar municipis, categories i usuaris."
+    },
+    "shops": {
+      "title": "Establiments",
+      "loading": "Carregant establiments...",
+      "error": "Error en carregar els establiments.",
+      "noShops": "No s'han trobat establiments."
+    }
+  }
+}

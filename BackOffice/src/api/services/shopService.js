@@ -2,11 +2,15 @@ import { httpClient } from '../httpClient';
 
 export const shopService = {
   getAll: async () => {
-    const response = await httpClient.get('/shops');
+    const response = await httpClient.get('/public/shops');
+    return response.data;
+  },
+  getPendingShops: async () => {
+    const response = await httpClient.get('/admin/shops/pending');
     return response.data;
   },
   getById: async (id) => {
-    const response = await httpClient.get(`/shops/${id}`);
+    const response = await httpClient.get(`/public/shops/${id}`);
     return response.data;
   },
   create: async (shopData) => {

@@ -12,5 +12,23 @@
     "ca": "Català",
     "es": "Espanyol",
     "en": "Anglès"
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Panell d'administració",
+      "description": "Gestiona municipis, categories, comerços i usuaris des d'aquest espai.",
+      "refresh": "Actualitza",
+      "refreshing": "Actualitzant..."
+    },
+    "stats": {
+      "label": "Estadístiques d'administració",
+      "pendingShops": "Comerços pendents"
+    },
+    "shops": {
+      "pendingTitle": "Comerços pendents",
+      "loading": "Carregant comerços pendents...",
+      "error": "No s'han pogut carregar els comerços pendents.",
+      "noPendingShops": "No hi ha comerços pendents."
+    }
   }
 }

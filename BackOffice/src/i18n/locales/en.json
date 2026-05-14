@@ -12,5 +12,23 @@
     "ca": "Catalan",
     "es": "Spanish",
     "en": "English"
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Admin dashboard",
+      "description": "Manage municipalities, categories, shops and users from this area.",
+      "refresh": "Refresh",
+      "refreshing": "Refreshing..."
+    },
+    "stats": {
+      "label": "Administration statistics",
+      "pendingShops": "Pending shops"
+    },
+    "shops": {
+      "pendingTitle": "Pending shops",
+      "loading": "Loading pending shops...",
+      "error": "Pending shops could not be loaded.",
+      "noPendingShops": "No pending shops found."
+    }
   }
 }

@@ -1,34 +1,50 @@
-import { useTranslation } from 'react-i18next'
-import LanguageSwitcher from './components/common/LanguageSwitcher'
-import { httpClient } from './api/httpClient'
-import './styles/App.css'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+import LoginPage from './pages/LoginPage';
+import UnauthorizedPage from './pages/UnauthorizedPage';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import MerchantDashboard from './pages/merchant/MerchantDashboard';
+import LanguageSwitcher from './components/common/LanguageSwitcher';
+import './styles/App.css';
 
 function App() {
-  const { t } = useTranslation()
-
   return (
-    <main className="app">
-      <header className="app-header">
-        <h1>{t('app.title')}</h1>
-        <LanguageSwitcher />
-      </header>
+    <AuthProvider>
+      <BrowserRouter>
+        <header className="app-header">
+          <h1>PromoRural BackOffice</h1>
+          <LanguageSwitcher />
+        </header>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          
+          <Route 
+            path="/admin/*" 
+            element={
+              <ProtectedRoute allowedRoles={['ROLE_ADMIN']}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            } 
+          />
+          
+          <Route 
+            path="/merchant/*" 
+            element={
+              <ProtectedRoute allowedRoles={['ROLE_MERCHANT']}>
+                <MerchantDashboard />
+              </ProtectedRoute>
+            } 
+          />
 
-      <section className="panel">
-        <h2>{t('app.sectionAdmin')}</h2>
-        <p>{t('app.sectionAdminDescription')}</p>
-      </section>
+          <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
-      <section className="panel">
-        <h2>{t('app.sectionMerchant')}</h2>
-        <p>{t('app.sectionMerchantDescription')}</p>
-      </section>
-
-      <section className="panel panel-inline">
-        <span>{t('app.apiBaseUrl')}</span>
-        <code>{httpClient.defaults.baseURL}</code>
-      </section>
-    </main>
-  )
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="*" element={<div>404 Not Found</div>} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
+  );
 }
 
-export default App
+export default App;

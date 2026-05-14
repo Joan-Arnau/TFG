@@ -12,5 +12,23 @@
     "ca": "Catalán",
     "es": "Español",
     "en": "Inglés"
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Panel de administración",
+      "description": "Gestiona municipios, categorías, comercios y usuarios desde este espacio.",
+      "refresh": "Actualizar",
+      "refreshing": "Actualizando..."
+    },
+    "stats": {
+      "label": "Estadísticas de administración",
+      "pendingShops": "Comercios pendientes"
+    },
+    "shops": {
+      "pendingTitle": "Comercios pendientes",
+      "loading": "Cargando comercios pendientes...",
+      "error": "No se han podido cargar los comercios pendientes.",
+      "noPendingShops": "No hay comercios pendientes."
+    }
   }
 }

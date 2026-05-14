@@ -49,6 +49,89 @@
   padding: 0.2rem 0.5rem;
 }
 
+.dashboard {
+  display: grid;
+  gap: 1rem;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.dashboard-header h2,
+.dashboard-header p,
+.panel h3 {
+  margin: 0;
+}
+
+.dashboard-header p {
+  color: #334155;
+  margin-top: 0.35rem;
+}
+
+.dashboard-header button {
+  border: 1px solid #0f172a;
+  border-radius: 6px;
+  background: #0f172a;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+}
+
+.dashboard-header button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+}
+
+.stat-card {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.stat-card span {
+  color: #475569;
+  font-size: 0.9rem;
+}
+
+.stat-card strong {
+  font-size: 1.75rem;
+}
+
+.shop-list {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+}
+
+.shop-list-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1px solid #e2e8f0;
+  padding: 0.75rem 0;
+}
+
+.shop-list-item span {
+  color: #64748b;
+}
+
+.error {
+  color: #b91c1c;
+}
+
 .language-switcher {
   display: flex;
   align-items: center;
