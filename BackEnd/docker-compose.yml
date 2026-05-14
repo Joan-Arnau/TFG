@@ -30,5 +30,12 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
+  mail-server:
+    image: axllent/mailpit:latest
+    container_name: promo-rural-mailpit
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
 volumes:
   db_data:

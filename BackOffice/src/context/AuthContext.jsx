@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useEffect } from 'react';
-import { httpClient } from '../api/httpClient';
+import { authService } from '../api/services/authService';
 
 const AuthContext = createContext();
 
@@ -20,8 +20,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (credentials) => {
-    const response = await httpClient.post('/auth/login', credentials);
-    const { token, role } = response.data;
+    const { token, role } = await authService.login(credentials);
     localStorage.setItem('authToken', token);
     localStorage.setItem('userRole', role);
     setUser({ token, role });
