@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
-import LanguageSwitcher from './components/LanguageSwitcher'
+import LanguageSwitcher from './components/common/LanguageSwitcher'
 import { httpClient } from './api/httpClient'
-import './App.css'
+import './styles/App.css'
 
 function App() {
   const { t } = useTranslation()

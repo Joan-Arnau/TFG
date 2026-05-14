@@ -1,6 +1,7 @@
 {
   "app": {
-    "title": "Promo Rural aplication",
+    "title": "Promo Rural App",
+    "welcome": "Welcome to the rural promotion platform",
     "apiBaseUrl": "API base URL"
   },
   "language": {

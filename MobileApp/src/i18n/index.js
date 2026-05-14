@@ -1,12 +1,10 @@
 import i18n from 'i18next'
-import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
-import ca from './locals/ca.json'
-import es from './locals/es.json'
-import en from './locals/en.json'
+import ca from './locales/ca.json'
+import es from './locales/es.json'
+import en from './locales/en.json'
 
 i18n
-  .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources: {
@@ -14,6 +12,7 @@ i18n
       es: { translation: es },
       en: { translation: en },
     },
+    lng: 'ca', // Default language for mobile
     fallbackLng: 'ca',
     supportedLngs: ['ca', 'es', 'en'],
     interpolation: {
