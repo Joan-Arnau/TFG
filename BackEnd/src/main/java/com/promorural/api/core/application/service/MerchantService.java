@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -47,6 +48,7 @@ public class MerchantService {
     }
 
     @Transactional
+    @SuppressWarnings("null")
     public ShopMerchantResponse updateShopForMerchant(ShopUpdateRequest request) {
         User currentUser = getCurrentUser();
         Shop shop = shopRepository.findByOwnerUsername(currentUser.getUsername())
@@ -54,7 +56,7 @@ public class MerchantService {
 
         request.updateEntity(shop);
         
-        Shop savedShop = shopRepository.save(shop);
+        Shop savedShop = Objects.requireNonNull(shopRepository.save(shop));
         return mapToShopMerchantResponse(savedShop);
     }
 

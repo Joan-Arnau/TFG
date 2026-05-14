@@ -92,6 +92,7 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.BAD_REQUEST, "VALIDATION_ERROR", message, request);
     }
 
+    @SuppressWarnings("null")
     private ResponseEntity<ApiError> buildResponse(HttpStatus status, String code, String message, HttpServletRequest request) {
         ApiError error = new ApiError(
                 code,
@@ -99,6 +100,6 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now(),
                 request.getRequestURI()
         );
-        return new ResponseEntity<>(error, status);
+        return ResponseEntity.status(status).body(error);
     }
 }

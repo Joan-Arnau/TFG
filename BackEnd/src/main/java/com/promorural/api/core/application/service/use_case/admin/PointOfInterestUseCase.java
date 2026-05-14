@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,6 +54,7 @@ public class PointOfInterestUseCase {
         return PointOfInterestMapper.toGuestResponse(savedPoi);
     }
 
+    @SuppressWarnings("null")
     public PointOfInterestResponse update(Long id, PointOfInterestUpdateRequest request) {
         if (id == null) {
             throw new BadRequestException("Point of Interest ID cannot be null");
@@ -66,7 +68,7 @@ public class PointOfInterestUseCase {
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + categoryId));
         }
         request.updateEntity(poi, category, geometryFactory);
-        PointOfInterest updatedPoi = pointOfInterestRepository.save(poi);
+        PointOfInterest updatedPoi = Objects.requireNonNull(pointOfInterestRepository.save(poi));
         return PointOfInterestMapper.toGuestResponse(updatedPoi);
     }
 

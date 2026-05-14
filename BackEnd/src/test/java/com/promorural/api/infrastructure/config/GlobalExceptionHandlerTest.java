@@ -6,6 +6,7 @@ import com.promorural.api.core.domain.exception.BadRequestException;
 import com.promorural.api.core.domain.exception.ConflictException;
 import com.promorural.api.core.domain.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Objects;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,10 +50,10 @@ class GlobalExceptionHandlerTest {
 
     private void assertError(ResponseEntity<ApiError> response, HttpStatus status, String code, String message) {
         assertThat(response.getStatusCode()).isEqualTo(status);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().code()).isEqualTo(code);
-        assertThat(response.getBody().message()).isEqualTo(message);
-        assertThat(response.getBody().path()).isEqualTo("/api/test");
-        assertThat(response.getBody().timestamp()).isNotNull();
+        ApiError body = Objects.requireNonNull(response.getBody());
+        assertThat(body.code()).isEqualTo(code);
+        assertThat(body.message()).isEqualTo(message);
+        assertThat(body.path()).isEqualTo("/api/test");
+        assertThat(body.timestamp()).isNotNull();
     }
 }

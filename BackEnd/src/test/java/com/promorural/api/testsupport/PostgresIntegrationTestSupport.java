@@ -12,6 +12,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 public abstract class PostgresIntegrationTestSupport {
 
     @Container
+    @SuppressWarnings("resource")
     static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgis/postgis:16-3.4")
             .withDatabaseName("promorural_test")
             .withUsername("promorural")

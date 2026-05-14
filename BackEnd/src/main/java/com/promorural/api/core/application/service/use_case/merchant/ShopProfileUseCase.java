@@ -13,6 +13,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Service
 @Transactional
 public class ShopProfileUseCase {
@@ -32,12 +34,13 @@ public class ShopProfileUseCase {
         return ShopMapper.toMerchantResponse(shop);
     }
 
+    @SuppressWarnings("null")
     public ShopMerchantResponse updateMyShop(ShopUpdateRequest request) {
         User currentUser = getCurrentUser();
         Shop shop = shopRepository.findByOwnerUsername(currentUser.getUsername())
             .orElseThrow(() -> new ResourceNotFoundException("Merchant does not have an associated shop."));
         request.updateEntity(shop);
-        Shop savedShop = shopRepository.save(shop);
+        Shop savedShop = Objects.requireNonNull(shopRepository.save(shop));
         return ShopMapper.toMerchantResponse(savedShop);
     }
 

@@ -14,6 +14,7 @@ import com.promorural.api.core.domain.exception.BadRequestException;
 import com.promorural.api.core.domain.exception.ResourceNotFoundException;
 import com.promorural.api.core.domain.repository.CategoryRepository;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,19 +33,21 @@ class CategoryServiceTest {
     private CategoryService categoryService;
 
     @Test
+    @SuppressWarnings("null")
     void createCategoryPersistsMappedEntity() {
         Category saved = new Category();
         saved.setName(Map.of("ca", "Botigues"));
         saved.setType(CategoryType.SHOP);
-        when(categoryRepository.save(any(Category.class))).thenReturn(saved);
+        when(categoryRepository.save(any(Category.class))).thenReturn(Objects.requireNonNull(saved));
 
         CategoryAdminResponse response = categoryService.createCategory(
                 new CategoryRequest(Map.of("ca", "Botigues"), "SHOP"));
 
         ArgumentCaptor<Category> captor = ArgumentCaptor.forClass(Category.class);
         verify(categoryRepository).save(captor.capture());
-        assertThat(captor.getValue().getName()).containsEntry("ca", "Botigues");
-        assertThat(captor.getValue().getType()).isEqualTo(CategoryType.SHOP);
+        Category captured = Objects.requireNonNull(captor.getValue());
+        assertThat(captured.getName()).containsEntry("ca", "Botigues");
+        assertThat(captured.getType()).isEqualTo(CategoryType.SHOP);
         assertThat(response.name()).containsEntry("ca", "Botigues");
         assertThat(response.type()).isEqualTo("SHOP");
     }

@@ -13,6 +13,8 @@ import com.promorural.api.core.domain.repository.ContactRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Service
 @Transactional
 public class ContactUseCase {
@@ -41,6 +43,7 @@ public class ContactUseCase {
         return mapToResponse(savedContact);
     }
 
+    @SuppressWarnings("null")
     public ContactResponse update(Long id, ContactUpdateRequest request) {
         if (id == null) {
             throw new BadRequestException("Contact ID cannot be null");
@@ -56,7 +59,7 @@ public class ContactUseCase {
         if (request.serviceName() != null) { contact.setServiceName(request.serviceName()); }
         if (request.phoneNumber() != null) { contact.setPhoneNumber(request.phoneNumber()); }
         if (request.iconName() != null) { contact.setIconName(request.iconName()); }
-        Contact updatedContact = contactRepository.save(contact);
+        Contact updatedContact = Objects.requireNonNull(contactRepository.save(contact));
         return mapToResponse(updatedContact);
     }
 
