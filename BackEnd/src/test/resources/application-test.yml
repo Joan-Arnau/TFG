@@ -1,0 +1,12 @@
+app:
+  default-language: ca
+  supported-languages:
+    - ca
+    - es
+    - en
+  jwt:
+    secret: test-secret-key-with-at-least-32-characters
+    expiration-ms: 3600000
+  fileupload:
+    upload-dir: target/test-uploads
+    base-url: http://localhost:8080/uploads
