@@ -1,10 +1,7 @@
 package com.promorural.api.infrastructure.config;
 
-import com.promorural.api.core.domain.entity.User;
-import com.promorural.api.core.domain.entity.MunicipalityConfig;
-import com.promorural.api.core.domain.entity.Role;
-import com.promorural.api.core.domain.repository.MunicipalityConfigRepository;
-import com.promorural.api.core.domain.repository.UserRepository;
+import com.promorural.api.core.domain.entity.*;
+import com.promorural.api.core.domain.repository.*;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,9 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.promorural.api.core.domain.entity.Category;
-import com.promorural.api.core.domain.entity.CategoryType;
-import com.promorural.api.core.domain.repository.CategoryRepository;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -28,13 +22,16 @@ public class SeedDataConfig {
             MunicipalityConfigRepository municipalityConfigRepository,
             UserRepository userRepository,
             CategoryRepository categoryRepository,
+            ShopRepository shopRepository,
             AppProperties appProperties,
             PasswordEncoder passwordEncoder,
             GeometryFactory geometryFactory,
             @Value("${SEED_ADMIN_USERNAME:admin}") String adminUsername,
             @Value("${SEED_ADMIN_PASSWORD:admin1234}") String adminPassword,
+            @Value("${SEED_ADMIN_EMAIL:admin@promorural.local}") String adminEmail,
             @Value("${SEED_MERCHANT_USERNAME:merchant}") String merchantUsername,
-            @Value("${SEED_MERCHANT_PASSWORD:merchant1234}") String merchantPassword
+            @Value("${SEED_MERCHANT_PASSWORD:merchant1234}") String merchantPassword,
+            @Value("${SEED_MERCHANT_EMAIL:merchant@promorural.local}") String merchantEmail
     ) {
         return args -> {
             if (categoryRepository.count() == 0) {
@@ -85,6 +82,7 @@ public class SeedDataConfig {
             if (userRepository.findByUsername(adminUsername).isEmpty()) {
                 User admin = new User();
                 admin.setUsername(adminUsername);
+                admin.setEmail(adminEmail);
                 admin.setPassword(passwordEncoder.encode(adminPassword));
                 admin.setRole(Role.ROLE_ADMIN);
                 userRepository.save(admin);
@@ -93,9 +91,21 @@ public class SeedDataConfig {
             if (userRepository.findByUsername(merchantUsername).isEmpty()) {
                 User merchant = new User();
                 merchant.setUsername(merchantUsername);
+                merchant.setEmail(merchantEmail);
                 merchant.setPassword(passwordEncoder.encode(merchantPassword));
                 merchant.setRole(Role.ROLE_MERCHANT);
                 userRepository.save(merchant);
+
+                Shop shop = new Shop();
+                String shopName = "Botiga Prova";
+                String shopDesc = "Botiga per defecte";
+                shop.setName(Map.of("ca", shopName, "es", shopName, "en", shopName));
+                shop.setDescription(Map.of("ca", shopDesc, "es", shopDesc, "en", shopDesc));
+                shop.setAddress("Carrer de Prova, 1");
+                shop.setPhoneNumber("123456789");
+                shop.setStatus(ShopStatus.PENDING);
+                shop.setOwner(merchant);
+                shopRepository.save(shop);
             }
         };
     }

@@ -30,6 +30,26 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
+  api-server:
+    build: .
+    container_name: promo-rural-api
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db-server:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_MAIL_HOST: mail-server
+      SPRING_MAIL_PORT: 1025
+    depends_on:
+      db-server:
+        condition: service_healthy
+      mail-server:
+        condition: service_started
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
   mail-server:
     image: axllent/mailpit:latest
     container_name: promo-rural-mailpit

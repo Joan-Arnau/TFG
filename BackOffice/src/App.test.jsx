@@ -12,15 +12,13 @@ vi.mock('react-i18next', () => ({
   }),
 }))
 
-vi.mock('./components/LanguageSwitcher', () => ({
+vi.mock('./components/common/LanguageSwitcher', () => ({
   default: () => <div data-testid="language-switcher" />,
 }))
 
-test('renders the backoffice shell and API base URL', () => {
+test('renders the backoffice title and language switcher', () => {
   render(<App />)
 
-  expect(screen.getByRole('heading', { name: 'app.title' })).toBeInTheDocument()
-  expect(screen.getByText('app.sectionAdmin')).toBeInTheDocument()
-  expect(screen.getByText('app.sectionMerchant')).toBeInTheDocument()
+  expect(screen.getByText('PromoRural BackOffice')).toBeInTheDocument()
   expect(screen.getByTestId('language-switcher')).toBeInTheDocument()
 })

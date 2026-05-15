@@ -1,6 +1,9 @@
 spring:
   application:
     name: promo-rural-api
+  mail:
+    host: ${SPRING_MAIL_HOST:localhost}
+    port: ${SPRING_MAIL_PORT:1025}
   datasource:
     'url': ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/promorural}
     'username': ${SPRING_DATASOURCE_USERNAME:promorural}
@@ -15,6 +18,7 @@ spring:
           'time-zone': CET
   flyway:
     enabled: true
+    baseline-on-migrate: true
   jackson:
     'time-zone': CET
 
@@ -34,3 +38,8 @@ server:
   fileupload:
     upload-dir: ${FILE_UPLOAD_DIR:uploads}
     base-url: ${FILE_BASE_URL:http://localhost:8080/uploads}
+
+logging:
+  level:
+    '[org.springframework.security]': DEBUG
+    '[com.promorural.api]': DEBUG

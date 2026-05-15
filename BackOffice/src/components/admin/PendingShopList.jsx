@@ -1,9 +1,15 @@
 import { useTranslation } from 'react-i18next';
 
-const getShopName = (shop) => shop.name ?? shop.tradeName ?? shop.title ?? `#${shop.id}`;
-
 const PendingShopList = ({ shops, loading, error }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  const getShopName = (shop) => {
+    const nameData = shop.name ?? shop.tradeName ?? shop.title;
+    if (typeof nameData === 'object' && nameData !== null) {
+      return nameData[i18n.language] || nameData['ca'] || nameData['es'] || nameData['en'] || `#${shop.id}`;
+    }
+    return nameData ?? `#${shop.id}`;
+  };
 
   if (loading) {
     return (
