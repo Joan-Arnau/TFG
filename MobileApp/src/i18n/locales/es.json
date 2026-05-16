@@ -1,8 +1,38 @@
 {
   "app": {
     "title": "Aplicación Promo Rural",
-    "welcome": "Bienvenido a la plataforma de promoción rural",
+    "welcome": "Bienvenido a",
     "apiBaseUrl": "API base URL"
+  },
+  "dashboard": {
+    "news": "Comunicados y bandos",
+    "agenda": "Agenda rural",
+    "tourism": "Lugares de interés",
+    "contact": "Teléfonos de interés",
+    "shops": "Comercios locales",
+    "events": "Programa de fiestas",
+    "featured": "Destacado"
+  },
+  "shop": {
+    "list": "Directorio de comercios",
+    "detail": "Detalle del comercio",
+    "promotions": "Promociones vigentes",
+    "address": "¿Dónde estamos?",
+    "contact": "Contacta con nosotros",
+    "search": "Busca un comercio...",
+    "no_results": "No se han encontrado comercios",
+    "error_loading": "Se ha producido un error al cargar la información. Inténtalo de nuevo más tarde.",
+    "not_found": "No se ha encontrado el comercio solicitado.",
+    "categories": {
+      "all": "Todos",
+      "food": "Alimentación",
+      "services": "Servicios",
+      "hospitality": "Hostelería",
+      "other": "Otros"
+    }
+  },
+  "settings": {
+    "title": "Ajustes"
   },
   "language": {
     "label": "Idioma",
@@ -11,3 +41,4 @@
     "en": "Inglés"
   }
 }
+

@@ -1,8 +1,38 @@
 {
   "app": {
     "title": "Promo Rural App",
-    "welcome": "Welcome to the rural promotion platform",
+    "welcome": "Welcome to",
     "apiBaseUrl": "API base URL"
+  },
+  "dashboard": {
+    "news": "Announcements",
+    "agenda": "Rural Agenda",
+    "tourism": "Points of Interest",
+    "contact": "Useful Contacts",
+    "shops": "Local Shops",
+    "events": "Festival Program",
+    "featured": "Featured"
+  },
+  "shop": {
+    "list": "Shop Directory",
+    "detail": "Shop Details",
+    "promotions": "Active Promotions",
+    "address": "Where are we?",
+    "contact": "Contact us",
+    "search": "Search a shop...",
+    "no_results": "No shops found",
+    "error_loading": "An error occurred while loading. Please try again later.",
+    "not_found": "The requested shop was not found.",
+    "categories": {
+      "all": "All",
+      "food": "Food",
+      "services": "Services",
+      "hospitality": "Hospitality",
+      "other": "Other"
+    }
+  },
+  "settings": {
+    "title": "Settings"
   },
   "language": {
     "label": "Language",

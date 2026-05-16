@@ -31,6 +31,9 @@
       "other": "Altres"
     }
   },
+  "settings": {
+    "title": "Ajustaments"
+  },
   "language": {
     "label": "Idioma",
     "ca": "Català",
