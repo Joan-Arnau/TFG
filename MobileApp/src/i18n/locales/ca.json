@@ -1,8 +1,35 @@
 {
   "app": {
     "title": "Aplicació Promo Rural",
-    "welcome": "Benvingut a la plataforma de promoció rural",
+    "welcome": "Benvingut a",
     "apiBaseUrl": "API base URL"
+  },
+  "dashboard": {
+    "news": "Comunicats i bandos",
+    "agenda": "Agenda rural",
+    "tourism": "Llocs d'interès",
+    "contact": "Telèfons d'interès",
+    "shops": "Comerços locals",
+    "events": "Programa de festes",
+    "featured": "Destacat"
+  },
+  "shop": {
+    "list": "Directori de comerços",
+    "detail": "Detall del comerç",
+    "promotions": "Promocions vigents",
+    "address": "On som?",
+    "contact": "Contacta amb nosaltres",
+    "search": "Cerca un comerç...",
+    "no_results": "No s'han trobat comerços",
+    "error_loading": "S'ha produït un error en carregar la informació. Torna-ho a provar més tard.",
+    "not_found": "No s'ha trobat el comerç sol·licitat.",
+    "categories": {
+      "all": "Tots",
+      "food": "Alimentació",
+      "services": "Serveis",
+      "hospitality": "Hostaleria",
+      "other": "Altres"
+    }
   },
   "language": {
     "label": "Idioma",

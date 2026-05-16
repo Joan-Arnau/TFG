@@ -40,7 +40,7 @@ public class PublicController {
     }
 
     @GetMapping("/categories")
-    public ResponseEntity<List<CategoryResponse>> getCategories(@RequestParam CategoryType type) {
+    public ResponseEntity<List<CategoryResponse>> getCategories(@RequestParam(required = false, defaultValue = "SHOP") CategoryType type) {
         return ResponseEntity.ok(publicService.getCategories(type));
     }
 

@@ -24,7 +24,7 @@ export const ThemeProvider = ({ children }) => {
           });
         }
       } catch (error) {
-        console.error('Failed to fetch theme config:', error);
+        console.error('Failed to fetch theme config');
         setTheme(prev => ({ ...prev, loading: false }));
       }
     };
