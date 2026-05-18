@@ -36,6 +36,12 @@ export const getShopDetailStyles = (theme) => StyleSheet.create({
     marginLeft: -20,
     paddingLeft: 20,
   },
+  galleryImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 12,
+    marginRight: 10,
+  },
   promoCard: {
     marginRight: 15,
     width: 200,

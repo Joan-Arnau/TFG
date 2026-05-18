@@ -2,7 +2,9 @@ package com.promorural.api.infrastructure.config;
 
 import com.promorural.api.core.domain.entity.*;
 import com.promorural.api.core.domain.repository.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -23,6 +25,7 @@ public class SeedDataConfig {
             UserRepository userRepository,
             CategoryRepository categoryRepository,
             ShopRepository shopRepository,
+            PointOfInterestRepository poiRepository,
             AppProperties appProperties,
             PasswordEncoder passwordEncoder,
             GeometryFactory geometryFactory,
@@ -34,51 +37,49 @@ public class SeedDataConfig {
             @Value("${SEED_MERCHANT_EMAIL:merchant@promorural.local}") String merchantEmail
     ) {
         return args -> {
+            // 1. Categories
             if (categoryRepository.count() == 0) {
-                Category shopCat = new Category();
-                Map<String, String> shopCatNames = new HashMap<>();
-                shopCatNames.put("ca", "Comerç");
-                shopCatNames.put("es", "Comercio");
-                shopCatNames.put("en", "Shop");
-                shopCat.setName(shopCatNames);
-                shopCat.setType(CategoryType.SHOP);
-                categoryRepository.save(shopCat);
+                // Shop Categories
+                createCategory(categoryRepository, CategoryType.SHOP, 
+                    Map.of("ca", "Alimentació", "es", "Alimentación", "en", "Food"));
+                createCategory(categoryRepository, CategoryType.SHOP, 
+                    Map.of("ca", "Hostaleria", "es", "Hostelería", "en", "Hospitality"));
+                createCategory(categoryRepository, CategoryType.SHOP, 
+                    Map.of("ca", "Serveis", "es", "Servicios", "en", "Services"));
+                
+                // POI Categories
+                createCategory(categoryRepository, CategoryType.POI, 
+                    Map.of("ca", "Monuments", "es", "Monumentos", "en", "Monuments"));
+                createCategory(categoryRepository, CategoryType.POI, 
+                    Map.of("ca", "Natura", "es", "Naturaleza", "en", "Nature"));
 
-                Category eventCat = new Category();
-                Map<String, String> eventCatNames = new HashMap<>();
-                eventCatNames.put("ca", "Cultura");
-                eventCatNames.put("es", "Cultura");
-                eventCatNames.put("en", "Culture");
-                eventCat.setName(eventCatNames);
-                eventCat.setType(CategoryType.EVENT);
-                categoryRepository.save(eventCat);
-
-                Category annCat = new Category();
-                Map<String, String> annCatNames = new HashMap<>();
-                annCatNames.put("ca", "General");
-                annCatNames.put("es", "General");
-                annCatNames.put("en", "General");
-                annCat.setName(annCatNames);
-                annCat.setType(CategoryType.ANNOUNCEMENT);
-                categoryRepository.save(annCat);
+                // Event & Announcement
+                createCategory(categoryRepository, CategoryType.EVENT, 
+                    Map.of("ca", "Cultura", "es", "Cultura", "en", "Culture"));
+                createCategory(categoryRepository, CategoryType.ANNOUNCEMENT, 
+                    Map.of("ca", "General", "es", "General", "en", "General"));
             }
 
+            // 2. Municipality Config
             if (municipalityConfigRepository.findFirstByOrderByIdAsc().isEmpty()) {
                 MunicipalityConfig config = new MunicipalityConfig();
                 config.setDefaultLanguage(appProperties.defaultLanguage());
                 config.setSupportedLanguages(appProperties.supportedLanguages());
+                
                 Map<String, String> branding = new HashMap<>();
-                branding.put("primaryColor", "#2E7D32");
-                branding.put("secondaryColor", "#1565C0");
-                branding.put("logoUrl", "");
+                branding.put("primaryColor", "#2E7D32"); // Verd rural
+                branding.put("secondaryColor", "#1565C0"); // Blau turisme
+                branding.put("logoUrl", "https://via.placeholder.com/200x200?text=Ajuntament");
                 config.setBranding(branding);
                 
-                Point center = geometryFactory.createPoint(new Coordinate(1.2345, 41.1234));
+                // Centrat a Reus/Tarragona aprox
+                Point center = geometryFactory.createPoint(new Coordinate(1.1033, 41.1561));
                 config.setLocation(center);
                 
                 municipalityConfigRepository.save(config);
             }
 
+            // 3. Admin User
             if (userRepository.findByUsername(adminUsername).isEmpty()) {
                 User admin = new User();
                 admin.setUsername(adminUsername);
@@ -88,25 +89,92 @@ public class SeedDataConfig {
                 userRepository.save(admin);
             }
 
-            if (userRepository.findByUsername(merchantUsername).isEmpty()) {
-                User merchant = new User();
-                merchant.setUsername(merchantUsername);
-                merchant.setEmail(merchantEmail);
-                merchant.setPassword(passwordEncoder.encode(merchantPassword));
-                merchant.setRole(Role.ROLE_MERCHANT);
-                userRepository.save(merchant);
+            // 4. Shops and Merchants
+            if (shopRepository.count() == 0) {
+                User merchant = userRepository.findByUsername(merchantUsername).orElseGet(() -> {
+                    User m = new User();
+                    m.setUsername(merchantUsername);
+                    m.setEmail(merchantEmail);
+                    m.setPassword(passwordEncoder.encode(merchantPassword));
+                    m.setRole(Role.ROLE_MERCHANT);
+                    return userRepository.save(m);
+                });
 
-                Shop shop = new Shop();
-                String shopName = "Botiga Prova";
-                String shopDesc = "Botiga per defecte";
-                shop.setName(Map.of("ca", shopName, "es", shopName, "en", shopName));
-                shop.setDescription(Map.of("ca", shopDesc, "es", shopDesc, "en", shopDesc));
-                shop.setAddress("Carrer de Prova, 1");
-                shop.setPhoneNumber("123456789");
-                shop.setStatus(ShopStatus.PENDING);
-                shop.setOwner(merchant);
-                shopRepository.save(shop);
+                List<Category> shopCats = categoryRepository.findByType(CategoryType.SHOP);
+                Category foodCat = shopCats.stream().filter(c -> c.getName().get("en").equals("Food")).findFirst().orElse(shopCats.get(0));
+                Category hostCat = shopCats.stream().filter(c -> c.getName().get("en").equals("Hospitality")).findFirst().orElse(shopCats.get(0));
+
+                // Shop 1: Cal Fruiter
+                createShop(shopRepository, merchant, foodCat, "Cal Fruiter", 
+                    "Productes de proximitat i km0.", "Carrer Major, 12", "977123456", 
+                    geometryFactory.createPoint(new Coordinate(1.1040, 41.1570)));
+
+                // Shop 2: Restaurant El Racó
+                createShop(shopRepository, merchant, hostCat, "Restaurant El Racó", 
+                    "Cuina tradicional catalana.", "Plaça de la Vila, 5", "977654321", 
+                    geometryFactory.createPoint(new Coordinate(1.1050, 41.1555)));
+            }
+
+            // 5. Points of Interest
+            if (poiRepository.count() == 0) {
+                List<Category> poiCats = categoryRepository.findByType(CategoryType.POI);
+                Category monCat = poiCats.stream().filter(c -> c.getName().get("en").equals("Monuments")).findFirst().orElse(poiCats.get(0));
+                Category natCat = poiCats.stream().filter(c -> c.getName().get("en").equals("Nature")).findFirst().orElse(poiCats.get(0));
+
+                createPOI(poiRepository, monCat, "Església de Sant Pere", 
+                    "Edifici gòtic del segle XVI.", 
+                    geometryFactory.createPoint(new Coordinate(1.1060, 41.1565)));
+
+                createPOI(poiRepository, natCat, "Parc del Riu", 
+                    "Espai natural per passejar i fer esport.", 
+                    geometryFactory.createPoint(new Coordinate(1.1020, 41.1540)));
             }
         };
+    }
+
+    private void createCategory(CategoryRepository repo, CategoryType type, Map<String, String> names) {
+        Category cat = new Category();
+        cat.setName(names);
+        cat.setType(type);
+        repo.save(cat);
+    }
+
+    private void createShop(ShopRepository repo, User owner, Category cat, String name, String desc, String addr, String phone, Point loc) {
+        Shop shop = new Shop();
+        shop.setName(Map.of("ca", name, "es", name, "en", name));
+        shop.setDescription(Map.of("ca", desc, "es", desc, "en", desc));
+        shop.setAddress(addr);
+        shop.setPhoneNumber(phone);
+        shop.setStatus(ShopStatus.APPROVED);
+        shop.setOwner(owner);
+        shop.setCategory(cat);
+        shop.setLocation(loc);
+        shop.setHeaderImageUrl("https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=800"); // Foto de mercat de verdures
+        
+        List<ProductImage> gallery = new ArrayList<>();
+        String[] fruitImages = {
+            "https://images.unsplash.com/photo-1610832958506-aa56368176cf?q=80&w=400",
+            "https://images.unsplash.com/photo-1512149177596-f817c7ef5d4c?q=80&w=400",
+            "https://images.unsplash.com/photo-1606787366850-de6330128bfc?q=80&w=400" // Nova foto de tomàquets
+        };
+        for (int i = 0; i < fruitImages.length; i++) {
+            ProductImage img = new ProductImage();
+            img.setImageUrl(fruitImages[i]);
+            img.setShop(shop);
+            gallery.add(img);
+        }
+        shop.setImages(gallery);
+        
+        repo.save(shop);
+    }
+
+    private void createPOI(PointOfInterestRepository repo, Category cat, String name, String desc, Point loc) {
+        PointOfInterest poi = new PointOfInterest();
+        poi.setName(Map.of("ca", name, "es", name, "en", name));
+        poi.setDescription(Map.of("ca", desc, "es", desc, "en", desc));
+        poi.setCategory(cat);
+        poi.setLocation(loc);
+        poi.setImageUrl("https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=800");
+        repo.save(poi);
     }
 }

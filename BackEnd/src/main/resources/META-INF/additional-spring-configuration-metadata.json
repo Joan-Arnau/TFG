@@ -1,14 +1,22 @@
-{
-  "properties": [
-    {
-      "name": "app.mail.from",
-      "type": "java.lang.String",
-      "description": "A description for 'app.mail.from'"
-    },
-    {
-      "name": "app.backoffice-base-url",
-      "type": "java.lang.String",
-      "description": "A description for 'app.backoffice-base-url'"
-    }
-  ]
-}
+{"properties": [
+  {
+    "name": "app.mail.from",
+    "type": "java.lang.String",
+    "description": "A description for 'app.mail.from'"
+  },
+  {
+    "name": "app.backoffice-base-url",
+    "type": "java.lang.String",
+    "description": "A description for 'app.backoffice-base-url'"
+  },
+  {
+    "name": "app.file-upload.base-url",
+    "type": "java.lang.String",
+    "description": "A description for 'app.file-upload.base-url'"
+  },
+  {
+    "name": "app.file-upload.upload-dir",
+    "type": "java.lang.String",
+    "description": "A description for 'app.file-upload.upload-dir'"
+  }
+]}

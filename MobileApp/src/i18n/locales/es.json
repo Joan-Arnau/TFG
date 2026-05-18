@@ -13,9 +13,13 @@
     "events": "Programa de fiestas",
     "featured": "Destacado"
   },
+  "poi": {
+    "detail": "Detalles del lugar"
+  },
   "shop": {
     "list": "Directorio de comercios",
     "detail": "Detalle del comercio",
+    "gallery": "Galería de fotos",
     "promotions": "Promociones vigentes",
     "address": "¿Dónde estamos?",
     "contact": "Contacta con nosotros",
@@ -23,13 +27,15 @@
     "no_results": "No se han encontrado comercios",
     "error_loading": "Se ha producido un error al cargar la información. Inténtalo de nuevo más tarde.",
     "not_found": "No se ha encontrado el comercio solicitado.",
+    "search_results": "Resultados de la búsqueda",
     "categories": {
       "all": "Todos",
       "food": "Alimentación",
       "services": "Servicios",
       "hospitality": "Hostelería",
       "other": "Otros"
-    }
+    },
+    "close": "Cerrar"
   },
   "settings": {
     "title": "Ajustes"

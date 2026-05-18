@@ -7,6 +7,7 @@ import { Card } from '../components/ui/Card';
 import { useShops } from '../hooks/useShops';
 import { getCommonStyles } from '../styles/commonStyles';
 import { getShopDirectoryStyles } from '../styles/ShopDirectory.styles';
+import { ROUTES } from '../navigation/routes';
 
 const ShopDirectoryScreen = ({ navigation }) => {
   const { t } = useTranslation();
@@ -20,7 +21,10 @@ const ShopDirectoryScreen = ({ navigation }) => {
   const { shops, categories, loading, error, refetch } = useShops();
 
   const filteredShops = shops.filter(shop => {
-    const matchesSearch = shop.name.toLowerCase().includes(search.toLowerCase());
+    const lowerCaseSearch = search.toLowerCase();
+    const matchesSearch = shop.name.toLowerCase().includes(lowerCaseSearch) ||
+                          shop.description.toLowerCase().includes(lowerCaseSearch) ||
+                          shop.categoryName.toLowerCase().includes(lowerCaseSearch);
     const matchesCategory = activeCategory === 'all' || shop.categoryId === activeCategory;
     return matchesSearch && matchesCategory;
   });
@@ -28,10 +32,10 @@ const ShopDirectoryScreen = ({ navigation }) => {
   const renderShopItem = ({ item }) => (
     <Card 
       style={styles.shopCard} 
-      onPress={() => navigation.navigate('ShopDetail', { id: item.id })}
+      onPress={() => navigation.navigate(ROUTES.SHOP_DETAIL, { id: item.id })}
     >
       <Image 
-        source={{ uri: item.imageUrl || 'https://via.placeholder.com/400' }} 
+        source={{ uri: item.headerImageUrl || 'https://via.placeholder.com/400' }} 
         style={styles.shopImage} 
       />
       <View style={styles.shopInfo}>

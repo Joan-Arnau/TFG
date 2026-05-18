@@ -13,9 +13,13 @@
     "events": "Programa de festes",
     "featured": "Destacat"
   },
+  "poi": {
+    "detail": "Detall del lloc"
+  },
   "shop": {
     "list": "Directori de comerços",
     "detail": "Detall del comerç",
+    "gallery": "Galeria de fotos",
     "promotions": "Promocions vigents",
     "address": "On som?",
     "contact": "Contacta amb nosaltres",
@@ -23,13 +27,15 @@
     "no_results": "No s'han trobat comerços",
     "error_loading": "S'ha produït un error en carregar la informació. Torna-ho a provar més tard.",
     "not_found": "No s'ha trobat el comerç sol·licitat.",
+    "search_results": "Resultats de la cerca",
     "categories": {
       "all": "Tots",
       "food": "Alimentació",
       "services": "Serveis",
       "hospitality": "Hostaleria",
       "other": "Altres"
-    }
+    },
+    "close": "Tancar"
   },
   "settings": {
     "title": "Ajustaments"

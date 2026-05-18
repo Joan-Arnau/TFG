@@ -7,6 +7,7 @@ import { ThemedCard } from '../components/ui/Card';
 import { useDashboard } from '../hooks/useDashboard';
 import { getCommonStyles } from '../styles/commonStyles';
 import { getDashboardStyles } from '../styles/Dashboard.styles';
+import { ROUTES } from '../navigation/routes';
 
 const DashboardScreen = ({ navigation }) => {
   const { t } = useTranslation();
@@ -19,9 +20,9 @@ const DashboardScreen = ({ navigation }) => {
   const menuItems = [
     { id: 'news', title: t('dashboard.news'), icon: 'megaphone-outline' },
     { id: 'agenda', title: t('dashboard.agenda'), icon: 'calendar-outline' },
-    { id: 'tourism', title: t('dashboard.tourism'), icon: 'map-outline' },
+    { id: 'tourism', title: t('dashboard.tourism'), icon: 'map-outline', onPress: () => navigation.navigate(ROUTES.TOURISM_MAP) },
     { id: 'contact', title: t('dashboard.contact'), icon: 'call-outline' },
-    { id: 'shops', title: t('dashboard.shops'), icon: 'storefront-outline', onPress: () => navigation.navigate('ShopDirectory') },
+    { id: 'shops', title: t('dashboard.shops'), icon: 'storefront-outline', onPress: () => navigation.navigate(ROUTES.SHOP_DIRECTORY) },
     { id: 'events', title: t('dashboard.events'), icon: 'ribbon-outline' },
   ];
 

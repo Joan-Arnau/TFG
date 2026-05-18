@@ -8,8 +8,9 @@ import { ThemedCard } from '../components/ui/Card';
 import { useShopDetail } from '../hooks/useShopDetail';
 import { getCommonStyles } from '../styles/commonStyles';
 import { getShopDetailStyles } from '../styles/ShopDetail.styles';
+import { ROUTES } from '../navigation/routes';
 
-const ShopDetailScreen = ({ route }) => {
+const ShopDetailScreen = ({ navigation, route }) => {
   const { id } = route.params;
   const { t } = useTranslation();
   const theme = useTheme();
@@ -39,45 +40,68 @@ const ShopDetailScreen = ({ route }) => {
   const handleWhatsApp = () => shop.phoneNumber && Linking.openURL(`whatsapp://send?phone=${shop.phoneNumber}`);
 
   return (
-    <ScrollView style={commonStyles.container}>
-      <Image 
-        source={{ uri: shop.headerImageUrl || 'https://via.placeholder.com/800x400' }} 
-        style={styles.heroImage} 
-      />
-      
-      <View style={styles.infoContainer}>
-        <Text style={styles.name}>{shop.name}</Text>
-        <Text style={styles.description}>{shop.description}</Text>
+    <View style={commonStyles.container}>
+      <ScrollView style={{ flex: 1 }}>
+        <Image 
+          source={{ uri: shop.headerImageUrl || 'https://via.placeholder.com/800x400' }} 
+          style={styles.heroImage} 
+        />
+        
+        <View style={styles.infoContainer}>
+          <Text style={styles.name}>{shop.name}</Text>
+          <Text style={styles.description}>{shop.description}</Text>
 
-        <View style={styles.actionRow}>
-          <IconButton icon="call" onPress={handleCall} disabled={!shop.phoneNumber} />
-          <IconButton icon="logo-whatsapp" color="#25D366" onPress={handleWhatsApp} disabled={!shop.phoneNumber} />
-          <IconButton icon="map" color={theme.secondaryColor} />
-        </View>
+          <View style={styles.actionRow}>
+            <IconButton icon="call" onPress={handleCall} disabled={!shop.phoneNumber} />
+            <IconButton icon="logo-whatsapp" color="#25D366" onPress={handleWhatsApp} disabled={!shop.phoneNumber} />
+            <IconButton 
+              icon="map" 
+              color={theme.secondaryColor} 
+              onPress={() => navigation.navigate(ROUTES.TOURISM_MAP, { 
+                centerOn: { latitude: shop.latitude, longitude: shop.longitude } 
+              })}
+            />
+          </View>
 
-        {shop.promotions && shop.promotions.length > 0 && (
+          {shop.images && shop.images.length > 0 && (
+            <View style={styles.section}>
+              <Text style={commonStyles.sectionTitle}>{t('shop.gallery')}</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.promoScroll}>
+                {shop.images.map((img, index) => (
+                  <Image 
+                    key={index} 
+                    source={{ uri: img }} 
+                    style={styles.galleryImage} 
+                  />
+                ))}
+              </ScrollView>
+            </View>
+          )}
+
+          {shop.promotions && shop.promotions.length > 0 && (
+            <View style={styles.section}>
+              <Text style={commonStyles.sectionTitle}>{t('shop.promotions')}</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.promoScroll}>
+                {shop.promotions.map(promo => (
+                  <ThemedCard key={promo.id} style={styles.promoCard}>
+                    <Text style={styles.promoTitle}>{promo.title}</Text>
+                    <Text style={styles.promoDate}>{promo.endsAt}</Text>
+                  </ThemedCard>
+                ))}
+              </ScrollView>
+            </View>
+          )}
+
           <View style={styles.section}>
-            <Text style={commonStyles.sectionTitle}>{t('shop.promotions')}</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.promoScroll}>
-              {shop.promotions.map(promo => (
-                <ThemedCard key={promo.id} style={styles.promoCard}>
-                  <Text style={styles.promoTitle}>{promo.title}</Text>
-                  <Text style={styles.promoDate}>{promo.endsAt}</Text>
-                </ThemedCard>
-              ))}
-            </ScrollView>
-          </View>
-        )}
-
-        <View style={styles.section}>
-          <Text style={commonStyles.sectionTitle}>{t('shop.address')}</Text>
-          <View style={styles.addressBox}>
-            <Ionicons name="location-outline" size={20} color="#666" />
-            <Text style={styles.addressText}>{shop.address}</Text>
+            <Text style={commonStyles.sectionTitle}>{t('shop.address')}</Text>
+            <View style={styles.addressBox}>
+              <Ionicons name="location-outline" size={20} color="#666" />
+              <Text style={styles.addressText}>{shop.address}</Text>
+            </View>
           </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 };
 

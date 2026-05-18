@@ -17,7 +17,6 @@ This is the mobile application for the PromoRural project, built with [Expo](htt
 3.  **Run on a device/emulator**:
     - Press `a` for Android.
     - Press `i` for iOS.
-    - Press `w` for Web.
     - Scan the QR code with the **Expo Go** app on your phone.
 
 ## Architecture

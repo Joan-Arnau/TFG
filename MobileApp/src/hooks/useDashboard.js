@@ -1,8 +1,10 @@
-import { useState, useEffect } from 'react';
-import { publicService } from '../api/services/publicService';
+import { useState, useEffect, useMemo } from 'react'; // Added useMemo
+import { useTranslation } from 'react-i18next'; // New import
+import { publicService, getTranslation } from '../api/services/publicService'; // Modified import
 
 export const useDashboard = () => {
-  const [featuredItem, setFeaturedItem] = useState(null);
+  const { i18n } = useTranslation(); // New: Get i18n instance for reactive translation
+  const [rawFeaturedItem, setRawFeaturedItem] = useState(null); // Changed featuredItem to rawFeaturedItem
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -17,18 +19,18 @@ export const useDashboard = () => {
         
         const urgent = announcements.find(a => a.urgent);
         if (urgent) {
-          setFeaturedItem({
+          setRawFeaturedItem({ // Use setRawFeaturedItem
             type: 'announcement',
-            title: urgent.title,
-            subtitle: urgent.categoryName,
+            title: urgent.title, // Keep raw title
+            subtitle: urgent.categoryName, // Keep raw categoryName
             isUrgent: true
           });
         } else if (events.length > 0) {
           const nextEvent = events[0];
-          setFeaturedItem({
+          setRawFeaturedItem({ // Use setRawFeaturedItem
             type: 'event',
-            title: nextEvent.title,
-            subtitle: new Date(nextEvent.startsAt).toLocaleDateString(),
+            title: nextEvent.title, // Keep raw title
+            subtitle: new Date(nextEvent.startsAt).toLocaleDateString(), // Keep as is
             isUrgent: false
           });
         }
@@ -42,5 +44,24 @@ export const useDashboard = () => {
     loadFeatured();
   }, []);
 
-  return { featuredItem, loading };
+  const translatedFeaturedItem = useMemo(() => {
+    if (!rawFeaturedItem) return null;
+
+    if (rawFeaturedItem.type === 'announcement') {
+      return {
+        ...rawFeaturedItem,
+        title: getTranslation(rawFeaturedItem.title),
+        subtitle: getTranslation(rawFeaturedItem.subtitle), // Translate subtitle (categoryName)
+      };
+    } else if (rawFeaturedItem.type === 'event') {
+      return {
+        ...rawFeaturedItem,
+        title: getTranslation(rawFeaturedItem.title),
+        // Subtitle is a date string, no translation needed
+      };
+    }
+    return null;
+  }, [rawFeaturedItem, i18n.language]);
+
+  return { featuredItem: translatedFeaturedItem, loading };
 };

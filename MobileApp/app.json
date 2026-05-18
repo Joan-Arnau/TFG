@@ -22,9 +22,6 @@
         "foregroundImage": "./src/assets/hero.png",
         "backgroundColor": "#ffffff"
       }
-    },
-    "web": {
-      "favicon": "./src/assets/favicon.png"
     }
   }
 }

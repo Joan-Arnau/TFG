@@ -14,6 +14,7 @@ import com.promorural.api.core.domain.entity.CategoryType;
 import com.promorural.api.core.domain.entity.MunicipalityConfig;
 import com.promorural.api.core.domain.entity.Shop;
 import com.promorural.api.core.domain.entity.ShopStatus;
+import com.promorural.api.core.domain.entity.ProductImage;
 import com.promorural.api.core.domain.entity.Promotion;
 import com.promorural.api.core.domain.exception.BadRequestException;
 import com.promorural.api.core.domain.exception.ResourceNotFoundException;
@@ -26,11 +27,13 @@ import com.promorural.api.core.domain.repository.MunicipalityConfigRepository;
 import com.promorural.api.core.domain.repository.PointOfInterestRepository;
 import com.promorural.api.core.domain.repository.PromotionRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class PublicService {
 
     private final MunicipalityConfigRepository municipalityConfigRepository;
@@ -117,6 +120,10 @@ public class PublicService {
                 .map(this::mapToPromotionResponse)
                 .toList();
 
+        List<String> images = shop.getImages() != null 
+                ? shop.getImages().stream().map(ProductImage::getImageUrl).toList() 
+                : List.of();
+
         return new ShopDetailResponse(
                 shop.getId(),
                 shop.getName(),
@@ -127,7 +134,8 @@ public class PublicService {
                 mapToCategoryResponse(shop.getCategory()),
                 shop.getLocation() != null ? shop.getLocation().getY() : null,
                 shop.getLocation() != null ? shop.getLocation().getX() : null,
-                promotions
+                promotions,
+                images
         );
     }
 
@@ -175,16 +183,17 @@ public class PublicService {
 
     public List<PointOfInterestResponse> getPointsOfInterest() {
         return pointOfInterestRepository.findAll().stream()
-                .map(item -> new PointOfInterestResponse(
-                        item.getId(),
-                        item.getName(),
-                        item.getDescription(),
-                        item.getImageUrl(),
-                        mapToCategoryResponse(item.getCategory()),
-                        item.getLocation() != null ? item.getLocation().getY() : null,
-                        item.getLocation() != null ? item.getLocation().getX() : null
-                ))
+                .map(this::mapToPointOfInterestResponse)
                 .toList();
+    }
+
+    public PointOfInterestResponse getPointOfInterest(Long id) {
+        if (id == null) {
+            throw new BadRequestException("POI ID cannot be null");
+        }
+        return pointOfInterestRepository.findById(id)
+                .map(this::mapToPointOfInterestResponse)
+                .orElseThrow(() -> new ResourceNotFoundException("POI not found with ID: " + id));
     }
 
     public List<ContactResponse> getContacts() {
@@ -197,6 +206,18 @@ public class PublicService {
                         mapToCategoryResponse(item.getCategory())
                 ))
                 .toList();
+    }
+
+    private PointOfInterestResponse mapToPointOfInterestResponse(com.promorural.api.core.domain.entity.PointOfInterest item) {
+        return new PointOfInterestResponse(
+                item.getId(),
+                item.getName(),
+                item.getDescription(),
+                item.getImageUrl(),
+                mapToCategoryResponse(item.getCategory()),
+                item.getLocation() != null ? item.getLocation().getY() : null,
+                item.getLocation() != null ? item.getLocation().getX() : null
+        );
     }
 
     private CategoryResponse mapToCategoryResponse(Category category) {

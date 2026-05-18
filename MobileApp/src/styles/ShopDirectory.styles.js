@@ -62,6 +62,8 @@ export const getShopDirectoryStyles = (theme) => StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 12,
+    overflow: 'hidden',
+    backgroundColor: '#F1F3F5',
   },
   shopInfo: {
     flex: 1,

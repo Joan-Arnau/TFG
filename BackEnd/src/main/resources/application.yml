@@ -24,7 +24,10 @@ spring:
 
 server:
   error:
-    include-message: always
+    include-message: never
+    include-binding-errors: never
+    include-stacktrace: never
+    include-exception: false
 
 'app':
   default-language: ${DEFAULT_MUNICIPALITY_LANGUAGE:ca}
@@ -35,9 +38,9 @@ server:
   jwt:
     secret: ${JWT_SECRET:change-this-secret-key-with-at-least-32-characters}
     expiration-ms: ${JWT_EXPIRATION_MS:86400000}
-  fileupload:
+  file-upload:
     upload-dir: ${FILE_UPLOAD_DIR:uploads}
-    base-url: ${FILE_BASE_URL:http://localhost:8080/uploads}
+    base-url: ${FILE_BASE_URL:/uploads}
 
 logging:
   level:

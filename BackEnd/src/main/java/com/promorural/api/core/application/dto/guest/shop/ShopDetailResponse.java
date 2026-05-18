@@ -15,5 +15,6 @@ public record ShopDetailResponse(
         CategoryResponse category,
         Double latitude,
         Double longitude,
-        List<PromotionResponse> promotions
+        List<PromotionResponse> promotions,
+        List<String> images
 ) {}

@@ -13,9 +13,13 @@
     "events": "Festival Program",
     "featured": "Featured"
   },
+  "poi": {
+    "detail": "Place Details"
+  },
   "shop": {
     "list": "Shop Directory",
     "detail": "Shop Details",
+    "gallery": "Photo gallery",
     "promotions": "Active Promotions",
     "address": "Where are we?",
     "contact": "Contact us",
@@ -23,13 +27,15 @@
     "no_results": "No shops found",
     "error_loading": "An error occurred while loading. Please try again later.",
     "not_found": "The requested shop was not found.",
+    "search_results": "Search results",
     "categories": {
       "all": "All",
       "food": "Food",
       "services": "Services",
       "hospitality": "Hospitality",
       "other": "Other"
-    }
+    },
+    "close": "Close"
   },
   "settings": {
     "title": "Settings"

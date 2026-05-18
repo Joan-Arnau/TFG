@@ -74,6 +74,11 @@ public class PublicController {
         return ResponseEntity.ok(publicService.getPointsOfInterest());
     }
 
+    @GetMapping("/points-of-interest/{id}")
+    public ResponseEntity<PointOfInterestResponse> getPointOfInterest(@PathVariable Long id) {
+        return ResponseEntity.ok(publicService.getPointOfInterest(id));
+    }
+
     @GetMapping("/contacts")
     public ResponseEntity<List<ContactResponse>> getContacts() {
         return ResponseEntity.ok(publicService.getContacts());
