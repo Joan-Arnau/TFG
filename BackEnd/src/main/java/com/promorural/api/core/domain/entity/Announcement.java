@@ -78,4 +78,8 @@ public class Announcement {
     public OffsetDateTime getPublishedAt() {
         return publishedAt;
     }
+
+    public void setPublishedAt(OffsetDateTime publishedAt) {
+        this.publishedAt = publishedAt;
+    }
 }

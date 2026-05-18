@@ -42,7 +42,7 @@ export const useDashboard = () => {
     };
 
     loadFeatured();
-  }, []);
+  }, [i18n.language]);
 
   const translatedFeaturedItem = useMemo(() => {
     if (!rawFeaturedItem) return null;

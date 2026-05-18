@@ -28,13 +28,13 @@ export const publicService = {
       
       return data.map(shop => ({
         id: shop.id,
-        name: shop.name, // Raw multilingual Map
-        description: shop.description, // Raw multilingual Map
+        name: getTranslation(shop.name),
+        description: getTranslation(shop.description),
         address: shop.address,
         phoneNumber: shop.phoneNumber,
         headerImageUrl: formatImageUrl(shop.headerImageUrl),
         categoryId: shop.category ? shop.category.id : null,
-        categoryName: shop.category ? shop.category.name : '', // Raw multilingual Map
+        categoryName: shop.category ? getTranslation(shop.category.name) : '',
         latitude: shop.latitude,
         longitude: shop.longitude
       }));
@@ -52,20 +52,20 @@ export const publicService = {
       
       return {
         id: shop.id,
-        name: shop.name, // Raw multilingual Map
-        description: shop.description, // Raw multilingual Map
+        name: getTranslation(shop.name),
+        description: getTranslation(shop.description),
         address: shop.address,
         phoneNumber: shop.phoneNumber,
         headerImageUrl: formatImageUrl(shop.headerImageUrl),
         categoryId: shop.category ? shop.category.id : null,
-        categoryName: shop.category ? shop.category.name : '', // Raw multilingual Map
+        categoryName: shop.category ? getTranslation(shop.category.name) : '',
         latitude: shop.latitude,
         longitude: shop.longitude,
         images: Array.isArray(shop.images) ? shop.images.map(img => formatImageUrl(img)) : [],
         promotions: Array.isArray(shop.promotions) ? shop.promotions.map(p => ({
           id: p.id,
-          title: p.title, // Raw multilingual Map
-          description: p.description, // Raw multilingual Map
+          title: getTranslation(p.title),
+          description: getTranslation(p.description),
           imageUrl: formatImageUrl(p.imageUrl),
           startsAt: p.startsAt,
           endsAt: p.endsAt
@@ -85,7 +85,7 @@ export const publicService = {
       const data = Array.isArray(response.data) ? response.data : [];
       return data.map(cat => ({
         id: cat.id,
-        name: cat.name, // Raw multilingual Map
+        name: getTranslation(cat.name),
         icon: cat.icon || 'apps-outline'
       }));
     } catch (error) {
@@ -100,11 +100,11 @@ export const publicService = {
       const data = Array.isArray(response.data) ? response.data : [];
       return data.map(item => ({
         id: item.id,
-        title: item.title, // Raw multilingual Map
-        content: item.content, // Raw multilingual Map
+        title: getTranslation(item.title),
+        content: getTranslation(item.content),
         urgent: item.urgent,
         publishedAt: item.publishedAt,
-        categoryName: item.category ? item.category.name : '' // Raw multilingual Map
+        categoryName: item.category ? getTranslation(item.category.name) : ''
       }));
     } catch (error) {
       console.error('Error fetching announcements');
@@ -118,14 +118,14 @@ export const publicService = {
       const data = Array.isArray(response.data) ? response.data : [];
       return data.map(item => ({
         id: item.id,
-        title: item.title, // Raw multilingual Map
-        description: item.description, // Raw multilingual Map
-        locationText: item.locationText, // Raw multilingual Map
+        title: getTranslation(item.title),
+        description: getTranslation(item.description),
+        locationText: getTranslation(item.locationText),
         startsAt: item.startsAt,
         endsAt: item.endsAt,
         latitude: item.latitude,
         longitude: item.longitude,
-        categoryName: item.category ? item.category.name : '' // Raw multilingual Map
+        categoryName: item.category ? getTranslation(item.category.name) : ''
       }));
     } catch (error) {
       console.error('Error fetching events');
@@ -140,12 +140,12 @@ export const publicService = {
       
       return data.map(item => ({
         id: item.id,
-        name: item.name, // Raw multilingual Map
-        description: item.description, // Raw multilingual Map
+        name: getTranslation(item.name),
+        description: getTranslation(item.description),
         imageUrl: formatImageUrl(item.imageUrl),
         latitude: item.latitude,
         longitude: item.longitude,
-        categoryName: item.category ? item.category.name : '' // Raw multilingual Map
+        categoryName: item.category ? getTranslation(item.category.name) : ''
       }));
     } catch (error) {
       console.error('Error fetching POIs');
@@ -161,12 +161,12 @@ export const publicService = {
 
       return {
         id: item.id,
-        name: item.name, // Raw multilingual Map
-        description: item.description, // Raw multilingual Map
+        name: getTranslation(item.name),
+        description: getTranslation(item.description),
         imageUrl: formatImageUrl(item.imageUrl),
         latitude: item.latitude,
         longitude: item.longitude,
-        categoryName: item.category ? item.category.name : '' // Raw multilingual Map
+        categoryName: item.category ? getTranslation(item.category.name) : ''
       };
     } catch (error) {
       console.error('Error fetching POI detail:', error.response?.status, error.message);

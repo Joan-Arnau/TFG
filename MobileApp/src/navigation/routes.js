@@ -4,5 +4,7 @@ export const ROUTES = {
   SHOP_DETAIL: 'ShopDetail',
   TOURISM_MAP: 'TourismMap',
   POI_DETAIL: 'PointOfInterestDetail',
+  ANNOUNCEMENTS: 'Announcements',
+  ANNOUNCEMENT_DETAIL: 'AnnouncementDetail',
   SETTINGS: 'Settings',
 };

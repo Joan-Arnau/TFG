@@ -13,6 +13,15 @@
     "events": "Programa de festes",
     "featured": "Destacat"
   },
+  "announcement": {
+    "title": "Comunicats i Bandos",
+    "detail": "Comunicat",
+    "urgent": "URGENT",
+    "published_at": "Publicat el",
+    "read_more": "Llegir més",
+    "no_announcements": "No hi ha comunicats oficials hores d'ara.",
+    "search": "Cerca en els comunicats..."
+  },
   "poi": {
     "detail": "Detall del lloc"
   },

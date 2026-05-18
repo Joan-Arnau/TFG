@@ -7,6 +7,8 @@ import ShopDetailScreen from '../screens/ShopDetailScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import TourismMapScreen from '../screens/TourismMapScreen';
 import PointOfInterestDetailScreen from '../screens/PointOfInterestDetailScreen';
+import AnnouncementListScreen from '../screens/AnnouncementListScreen';
+import AnnouncementDetailScreen from '../screens/AnnouncementDetailScreen';
 import { useTheme } from '../context/ThemeContext';
 import { useTranslation } from 'react-i18next';
 import { ROUTES } from './routes';
@@ -62,6 +64,16 @@ const AppNavigator = () => {
         name={ROUTES.POI_DETAIL} 
         component={PointOfInterestDetailScreen} 
         options={{ title: t('dashboard.tourism') }}
+      />
+      <Stack.Screen 
+        name={ROUTES.ANNOUNCEMENTS} 
+        component={AnnouncementListScreen} 
+        options={{ title: t('announcement.title') }}
+      />
+      <Stack.Screen 
+        name={ROUTES.ANNOUNCEMENT_DETAIL} 
+        component={AnnouncementDetailScreen} 
+        options={{ title: t('announcement.detail') }}
       />
       <Stack.Screen 
         name={ROUTES.SETTINGS} 

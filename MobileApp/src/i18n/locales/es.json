@@ -13,6 +13,15 @@
     "events": "Programa de fiestas",
     "featured": "Destacado"
   },
+  "announcement": {
+    "title": "Comunicados y Bandos",
+    "detail": "Comunicado",
+    "urgent": "URGENTE",
+    "published_at": "Publicado el",
+    "read_more": "Leer más",
+    "no_announcements": "No hay comunicados oficiales en este momento.",
+    "search": "Buscar en comunicados..."
+  },
   "poi": {
     "detail": "Detalles del lugar"
   },
