@@ -125,7 +125,10 @@ export const publicService = {
         endsAt: item.endsAt,
         latitude: item.latitude,
         longitude: item.longitude,
-        categoryName: item.category ? getTranslation(item.category.name) : ''
+        isFestival: item.festival || false,
+        imageUrl: formatImageUrl(item.imageUrl),
+        categoryName: item.category ? getTranslation(item.category.name) : '',
+        categoryId: item.category ? item.category.id : null
       }));
     } catch (error) {
       console.error('Error fetching events');

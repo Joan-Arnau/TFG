@@ -40,6 +40,9 @@ public class Event {
     @Column(nullable = false)
     private OffsetDateTime endsAt;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @Column(columnDefinition = "geometry(Point,4326)")
     private Point locationGeom;
 
@@ -101,6 +104,14 @@ public class Event {
 
     public void setEndsAt(OffsetDateTime endsAt) {
         this.endsAt = endsAt;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public Point getLocationGeom() {

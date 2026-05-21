@@ -9,6 +9,9 @@ import TourismMapScreen from '../screens/TourismMapScreen';
 import PointOfInterestDetailScreen from '../screens/PointOfInterestDetailScreen';
 import AnnouncementListScreen from '../screens/AnnouncementListScreen';
 import AnnouncementDetailScreen from '../screens/AnnouncementDetailScreen';
+import AgendaScreen from '../screens/AgendaScreen';
+import FestivalScreen from '../screens/FestivalScreen';
+import EventDetailScreen from '../screens/EventDetailScreen';
 import { useTheme } from '../context/ThemeContext';
 import { useTranslation } from 'react-i18next';
 import { ROUTES } from './routes';
@@ -74,6 +77,21 @@ const AppNavigator = () => {
         name={ROUTES.ANNOUNCEMENT_DETAIL} 
         component={AnnouncementDetailScreen} 
         options={{ title: t('announcement.detail') }}
+      />
+      <Stack.Screen 
+        name={ROUTES.AGENDA} 
+        component={AgendaScreen} 
+        options={{ title: t('dashboard.agenda') }}
+      />
+      <Stack.Screen 
+        name={ROUTES.FESTIVALS} 
+        component={FestivalScreen} 
+        options={{ title: t('dashboard.events') }}
+      />
+      <Stack.Screen 
+        name={ROUTES.EVENT_DETAIL} 
+        component={EventDetailScreen} 
+        options={{ title: t('event.detail') }}
       />
       <Stack.Screen 
         name={ROUTES.SETTINGS} 

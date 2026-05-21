@@ -28,6 +28,7 @@ public class SeedDataConfig {
             ShopRepository shopRepository,
             PointOfInterestRepository poiRepository,
             AnnouncementRepository announcementRepository,
+            EventRepository eventRepository,
             AppProperties appProperties,
             PasswordEncoder passwordEncoder,
             GeometryFactory geometryFactory,
@@ -151,6 +152,70 @@ public class SeedDataConfig {
                         OffsetDateTime.now().minusDays(14));
                 }
             }
+
+            // 7. Events (Agenda & Festes)
+            if (eventRepository.count() == 0) {
+                List<Category> eventCats = categoryRepository.findByType(CategoryType.EVENT);
+                Category cultureCat = eventCats.stream().filter(c -> c.getName().get("en").equals("Culture")).findFirst().orElse(null);
+
+                if (cultureCat != null) {
+                    // Agenda events (not festival)
+                    createEvent(eventRepository, cultureCat, false,
+                        Map.of("ca", "Concert de Música Clàssica", "es", "Concierto de Música Clásica", "en", "Classical Music Concert"),
+                        Map.of("ca", "Gaudeix d'un vespre de música clàssica a càrrec de l'Orquestra Municipal. Intèrprets: Quartet de Corda de Barcelona. Obres de Mozart i Beethoven.", "es", "Disfruta de una velada de música clásica a cargo de la Orquesta Municipal. Intérpretes: Cuarteto de Cuerda de Barcelona. Obras de Mozart y Beethoven.", "en", "Enjoy an evening of classical music by the Municipal Orchestra. Performers: Barcelona String Quartet. Works by Mozart and Beethoven."),
+                        Map.of("ca", "Teatre Municipal", "es", "Teatro Municipal", "en", "Municipal Theatre"),
+                        OffsetDateTime.now().plusDays(3),
+                        OffsetDateTime.now().plusDays(3).plusHours(2),
+                        "https://images.unsplash.com/photo-1507838153414-b4b713384a76?q=80&w=800",
+                        geometryFactory.createPoint(new Coordinate(1.1045, 41.1568)));
+
+                    createEvent(eventRepository, cultureCat, false,
+                        Map.of("ca", "Taller de Ceràmica", "es", "Taller de Cerámica", "en", "Pottery Workshop"),
+                        Map.of("ca", "Taller pràctic de ceràmica artesanal per a totes les edats. Aprèn les tècniques bàsiques del torn i la decoració. Material inclòs.", "es", "Taller práctico de cerámica artesanal para todas las edades. Aprende las técnicas básicas del torno y la decoración. Material incluido.", "en", "Hands-on pottery workshop for all ages. Learn basic wheel and decoration techniques. Materials included."),
+                        Map.of("ca", "Centre Cultural", "es", "Centro Cultural", "en", "Cultural Center"),
+                        OffsetDateTime.now().plusDays(5),
+                        OffsetDateTime.now().plusDays(5).plusHours(3),
+                        "https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?q=80&w=800",
+                        geometryFactory.createPoint(new Coordinate(1.1055, 41.1558)));
+
+                    createEvent(eventRepository, cultureCat, false,
+                        Map.of("ca", "Exposició de Pintura: 'Colors del Paisatge'", "es", "Exposición de Pintura: 'Colores del Paisaje'", "en", "Painting Exhibition: 'Colors of the Landscape'"),
+                        Map.of("ca", "Exposició col·lectiva d'artistes locals amb obres inspirades en el paisatge rural de la comarca. Inclou pintura a l'oli, aquarel·la i acrílic.", "es", "Exposición colectiva de artistas locales con obras inspiradas en el paisaje rural de la comarca. Incluye pintura al óleo, acuarela y acrílico.", "en", "Group exhibition of local artists with works inspired by the rural landscape. Includes oil, watercolor and acrylic paintings."),
+                        Map.of("ca", "Sala d'Exposicions Municipal", "es", "Sala de Exposiciones Municipal", "en", "Municipal Exhibition Hall"),
+                        OffsetDateTime.now().plusDays(10),
+                        OffsetDateTime.now().plusDays(17),
+                        "https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=800",
+                        geometryFactory.createPoint(new Coordinate(1.1038, 41.1562)));
+
+                    // Festival events (Festa Major)
+                    createEvent(eventRepository, cultureCat, true,
+                        Map.of("ca", "Festa Major: Cercavila i Gegants", "es", "Fiesta Mayor: Cercavila y Gigantes", "en", "Town Festival: Parade and Giants"),
+                        Map.of("ca", "Inici de la Festa Major amb la tradicional cercavila de gegants, capgrossos i la xaranga. Recorregut: Plaça de la Vila, Carrer Major, Plaça de l'Església.", "es", "Inicio de la Fiesta Mayor con la tradicional cercavila de gigantes, cabezudos y la charanga. Recorrido: Plaza de la Villa, Calle Mayor, Plaza de la Iglesia.", "en", "Start of the Town Festival with the traditional parade of giants, big-heads and the brass band. Route: Town Square, Main Street, Church Square."),
+                        Map.of("ca", "Plaça de la Vila", "es", "Plaza de la Villa", "en", "Town Square"),
+                        OffsetDateTime.now().plusDays(15),
+                        OffsetDateTime.now().plusDays(15).plusHours(3),
+                        "https://images.unsplash.com/photo-1560523159-4a9692d222ef?q=80&w=800",
+                        geometryFactory.createPoint(new Coordinate(1.1050, 41.1570)));
+
+                    createEvent(eventRepository, cultureCat, true,
+                        Map.of("ca", "Festa Major: Concert de Nit", "es", "Fiesta Mayor: Concierto Nocturno", "en", "Town Festival: Night Concert"),
+                        Map.of("ca", "Gran concert nocturn amb grups de versions i música actual. Actuaran: 'Versions Band' i 'Sons del Camp'. Barra amb begudes i entrepans.", "es", "Gran concierto nocturno con grupos de versiones y música actual. Actuarán: 'Versions Band' y 'Sons del Camp'. Barra con bebidas y bocadillos.", "en", "Great night concert with cover bands and current music. Featuring: 'Versions Band' and 'Sons del Camp'. Bar with drinks and sandwiches."),
+                        Map.of("ca", "Pavelló Municipal d'Esports", "es", "Pabellón Municipal de Deportes", "en", "Municipal Sports Hall"),
+                        OffsetDateTime.now().plusDays(15).plusHours(8),
+                        OffsetDateTime.now().plusDays(15).plusHours(11),
+                        "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?q=80&w=800",
+                        geometryFactory.createPoint(new Coordinate(1.1065, 41.1575)));
+
+                    createEvent(eventRepository, cultureCat, true,
+                        Map.of("ca", "Festa Major: Castell de Focs Artificials", "es", "Fiesta Mayor: Castillo de Fuegos Artificiales", "en", "Town Festival: Fireworks Display"),
+                        Map.of("ca", "Espectacular castell de focs artificials per tancar la Festa Major. Es recomana portar cadira o manta per seure a la zona del parc.", "es", "Espectacular castillo de fuegos artificiales para cerrar la Fiesta Mayor. Se recomienda traer silla o manta para sentarse en la zona del parque.", "en", "Spectacular fireworks display to close the Town Festival. Bring a chair or blanket to sit in the park area."),
+                        Map.of("ca", "Parc del Riu", "es", "Parque del Río", "en", "Riverside Park"),
+                        OffsetDateTime.now().plusDays(16),
+                        OffsetDateTime.now().plusDays(16).plusHours(1),
+                        "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=800",
+                        geometryFactory.createPoint(new Coordinate(1.1020, 41.1540)));
+                }
+            }
         };
     }
 
@@ -208,5 +273,19 @@ public class SeedDataConfig {
         announcement.setUrgent(urgent);
         announcement.setPublishedAt(publishedAt);
         repo.save(announcement);
+    }
+
+    private void createEvent(EventRepository repo, Category cat, boolean festival, Map<String, String> title, Map<String, String> description, Map<String, String> locationText, OffsetDateTime startsAt, OffsetDateTime endsAt, String imageUrl, Point locationGeom) {
+        Event event = new Event();
+        event.setTitle(title);
+        event.setDescription(description);
+        event.setLocationText(locationText);
+        event.setCategory(cat);
+        event.setFestival(festival);
+        event.setStartsAt(startsAt);
+        event.setEndsAt(endsAt);
+        event.setImageUrl(imageUrl);
+        event.setLocationGeom(locationGeom);
+        repo.save(event);
     }
 }

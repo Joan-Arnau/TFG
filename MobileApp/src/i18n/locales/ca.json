@@ -49,6 +49,24 @@
   "settings": {
     "title": "Ajustaments"
   },
+  "event": {
+    "title": "Agenda Rural i Festes",
+    "detail": "Detall de l'acte",
+    "agenda": "Agenda",
+    "festivals": "Festa Major",
+    "festival": "Festa Major",
+    "festival_program": "Programa de Festa Major",
+    "today": "Avui",
+    "tomorrow": "Demà",
+    "now": "ARA",
+    "description": "Descripció",
+    "open_map": "Obrir mapa",
+    "share": "Compartir",
+    "add_calendar": "Afegir al calendari",
+    "all_categories": "Totes",
+    "no_agenda": "No hi ha actes a l'agenda properament.",
+    "no_festivals": "No hi ha actes de Festa Major programats."
+  },
   "language": {
     "label": "Idioma",
     "ca": "Català",

@@ -49,6 +49,24 @@
   "settings": {
     "title": "Ajustes"
   },
+  "event": {
+    "title": "Agenda Rural y Fiestas",
+    "detail": "Detalle del acto",
+    "agenda": "Agenda",
+    "festivals": "Fiesta Mayor",
+    "festival": "Fiesta Mayor",
+    "festival_program": "Programa de Fiesta Mayor",
+    "today": "Hoy",
+    "tomorrow": "Mañana",
+    "now": "AHORA",
+    "description": "Descripción",
+    "open_map": "Abrir mapa",
+    "share": "Compartir",
+    "add_calendar": "Añadir al calendario",
+    "all_categories": "Todas",
+    "no_agenda": "No hay actos en la agenda próximamente.",
+    "no_festivals": "No hay actos de Fiesta Mayor programados."
+  },
   "language": {
     "label": "Idioma",
     "ca": "Catalán",

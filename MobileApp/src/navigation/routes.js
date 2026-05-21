@@ -6,5 +6,8 @@ export const ROUTES = {
   POI_DETAIL: 'PointOfInterestDetail',
   ANNOUNCEMENTS: 'Announcements',
   ANNOUNCEMENT_DETAIL: 'AnnouncementDetail',
+  AGENDA: 'Agenda',
+  FESTIVALS: 'Festivals',
+  EVENT_DETAIL: 'EventDetail',
   SETTINGS: 'Settings',
 };

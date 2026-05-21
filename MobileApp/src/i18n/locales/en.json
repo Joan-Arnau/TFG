@@ -49,6 +49,24 @@
   "settings": {
     "title": "Settings"
   },
+  "event": {
+    "title": "Rural Agenda & Festivals",
+    "detail": "Event details",
+    "agenda": "Agenda",
+    "festivals": "Town Festival",
+    "festival": "Town Festival",
+    "festival_program": "Town Festival Program",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "now": "NOW",
+    "description": "Description",
+    "open_map": "Open map",
+    "share": "Share",
+    "add_calendar": "Add to calendar",
+    "all_categories": "All",
+    "no_agenda": "No upcoming events in the agenda.",
+    "no_festivals": "No Town Festival events scheduled."
+  },
   "language": {
     "label": "Language",
     "ca": "Catalan",

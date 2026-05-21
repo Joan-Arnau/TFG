@@ -18,6 +18,7 @@ public final class EventMapper {
                 item.isFestival(),
                 item.getStartsAt(),
                 item.getEndsAt(),
+                item.getImageUrl(),
                 item.getLocationGeom() != null ? item.getLocationGeom().getY() : null,
                 item.getLocationGeom() != null ? item.getLocationGeom().getX() : null
         );

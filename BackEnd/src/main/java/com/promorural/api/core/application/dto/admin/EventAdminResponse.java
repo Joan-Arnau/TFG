@@ -12,6 +12,7 @@ public record EventAdminResponse(
         boolean festival,
         OffsetDateTime startsAt,
         OffsetDateTime endsAt,
+        String imageUrl,
         Double latitude,
         Double longitude
 ) {}
