@@ -25,7 +25,7 @@ const AppNavigator = () => {
 
   return (
     <Stack.Navigator
-      screenOptions={{
+      screenOptions={({ navigation }) => ({
         headerStyle: {
           backgroundColor: '#fff',
         },
@@ -34,7 +34,17 @@ const AppNavigator = () => {
           fontWeight: 'bold',
         },
         headerShadowVisible: false,
-      }}
+        headerLeft: () => (
+          navigation.canGoBack() ? (
+            <TouchableOpacity 
+              onPress={() => navigation.navigate(ROUTES.DASHBOARD)}
+              style={{ marginRight: 15 }}
+            >
+              <Ionicons name="home-outline" size={24} color={theme.primaryColor} />
+            </TouchableOpacity>
+          ) : null
+        ),
+      })}
     >
       <Stack.Screen 
         name={ROUTES.DASHBOARD} 
@@ -82,12 +92,18 @@ const AppNavigator = () => {
       <Stack.Screen 
         name={ROUTES.AGENDA} 
         component={AgendaScreen} 
-        options={{ title: t('dashboard.agenda') }}
+        options={{ 
+          title: t('dashboard.agenda'),
+          headerRight: () => <Ionicons name="calendar-outline" size={24} color={theme.primaryColor} style={{ marginRight: 15 }} />
+        }}
       />
       <Stack.Screen 
         name={ROUTES.FESTIVALS} 
         component={FestivalScreen} 
-        options={{ title: t('dashboard.events') }}
+        options={{ 
+          title: t('dashboard.events'),
+          headerRight: () => <Ionicons name="sparkles-outline" size={24} color={theme.primaryColor} style={{ marginRight: 15 }} />
+        }}
       />
       <Stack.Screen 
         name={ROUTES.EVENT_DETAIL} 

@@ -174,7 +174,7 @@ public class SeedDataConfig {
 
                 createPOI(poiRepository, natCat, "Parc del Riu", 
                     "Espai natural per passejar i fer esport.", 
-                    geometryFactory.createPoint(new Coordinate(1.1020, 41.1540)));
+                    geometryFactory.createPoint(new Coordinate(1.1025, 41.1540)));
                 log.info("Points of interest seeded.");
             }
 

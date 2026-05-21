@@ -13,6 +13,7 @@ export const useMapData = () => {
   const [data, setData] = useState({
     shops: [],
     pois: [],
+    events: [],
     initialRegion: DEFAULT_REGION
   });
   const [loading, setLoading] = useState(true);
@@ -31,15 +32,17 @@ export const useMapData = () => {
     try {
       setLoading(true);
       setError(false);
-      const [config, shops, pois] = await Promise.all([
+      const [config, shops, pois, events] = await Promise.all([
         publicService.getConfig(),
         publicService.getShops(),
-        publicService.getPointsOfInterest()
+        publicService.getPointsOfInterest(),
+        publicService.getEvents()
       ]);
 
       setData({
         shops: shops.filter(hasValidCoordinates),
         pois: pois.filter(hasValidCoordinates),
+        events: events.filter(hasValidCoordinates),
         initialRegion: {
           latitude: toFiniteNumberOr(config?.latitude, DEFAULT_REGION.latitude),
           longitude: toFiniteNumberOr(config?.longitude, DEFAULT_REGION.longitude),

@@ -8,7 +8,7 @@ import { usePointOfInterestDetail } from '../hooks/usePointOfInterestDetail';
 import { getCommonStyles } from '../styles/commonStyles';
 import { getShopDetailStyles } from '../styles/ShopDetail.styles';
 import { ROUTES } from '../navigation/routes';
-import { getTranslation } from '../api/services/publicService'; // New import
+import OSMMap from '../components/ui/OSMMap';
 
 const PointOfInterestDetailScreen = ({ navigation, route }) => {
   const { id } = route.params;
@@ -37,35 +37,54 @@ const PointOfInterestDetailScreen = ({ navigation, route }) => {
   }
 
   return (
-    <View style={commonStyles.container}>
-      <ScrollView style={{ flex: 1 }}>
-        <Image 
-          source={{ uri: poi.imageUrl || 'https://via.placeholder.com/800x400' }} 
-          style={styles.heroImage} 
-        />
-        
-        <View style={styles.infoContainer}>
-          <View style={{ marginBottom: 15 }}>
-            <Text style={styles.name}>{getTranslation(poi.name)}</Text>
-            <View style={{ backgroundColor: theme.secondaryColor, alignSelf: 'flex-start', paddingHorizontal: 12, paddingVertical: 4, borderRadius: 20, marginTop: 5 }}>
-              <Text style={{ color: '#FFF', fontSize: 12, fontWeight: 'bold' }}>{getTranslation(poi.categoryName)}</Text>
-            </View>
+    <ScrollView style={commonStyles.container}>
+      <Image 
+        source={{ uri: poi.imageUrl || 'https://via.placeholder.com/800x400' }} 
+        style={styles.heroImage} 
+      />
+      
+      <View style={styles.infoContainer}>
+        <View style={{ marginBottom: 15 }}>
+          <Text style={styles.name}>{poi.name}</Text>
+          <View style={{ backgroundColor: theme.secondaryColor, alignSelf: 'flex-start', paddingHorizontal: 12, paddingVertical: 4, borderRadius: 20, marginTop: 5 }}>
+            <Text style={{ color: '#FFF', fontSize: 12, fontWeight: 'bold' }}>{poi.categoryName}</Text>
           </View>
-          
-          <Text style={styles.description}>{getTranslation(poi.description)}</Text>
+        </View>
+        
+        <Text style={styles.description}>{poi.description}</Text>
 
-          <View style={styles.actionRow}>
-            <IconButton 
-              icon="map" 
-              color={theme.secondaryColor} 
-              onPress={() => navigation.navigate(ROUTES.TOURISM_MAP, { 
-                centerOn: { latitude: poi.latitude, longitude: poi.longitude } 
-              })}
+        <View style={styles.actionRow}>
+          <IconButton 
+            icon="map-outline" 
+            color={theme.secondaryColor} 
+            onPress={() => navigation.navigate(ROUTES.TOURISM_MAP, { 
+              centerOn: { latitude: poi.latitude, longitude: poi.longitude } 
+            })}
+          />
+        </View>
+
+        <View style={styles.section}>
+          <Text style={commonStyles.sectionTitle}>{t('shop.address')}</Text>
+          
+          <View style={styles.mapContainer}>
+            <OSMMap
+              markers={[{
+                id: poi.id,
+                latitude: poi.latitude,
+                longitude: poi.longitude,
+                name: poi.name,
+                mapType: 'poi'
+              }]}
+              initialRegion={{
+                latitude: poi.latitude,
+                longitude: poi.longitude
+              }}
+              style={styles.map}
             />
           </View>
         </View>
-      </ScrollView>
-    </View>
+      </View>
+    </ScrollView>
   );
 };
 

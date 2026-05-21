@@ -2,7 +2,8 @@
   "app": {
     "title": "Aplicació Promo Rural",
     "welcome": "Benvingut a",
-    "apiBaseUrl": "API base URL"
+    "apiBaseUrl": "API base URL",
+    "details": "Detalls"
   },
   "dashboard": {
     "news": "Comunicats i bandos",

@@ -12,11 +12,28 @@ export const getShopDetailStyles = (theme) => StyleSheet.create({
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
   },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
   name: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#212529',
-    marginBottom: 8,
+    flex: 1,
+  },
+  categoryBadge: {
+    backgroundColor: theme.secondaryColor,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 15,
+  },
+  categoryText: {
+    color: '#FFF',
+    fontSize: 12,
+    fontWeight: 'bold',
   },
   description: {
     fontSize: 16,
@@ -36,11 +53,29 @@ export const getShopDetailStyles = (theme) => StyleSheet.create({
     marginLeft: -20,
     paddingLeft: 20,
   },
+  galleryScroll: {
+    marginTop: 10,
+  },
   galleryImage: {
     width: 150,
     height: 150,
     borderRadius: 12,
     marginRight: 10,
+  },
+  emptyGallery: {
+    padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F8F9FA',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#EEE',
+    marginTop: 10,
+  },
+  emptyGalleryText: {
+    color: '#999',
+    marginTop: 5,
+    fontSize: 14,
   },
   promoCard: {
     marginRight: 15,
@@ -63,11 +98,21 @@ export const getShopDetailStyles = (theme) => StyleSheet.create({
     backgroundColor: '#F8F9FA',
     padding: 15,
     borderRadius: 12,
+    marginBottom: 10,
   },
   addressText: {
     marginLeft: 10,
     fontSize: 14,
     color: '#495057',
+    flex: 1,
+  },
+  mapContainer: {
+    height: 180,
+    borderRadius: 12,
+    overflow: 'hidden',
+    marginTop: 10,
+  },
+  map: {
     flex: 1,
   },
 });

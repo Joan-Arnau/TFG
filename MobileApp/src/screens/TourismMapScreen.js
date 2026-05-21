@@ -1,47 +1,85 @@
-import React from 'react';
-import { View, Text, ActivityIndicator, TextInput, ScrollView, TouchableOpacity, FlatList, Image, Modal, StyleSheet } from 'react-native';
-import MapView, { Marker, UrlTile } from 'react-native-maps';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
+import { View, Text, ActivityIndicator, TextInput, ScrollView, TouchableOpacity, FlatList, Image } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
+import { useMapData } from '../hooks/useMapData';
 import { getCommonStyles } from '../styles/commonStyles';
 import { getMapStyles } from '../styles/Map.styles';
 import { Ionicons } from '@expo/vector-icons';
 import { ROUTES } from '../navigation/routes';
-import { useTourismMapLogic } from '../hooks/useTourismMapLogic';
+import OSMMap from '../components/ui/OSMMap';
 
 const TourismMapScreen = ({ navigation, route }) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const commonStyles = getCommonStyles(theme);
   const styles = getMapStyles(theme);
+  const webViewRef = useRef(null);
+  
+  const { shops, pois, events, initialRegion, loading } = useMapData();
+  
+  const [search, setSearch] = useState('');
+  const [filter, setFilter] = useState('all'); 
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const [isListVisible, setIsListVisible] = useState(false);
+  const [isListExpanded, setIsListExpanded] = useState(false);
 
-  const {
-    mapRef,
-    shops,
-    pois,
-    initialRegion,
-    loading,
-    search,
-    setSearch,
-    filter,
-    setFilter,
-    isSearchVisible,
-    setIsSearchVisible,
-    isListVisible,
-    setIsListVisible,
-    isListExpanded,
-    setIsListExpanded,
-    selectedMarkerId,
-    setSelectedMarkerId,
-    filteredData,
-    centerToMyPosition,
-    focusOnMarker,
-    closeSearch,
-    isModalVisible,
-    setIsModalVisible,
-    activeItem,
-    markersFrozen,
-  } = useTourismMapLogic(navigation, route);
+  // Memoized markers for the map component
+  const mapMarkers = useMemo(() => {
+    return [
+      ...shops.map(s => ({ ...s, mapType: 'shop' })),
+      ...pois.map(p => ({ ...p, mapType: 'poi' })),
+      ...events.map(e => ({ ...e, mapType: 'event' }))
+    ];
+  }, [shops, pois, events]);
+
+  // Center map when centerOn param changes (e.g. returning from detail)
+  useEffect(() => {
+    if (route.params?.centerOn && webViewRef.current) {
+      const { latitude, longitude } = route.params.centerOn;
+      webViewRef.current.injectJavaScript(`if(window.centerMap) window.centerMap(${latitude}, ${longitude}); true;`);
+    }
+  }, [route.params?.centerOn]);
+
+  const filteredData = useMemo(() => {
+    let combined = [...mapMarkers];
+
+    if (filter === 'shop') combined = combined.filter(i => i.mapType === 'shop');
+    if (filter === 'poi') combined = combined.filter(i => i.mapType === 'poi');
+    if (filter === 'agenda') combined = combined.filter(i => i.mapType === 'event' && !i.isFestival);
+    if (filter === 'festival') combined = combined.filter(i => i.mapType === 'event' && i.isFestival);
+
+    if (search) {
+      combined = combined.filter(i => 
+        i.name.toLowerCase().includes(search.toLowerCase()) || 
+        (i.title && i.title.toLowerCase().includes(search.toLowerCase()))
+      );
+    }
+
+    return combined;
+  }, [mapMarkers, filter, search]);
+
+  const centerToMyPosition = () => {
+    if (webViewRef.current) {
+      webViewRef.current.injectJavaScript(`if(window.centerMap) window.centerMap(${initialRegion.latitude}, ${initialRegion.longitude}); true;`);
+    }
+  };
+
+  const handleMarkerPress = (data) => {
+    if (data.mapType === 'shop') {
+      navigation.navigate(ROUTES.SHOP_DETAIL, { id: data.id });
+    } else if (data.mapType === 'event') {
+      navigation.navigate(ROUTES.EVENT_DETAIL, { event: data.item });
+    } else {
+      navigation.navigate(ROUTES.POI_DETAIL, { id: data.id });
+    }
+  };
+
+  const closeSearch = () => {
+    setIsSearchVisible(false);
+    setSearch('');
+    setFilter('all');
+  };
 
   if (loading) {
     return (
@@ -52,7 +90,8 @@ const TourismMapScreen = ({ navigation, route }) => {
   }
 
   const renderListItem = ({ item }) => {
-    const imageUrl = item.mapType === 'shop' ? item.headerImageUrl : item.imageUrl;
+    const imageUrl = item.mapType === 'shop' ? item.headerImageUrl : (item.imageUrl || null);
+    const title = item.name || item.title;
     
     return (
       <TouchableOpacity 
@@ -60,6 +99,8 @@ const TourismMapScreen = ({ navigation, route }) => {
         onPress={() => {
           if (item.mapType === 'shop') {
             navigation.navigate(ROUTES.SHOP_DETAIL, { id: item.id });
+          } else if (item.mapType === 'event') {
+            navigation.navigate(ROUTES.EVENT_DETAIL, { event: item });
           } else {
             navigation.navigate(ROUTES.POI_DETAIL, { id: item.id });
           }
@@ -74,14 +115,14 @@ const TourismMapScreen = ({ navigation, route }) => {
             />
           ) : (
             <Ionicons 
-              name={item.mapType === 'shop' ? 'cart' : 'location'} 
+              name={item.mapType === 'shop' ? 'cart' : (item.mapType === 'event' ? 'calendar' : 'location')} 
               size={20} 
               color={item.mapType === 'shop' ? theme.primaryColor : theme.secondaryColor} 
             />
           )}
         </View>
         <View style={styles.listItemContent}>
-          <Text style={styles.listItemTitle}>{item.name}</Text>
+          <Text style={styles.listItemTitle}>{title}</Text>
           <Text style={styles.listItemSub}>{item.categoryName || t('dashboard.tourism')}</Text>
         </View>
         <Ionicons name="chevron-forward" size={18} color={styles.iconChevron} />
@@ -91,6 +132,7 @@ const TourismMapScreen = ({ navigation, route }) => {
 
   return (
     <View style={commonStyles.container}>
+      {/* Floating controls */}
       <View style={[styles.floatingControls, { top: isSearchVisible ? 120 : 10 }]}>
         <TouchableOpacity 
           style={styles.roundButton} 
@@ -112,7 +154,7 @@ const TourismMapScreen = ({ navigation, route }) => {
 
         <TouchableOpacity 
           style={[styles.roundButton, isListVisible && { backgroundColor: theme.primaryColor }]} 
-          onPress={() => setIsListVisible(!isListExpanded)}
+          onPress={() => setIsListVisible(!isListVisible)}
         >
           <Ionicons 
             name="list" 
@@ -122,6 +164,7 @@ const TourismMapScreen = ({ navigation, route }) => {
         </TouchableOpacity>
       </View>
 
+      {/* Search and Filters */}
       {isSearchVisible && (
         <View style={styles.searchContainer}>
           <View style={styles.searchBar}>
@@ -178,41 +221,46 @@ const TourismMapScreen = ({ navigation, route }) => {
               />
               <Text style={[styles.filterText, filter === 'poi' && styles.filterTextActive]}>{t('dashboard.tourism')}</Text>
             </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={[styles.filterChip, filter === 'agenda' && styles.filterChipActive]}
+              onPress={() => setFilter('agenda')}
+            >
+              <Ionicons 
+                name="calendar-outline" 
+                size={16} 
+                color={filter === 'agenda' ? styles.iconFilterActive : styles.iconFilterInactive} 
+              />
+              <Text style={[styles.filterText, filter === 'agenda' && styles.filterTextActive]}>{t('dashboard.agenda')}</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={[styles.filterChip, filter === 'festival' && styles.filterChipActive]}
+              onPress={() => setFilter('festival')}
+            >
+              <Ionicons 
+                name="sparkles-outline" 
+                size={16} 
+                color={filter === 'festival' ? styles.iconFilterActive : styles.iconFilterInactive} 
+              />
+              <Text style={[styles.filterText, filter === 'festival' && styles.filterTextActive]}>{t('dashboard.events')}</Text>
+            </TouchableOpacity>
           </ScrollView>
         </View>
       )}
 
-      <MapView
-        ref={mapRef}
-        style={styles.map}
+      {/* OSM Map Component */}
+      <OSMMap
+        webViewRef={webViewRef}
+        markers={filteredData}
         initialRegion={initialRegion}
-        showsUserLocation={true}
-        toolbarEnabled={false}
-        moveOnMarkerPress={false}
-        onPress={() => setSelectedMarkerId(null)}
-      >
-        <UrlTile
-          urlTemplate="https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}.png"
-          maximumZ={19}
-          flipY={false}
-        />
-        {filteredData && filteredData.length > 0 && filteredData.map((item) => {
-          const markerKey = `${item.mapType}-${item.id}`;
-          return (
-            <Marker
-              key={markerKey}
-              coordinate={{ latitude: item.latitude, longitude: item.longitude }}
-              onPress={() => focusOnMarker(item)}
-              tracksViewChanges={markersFrozen ? false : true}
-            >
-              <View style={item.mapType === 'shop' ? styles.shopMarker : styles.poiMarker}>
-                <Ionicons name={item.mapType === 'shop' ? 'cart' : 'location'} size={20} color={styles.iconMarker} />
-              </View>
-            </Marker>
-          );
-        })}
-      </MapView>
+        onMarkerPress={handleMarkerPress}
+        style={styles.map}
+        theme={theme}
+        detailLabel={t('app.details')}
+      />
 
+      {/* Expandable floating list */}
       {isListVisible && (
         <View style={[
           styles.bottomSheet, 
@@ -240,44 +288,6 @@ const TourismMapScreen = ({ navigation, route }) => {
           />
         </View>
       )}
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isModalVisible}
-        onRequestClose={() => setIsModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}> 
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>{activeItem?.name}</Text>
-            <Text style={styles.modalDescription}>
-              {activeItem?.mapType === 'shop' ? activeItem?.categoryName : activeItem?.description}
-            </Text>
-            
-            <View style={styles.modalButtonsRow}>
-              <TouchableOpacity 
-                style={[styles.btn, { backgroundColor: theme.primaryColor }]}
-                onPress={() => {
-                  setIsModalVisible(false);
-                  if (activeItem?.mapType === 'shop') {
-                    navigation.navigate(ROUTES.SHOP_DETAIL, { id: activeItem.id });
-                  } else {
-                    navigation.navigate(ROUTES.POI_DETAIL, { id: activeItem.id });
-                  }
-                }}
-              >
-                <Text style={styles.btnText}>
-                  {activeItem?.mapType === 'shop' ? t('shop.detail') : t('poi.detail')}
-                </Text>
-              </TouchableOpacity>
-              
-              <TouchableOpacity style={styles.btnCancel} onPress={() => setIsModalVisible(false)}>
-                <Text style={styles.btnCancelText}>{t('shop.close')}</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
     </View>
   );
 };
