@@ -175,5 +175,23 @@ export const publicService = {
       console.error('Error fetching POI detail:', error.response?.status, error.message);
       return null;
     }
+  },
+
+  getContacts: async () => {
+    try {
+      const response = await httpClient.get('/public/contacts');
+      const data = Array.isArray(response.data) ? response.data : [];
+      
+      return data.map(item => ({
+        id: item.id,
+        serviceName: getTranslation(item.serviceName),
+        phoneNumber: item.phoneNumber,
+        iconName: item.iconName || 'call-outline',
+        categoryName: item.category ? getTranslation(item.category.name) : ''
+      }));
+    } catch (error) {
+      console.error('Error fetching contacts');
+      return [];
+    }
   }
 };

@@ -51,7 +51,7 @@ export const EventListBase = ({ navigation, isFestivalOnly }) => {
   const renderSectionHeader = ({ section }) => {
     if (isFestivalOnly) {
       return (
-        <View style={[styles.sectionHeader, { backgroundColor: theme.secondaryColor }]}>
+        <View style={[styles.sectionHeader, { borderBottomWidth: 2, borderBottomColor: theme.primaryColor, backgroundColor: '#FFF' }]}>
           <Text style={[styles.sectionHeaderText, { color: theme.primaryColor }]}>
             <Ionicons name="sparkles" size={16} color={theme.primaryColor} /> {formatSectionHeader(section.data[0]?.startsAt)}
           </Text>
@@ -88,9 +88,9 @@ export const EventListBase = ({ navigation, isFestivalOnly }) => {
     : styles.filterChipActive;
 
   return (
-    <View style={[styles.container, isFestivalOnly && { backgroundColor: theme.secondaryColor }]}>
+    <View style={styles.container}>
       {/* Category Chips */}
-      <View style={[styles.header, isFestivalOnly && { borderBottomColor: theme.secondaryColor }]}>
+      <View style={styles.header}>
         <ScrollView 
           horizontal 
           showsHorizontalScrollIndicator={false} 

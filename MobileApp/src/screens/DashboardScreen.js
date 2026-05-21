@@ -20,7 +20,7 @@ const DashboardScreen = ({ navigation }) => {
     { id: 'news', title: t('dashboard.news'), icon: 'megaphone-outline', onPress: () => navigation.navigate(ROUTES.ANNOUNCEMENTS) },
     { id: 'agenda', title: t('dashboard.agenda'), icon: 'calendar-outline', onPress: () => navigation.navigate(ROUTES.AGENDA) },
     { id: 'tourism', title: t('dashboard.tourism'), icon: 'map-outline', onPress: () => navigation.navigate(ROUTES.TOURISM_MAP) },
-    { id: 'contact', title: t('dashboard.contact'), icon: 'call-outline' },
+    { id: 'contact', title: t('dashboard.contact'), icon: 'call-outline', onPress: () => navigation.navigate(ROUTES.CONTACTS) },
     { id: 'shops', title: t('dashboard.shops'), icon: 'storefront-outline', onPress: () => navigation.navigate(ROUTES.SHOP_DIRECTORY) },
     { id: 'events', title: t('dashboard.events'), icon: 'ribbon-outline', onPress: () => navigation.navigate(ROUTES.FESTIVALS) },
   ];

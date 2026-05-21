@@ -16,9 +16,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Configuration
 public class SeedDataConfig {
+
+    private static final Logger log = LoggerFactory.getLogger(SeedDataConfig.class);
 
     @Bean
     CommandLineRunner seedData(
@@ -29,6 +33,7 @@ public class SeedDataConfig {
             PointOfInterestRepository poiRepository,
             AnnouncementRepository announcementRepository,
             EventRepository eventRepository,
+            ContactRepository contactRepository,
             AppProperties appProperties,
             PasswordEncoder passwordEncoder,
             GeometryFactory geometryFactory,
@@ -40,8 +45,11 @@ public class SeedDataConfig {
             @Value("${SEED_MERCHANT_EMAIL:merchant@promorural.local}") String merchantEmail
     ) {
         return args -> {
+            log.info("Starting database seeding process...");
+
             // 1. Categories
             if (categoryRepository.count() == 0) {
+                log.info("Seeding categories...");
                 // Shop Categories
                 createCategory(categoryRepository, CategoryType.SHOP, 
                     Map.of("ca", "Alimentació", "es", "Alimentación", "en", "Food"));
@@ -61,10 +69,20 @@ public class SeedDataConfig {
                     Map.of("ca", "Cultura", "es", "Cultura", "en", "Culture"));
                 createCategory(categoryRepository, CategoryType.ANNOUNCEMENT, 
                     Map.of("ca", "General", "es", "General", "en", "General"));
+
+                // Contact Categories
+                createCategory(categoryRepository, CategoryType.CONTACT, 
+                    Map.of("ca", "Emergències", "es", "Emergencias", "en", "Emergencies"));
+                createCategory(categoryRepository, CategoryType.CONTACT, 
+                    Map.of("ca", "Administració", "es", "Administración", "en", "Administration"));
+                createCategory(categoryRepository, CategoryType.CONTACT, 
+                    Map.of("ca", "Salut", "es", "Salud", "en", "Health"));
+                log.info("Categories seeded successfully.");
             }
 
             // 2. Municipality Config
             if (municipalityConfigRepository.findFirstByOrderByIdAsc().isEmpty()) {
+                log.info("Seeding municipality configuration...");
                 MunicipalityConfig config = new MunicipalityConfig();
                 config.setDefaultLanguage(appProperties.defaultLanguage());
                 config.setSupportedLanguages(appProperties.supportedLanguages());
@@ -79,21 +97,25 @@ public class SeedDataConfig {
                 config.setLocation(center);
                 
                 municipalityConfigRepository.save(config);
+                log.info("Municipality configuration seeded.");
             }
 
             // 3. Admin User
             if (userRepository.findByUsername(adminUsername).isEmpty()) {
+                log.info("Seeding admin user...");
                 User admin = new User();
                 admin.setUsername(adminUsername);
                 admin.setEmail(adminEmail);
                 admin.setPassword(passwordEncoder.encode(adminPassword));
                 admin.setRole(Role.ROLE_ADMIN);
                 userRepository.save(admin);
+                log.info("Admin user created.");
             }
 
             // 4. Shops and Merchants
             if (shopRepository.count() == 0) {
-                User merchant = userRepository.findByUsername(merchantUsername).orElseGet(() -> {
+                log.info("Seeding merchants and shops...");
+                User merchant1 = userRepository.findByUsername(merchantUsername).orElseGet(() -> {
                     User m = new User();
                     m.setUsername(merchantUsername);
                     m.setEmail(merchantEmail);
@@ -102,21 +124,46 @@ public class SeedDataConfig {
                     return userRepository.save(m);
                 });
 
+                User merchant2 = userRepository.findByUsername("merchant2").orElseGet(() -> {
+                    User m = new User();
+                    m.setUsername("merchant2");
+                    m.setEmail("merchant2@promorural.local");
+                    m.setPassword(passwordEncoder.encode("merchant1234"));
+                    m.setRole(Role.ROLE_MERCHANT);
+                    return userRepository.save(m);
+                });
+
+                User merchant3 = userRepository.findByUsername("merchant3").orElseGet(() -> {
+                    User m = new User();
+                    m.setUsername("merchant3");
+                    m.setEmail("merchant3@promorural.local");
+                    m.setPassword(passwordEncoder.encode("merchant1234"));
+                    m.setRole(Role.ROLE_MERCHANT);
+                    return userRepository.save(m);
+                });
+
                 List<Category> shopCats = categoryRepository.findByType(CategoryType.SHOP);
                 Category foodCat = shopCats.stream().filter(c -> c.getName().get("en").equals("Food")).findFirst().orElse(shopCats.get(0));
                 Category hostCat = shopCats.stream().filter(c -> c.getName().get("en").equals("Hospitality")).findFirst().orElse(shopCats.get(0));
+                Category servCat = shopCats.stream().filter(c -> c.getName().get("en").equals("Services")).findFirst().orElse(shopCats.get(0));
 
-                createShop(shopRepository, merchant, foodCat, "Cal Fruiter", 
+                createShop(shopRepository, merchant1, foodCat, "Cal Fruiter", 
                     "Productes de proximitat i km0.", "Carrer Major, 12", "977123456", 
                     geometryFactory.createPoint(new Coordinate(1.1040, 41.1570)));
 
-                createShop(shopRepository, merchant, hostCat, "Restaurant El Racó", 
+                createShop(shopRepository, merchant2, hostCat, "Restaurant El Racó", 
                     "Cuina tradicional catalana.", "Plaça de la Vila, 5", "977654321", 
                     geometryFactory.createPoint(new Coordinate(1.1050, 41.1555)));
+
+                createShop(shopRepository, merchant3, servCat, "Farmàcia de Baix", 
+                    "Atenció farmacèutica i parafarmàcia.", "Carrer de Baix, 3", "977889900", 
+                    geometryFactory.createPoint(new Coordinate(1.1030, 41.1550)));
+                log.info("Shops and merchants seeded.");
             }
 
             // 5. Points of Interest
             if (poiRepository.count() == 0) {
+                log.info("Seeding points of interest...");
                 List<Category> poiCats = categoryRepository.findByType(CategoryType.POI);
                 Category monCat = poiCats.stream().filter(c -> c.getName().get("en").equals("Monuments")).findFirst().orElse(poiCats.get(0));
                 Category natCat = poiCats.stream().filter(c -> c.getName().get("en").equals("Nature")).findFirst().orElse(poiCats.get(0));
@@ -128,10 +175,12 @@ public class SeedDataConfig {
                 createPOI(poiRepository, natCat, "Parc del Riu", 
                     "Espai natural per passejar i fer esport.", 
                     geometryFactory.createPoint(new Coordinate(1.1020, 41.1540)));
+                log.info("Points of interest seeded.");
             }
 
             // 6. Announcements
             if (announcementRepository.count() == 0) {
+                log.info("Seeding announcements...");
                 List<Category> annCats = categoryRepository.findByType(CategoryType.ANNOUNCEMENT);
                 Category generalCat = annCats.isEmpty() ? null : annCats.get(0);
 
@@ -151,10 +200,12 @@ public class SeedDataConfig {
                         Map.of("ca", "La Biblioteca Municipal amplia l'horari d'estiu a partir del 15 de juny. Obrirà de dilluns a divendres de 9:00 a 20:00h.", "es", "La Biblioteca Municipal amplía el horario de verano a partir del 15 de junio. Abrirá de lunes a viernes de 9:00 a 20:00h.", "en", "The Municipal Library extends its summer opening hours from June 15. It will be open Monday to Friday from 9:00 AM to 8:00 PM."),
                         OffsetDateTime.now().minusDays(14));
                 }
+                log.info("Announcements seeded.");
             }
 
             // 7. Events (Agenda & Festes)
             if (eventRepository.count() == 0) {
+                log.info("Seeding events (agenda and festivals)...");
                 List<Category> eventCats = categoryRepository.findByType(CategoryType.EVENT);
                 Category cultureCat = eventCats.stream().filter(c -> c.getName().get("en").equals("Culture")).findFirst().orElse(null);
 
@@ -215,7 +266,36 @@ public class SeedDataConfig {
                         "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=800",
                         geometryFactory.createPoint(new Coordinate(1.1020, 41.1540)));
                 }
+                log.info("Events seeded.");
             }
+
+            // 8. Useful Contacts
+            if (contactRepository.count() == 0) {
+                log.info("Seeding useful contacts...");
+                List<Category> contactCats = categoryRepository.findByType(CategoryType.CONTACT);
+                Category emergencyCat = contactCats.stream().filter(c -> c.getName().get("en").equals("Emergencies")).findFirst().orElse(contactCats.get(0));
+                Category adminCat = contactCats.stream().filter(c -> c.getName().get("en").equals("Administration")).findFirst().orElse(contactCats.get(0));
+                Category healthCat = contactCats.stream().filter(c -> c.getName().get("en").equals("Health")).findFirst().orElse(contactCats.get(0));
+
+                createContact(contactRepository, emergencyCat, 
+                    Map.of("ca", "Policia Local", "es", "Policía Local", "en", "Local Police"), 
+                    "111 111 11", "shield-outline");
+
+                createContact(contactRepository, adminCat, 
+                    Map.of("ca", "Ajuntament", "es", "Ayuntamiento", "en", "Town Hall"), 
+                    "111 111 12", "business-outline");
+
+                createContact(contactRepository, healthCat, 
+                    Map.of("ca", "Centre d'Atenció Primària (CAP)", "es", "Centro de Atención Primaria (CAP)", "en", "Medical Center"), 
+                    "111 111 13", "medical-outline");
+
+                createContact(contactRepository, healthCat, 
+                    Map.of("ca", "Farmàcia de Guàrdia", "es", "Farmacia de Guardia", "en", "Pharmacy on Duty"), 
+                    "111 111 14", "medkit-outline");
+                log.info("Useful contacts seeded.");
+            }
+
+            log.info("Database seeding process completed successfully.");
         };
     }
 
@@ -287,5 +367,14 @@ public class SeedDataConfig {
         event.setImageUrl(imageUrl);
         event.setLocationGeom(locationGeom);
         repo.save(event);
+    }
+
+    private void createContact(ContactRepository repo, Category cat, Map<String, String> names, String phone, String icon) {
+        Contact contact = new Contact();
+        contact.setServiceName(names);
+        contact.setPhoneNumber(phone);
+        contact.setIconName(icon);
+        contact.setCategory(cat);
+        repo.save(contact);
     }
 }

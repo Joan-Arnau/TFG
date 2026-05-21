@@ -12,6 +12,7 @@ import AnnouncementDetailScreen from '../screens/AnnouncementDetailScreen';
 import AgendaScreen from '../screens/AgendaScreen';
 import FestivalScreen from '../screens/FestivalScreen';
 import EventDetailScreen from '../screens/EventDetailScreen';
+import ContactListScreen from '../screens/ContactListScreen';
 import { useTheme } from '../context/ThemeContext';
 import { useTranslation } from 'react-i18next';
 import { ROUTES } from './routes';
@@ -92,6 +93,11 @@ const AppNavigator = () => {
         name={ROUTES.EVENT_DETAIL} 
         component={EventDetailScreen} 
         options={{ title: t('event.detail') }}
+      />
+      <Stack.Screen 
+        name={ROUTES.CONTACTS} 
+        component={ContactListScreen} 
+        options={{ title: t('dashboard.contact') }}
       />
       <Stack.Screen 
         name={ROUTES.SETTINGS} 

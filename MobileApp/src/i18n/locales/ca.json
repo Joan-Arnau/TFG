@@ -21,8 +21,13 @@
     "read_more": "Llegir més",
     "no_announcements": "No hi ha comunicats oficials hores d'ara.",
     "search": "Cerca en els comunicats..."
-  },
-  "poi": {
+    },
+    "contact": {
+    "title": "Telèfons d'interès",
+    "no_contacts": "No hi ha contactes disponibles hores d'ara.",
+    "retry": "Torna-ho a provar"
+    },
+    "shop": {
     "detail": "Detall del lloc"
   },
   "shop": {

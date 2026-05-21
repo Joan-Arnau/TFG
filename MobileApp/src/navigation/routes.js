@@ -9,5 +9,6 @@ export const ROUTES = {
   AGENDA: 'Agenda',
   FESTIVALS: 'Festivals',
   EVENT_DETAIL: 'EventDetail',
+  CONTACTS: 'Contacts',
   SETTINGS: 'Settings',
 };
