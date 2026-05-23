@@ -3,7 +3,11 @@ package com.promorural.api.core.application.service;
 import com.promorural.api.core.application.dto.auth.AuthResponse;
 import com.promorural.api.core.application.dto.auth.LoginRequest;
 import com.promorural.api.core.application.dto.auth.RegisterRequest;
-import com.promorural.api.core.domain.entity.*;
+import com.promorural.api.core.domain.entity.PasswordResetToken;
+import com.promorural.api.core.domain.entity.Role;
+import com.promorural.api.core.domain.entity.Shop;
+import com.promorural.api.core.domain.entity.ShopStatus;
+import com.promorural.api.core.domain.entity.User;
 import com.promorural.api.core.domain.exception.ConflictException;
 import com.promorural.api.core.domain.repository.PasswordResetTokenRepository;
 import com.promorural.api.core.domain.repository.ShopRepository;
@@ -124,7 +128,6 @@ public class AuthService {
 
         User user = userOpt.get();
         
-        // Invalidate old tokens
         tokenRepository.deleteByUser(user);
 
         byte[] randomBytes = new byte[32];

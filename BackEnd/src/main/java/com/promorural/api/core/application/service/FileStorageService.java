@@ -1,5 +1,6 @@
 package com.promorural.api.core.application.service;
 
+import com.promorural.api.core.domain.exception.BadRequestException;
 import com.promorural.api.core.domain.exception.FileStorageException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Locale;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -20,15 +23,43 @@ public class FileStorageService {
     @Value("${app.file-upload.base-url}")
     private String baseUrl;
 
-    /**
-     * Stores a file on the local file system and returns its accessible URL.
-     * @param file The file to store.
-     * @return The URL to access the stored file.
-     */
-    public String storeFile(MultipartFile file) {
-        Path uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
+    private static final long DEFAULT_MAX_BYTES = 2 * 1024 * 1024;
 
-        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+    private static final Set<String> ALLOWED_CONTENT_TYPES = Set.of(
+            "image/png",
+            "image/jpeg",
+            "image/webp"
+    );
+
+    public String storeFile(MultipartFile file) {
+        return storeFile(file, null);
+    }
+
+    /**
+     * Stores file under an optional subdirectory (e.g. "promotions", "gallery", "shops").
+     * Validates content type and size before saving.
+     */
+    public String storeFile(MultipartFile file, String subdir) {
+        if (file == null || file.isEmpty()) {
+            throw new BadRequestException("Uploaded file is empty");
+        }
+
+        String contentType = file.getContentType();
+        if (contentType == null || !ALLOWED_CONTENT_TYPES.contains(contentType.toLowerCase(Locale.ROOT))) {
+            throw new BadRequestException("Unsupported file type. Only PNG, JPEG and WEBP are allowed.");
+        }
+
+        if (file.getSize() > DEFAULT_MAX_BYTES) {
+            throw new BadRequestException("File is too large. Maximum allowed size is 2MB.");
+        }
+
+        Path uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
+        if (subdir != null && !subdir.isBlank()) {
+            uploadPath = uploadPath.resolve(subdir);
+        }
+
+        String extension = getFileExtension(file.getOriginalFilename(), contentType);
+        String fileName = UUID.randomUUID().toString() + (extension != null ? "." + extension : "");
         Path filePath = uploadPath.resolve(fileName);
 
         try {
@@ -38,13 +69,10 @@ public class FileStorageService {
             throw new FileStorageException("Could not store uploaded file", e);
         }
 
-        return baseUrl + "/" + fileName;
+        String relative = (subdir != null && !subdir.isBlank()) ? subdir + "/" + fileName : fileName;
+        return baseUrl + "/" + relative;
     }
 
-    /**
-     * Deletes a file from the local file system given its URL.
-     * @param fileUrl The URL of the file to delete.
-     */
     public void deleteFile(String fileUrl) {
         if (fileUrl == null || !fileUrl.startsWith(baseUrl)) {
             return;
@@ -57,5 +85,19 @@ public class FileStorageService {
         } catch (IOException e) {
             throw new FileStorageException("Could not delete stored file", e);
         }
+    }
+
+    private String getFileExtension(String originalName, String contentType) {
+        if (originalName != null && originalName.contains(".")) {
+            String ext = originalName.substring(originalName.lastIndexOf('.') + 1);
+            return ext.toLowerCase(Locale.ROOT);
+        }
+
+        return switch (contentType) {
+            case "image/png" -> "png";
+            case "image/jpeg" -> "jpg";
+            case "image/webp" -> "webp";
+            default -> null;
+        };
     }
 }

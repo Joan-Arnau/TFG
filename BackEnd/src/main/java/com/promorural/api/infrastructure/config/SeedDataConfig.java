@@ -1,7 +1,25 @@
 package com.promorural.api.infrastructure.config;
 
-import com.promorural.api.core.domain.entity.*;
-import com.promorural.api.core.domain.repository.*;
+import com.promorural.api.core.domain.entity.Announcement;
+import com.promorural.api.core.domain.entity.Category;
+import com.promorural.api.core.domain.entity.CategoryType;
+import com.promorural.api.core.domain.entity.Contact;
+import com.promorural.api.core.domain.entity.Event;
+import com.promorural.api.core.domain.entity.MunicipalityConfig;
+import com.promorural.api.core.domain.entity.PointOfInterest;
+import com.promorural.api.core.domain.entity.ProductImage;
+import com.promorural.api.core.domain.entity.Role;
+import com.promorural.api.core.domain.entity.Shop;
+import com.promorural.api.core.domain.entity.ShopStatus;
+import com.promorural.api.core.domain.entity.User;
+import com.promorural.api.core.domain.repository.AnnouncementRepository;
+import com.promorural.api.core.domain.repository.CategoryRepository;
+import com.promorural.api.core.domain.repository.ContactRepository;
+import com.promorural.api.core.domain.repository.EventRepository;
+import com.promorural.api.core.domain.repository.MunicipalityConfigRepository;
+import com.promorural.api.core.domain.repository.PointOfInterestRepository;
+import com.promorural.api.core.domain.repository.ShopRepository;
+import com.promorural.api.core.domain.repository.UserRepository;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;

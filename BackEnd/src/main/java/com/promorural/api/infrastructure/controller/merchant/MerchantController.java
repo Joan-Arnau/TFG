@@ -8,6 +8,8 @@ import com.promorural.api.core.application.dto.merchant.shop.ShopUpdateRequest;
 import com.promorural.api.core.application.service.use_case.merchant.ProductImageUseCase;
 import com.promorural.api.core.application.service.use_case.merchant.PromotionUseCase;
 import com.promorural.api.core.application.service.use_case.merchant.ShopProfileUseCase;
+import com.promorural.api.core.application.service.MerchantService;
+import com.promorural.api.core.application.dto.merchant.shop.UploadFileResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,13 +28,16 @@ public class MerchantController {
     private final ShopProfileUseCase shopProfileUseCase;
     private final PromotionUseCase promotionUseCase;
     private final ProductImageUseCase productImageUseCase;
+    private final MerchantService merchantService;
 
     public MerchantController(ShopProfileUseCase shopProfileUseCase,
                                PromotionUseCase promotionUseCase,
-                               ProductImageUseCase productImageUseCase) {
+                               ProductImageUseCase productImageUseCase,
+                               MerchantService merchantService) {
         this.shopProfileUseCase = shopProfileUseCase;
         this.promotionUseCase = promotionUseCase;
         this.productImageUseCase = productImageUseCase;
+        this.merchantService = merchantService;
     }
 
     @GetMapping("/my-shop")
@@ -68,6 +73,18 @@ public class MerchantController {
     public ResponseEntity<ProductImageResponse> uploadImage(@RequestParam("file") MultipartFile file) {
         ProductImageResponse imageResponse = productImageUseCase.upload(file);
         return ResponseEntity.status(HttpStatus.CREATED).body(imageResponse);
+    }
+
+    @PostMapping("/promotions/images")
+    public ResponseEntity<UploadFileResponse> uploadPromotionImage(@RequestParam("file") MultipartFile file) {
+        UploadFileResponse resp = merchantService.uploadPromotionImage(file);
+        return ResponseEntity.status(HttpStatus.CREATED).body(resp);
+    }
+
+    @PostMapping("/my-shop/header-image")
+    public ResponseEntity<UploadFileResponse> uploadShopHeaderImage(@RequestParam("file") MultipartFile file) {
+        UploadFileResponse resp = merchantService.uploadShopHeaderImage(file);
+        return ResponseEntity.status(HttpStatus.CREATED).body(resp);
     }
 
     @DeleteMapping("/my-shop/images/{id}")

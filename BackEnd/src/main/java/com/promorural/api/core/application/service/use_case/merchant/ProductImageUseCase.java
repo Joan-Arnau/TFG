@@ -38,7 +38,7 @@ public class ProductImageUseCase {
 
     public ProductImageResponse upload(MultipartFile file) {
         Shop shop = getCurrentUserShop();
-        String imageUrl = fileStorageService.storeFile(file);
+        String imageUrl = fileStorageService.storeFile(file, "gallery");
 
         ProductImage image = new ProductImage();
         image.setImageUrl(imageUrl);

@@ -4,12 +4,22 @@ import com.promorural.api.core.application.dto.admin.CategoryRef;
 import com.promorural.api.core.application.dto.merchant.promotion.PromotionCreateRequest;
 import com.promorural.api.core.application.dto.merchant.promotion.PromotionMerchantResponse;
 import com.promorural.api.core.application.dto.merchant.shop.ProductImageResponse;
+import com.promorural.api.core.application.dto.merchant.shop.UploadFileResponse;
 import com.promorural.api.core.application.dto.merchant.shop.ShopMerchantResponse;
 import com.promorural.api.core.application.dto.merchant.shop.ShopUpdateRequest;
-import com.promorural.api.core.domain.entity.*;
+import com.promorural.api.core.domain.entity.Category;
+import com.promorural.api.core.domain.entity.ProductImage;
+import com.promorural.api.core.domain.entity.Promotion;
+import com.promorural.api.core.domain.entity.Shop;
+import com.promorural.api.core.domain.entity.UploadFile;
+import com.promorural.api.core.domain.entity.User;
 import com.promorural.api.core.domain.exception.BadRequestException;
 import com.promorural.api.core.domain.exception.ResourceNotFoundException;
-import com.promorural.api.core.domain.repository.*;
+import com.promorural.api.core.domain.repository.ProductImageRepository;
+import com.promorural.api.core.domain.repository.PromotionRepository;
+import com.promorural.api.core.domain.repository.ShopRepository;
+import com.promorural.api.core.domain.repository.UploadFileRepository;
+import com.promorural.api.core.domain.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,6 +49,9 @@ public class MerchantService {
 
     @Autowired
     private FileStorageService fileStorageService;
+
+    @Autowired
+    private UploadFileRepository uploadFileRepository;
 
     public ShopMerchantResponse getShopForMerchant() {
         User currentUser = getCurrentUser();
@@ -112,7 +125,7 @@ public class MerchantService {
         Shop shop = shopRepository.findByOwnerUsername(currentUser.getUsername())
                 .orElseThrow(() -> new ResourceNotFoundException("Merchant does not have an associated shop."));
 
-        String imageUrl = fileStorageService.storeFile(file);
+        String imageUrl = fileStorageService.storeFile(file, "gallery");
 
         ProductImage image = new ProductImage();
         image.setImageUrl(imageUrl);
@@ -120,6 +133,40 @@ public class MerchantService {
 
         ProductImage savedImage = productImageRepository.save(image);
         return mapToProductImageResponse(savedImage);
+    }
+
+    @Transactional
+    public UploadFileResponse uploadPromotionImage(MultipartFile file) {
+        User currentUser = getCurrentUser();
+        Shop shop = shopRepository.findByOwnerUsername(currentUser.getUsername())
+                .orElseThrow(() -> new ResourceNotFoundException("Merchant does not have an associated shop."));
+
+        String url = fileStorageService.storeFile(file, "promotions");
+
+        UploadFile uf = new UploadFile();
+        uf.setUrl(url);
+        uf.setShop(shop);
+
+        UploadFile saved = uploadFileRepository.save(uf);
+        return new UploadFileResponse(saved.getId(), saved.getUrl(), saved.getUploadedAt());
+    }
+
+    @Transactional
+    public UploadFileResponse uploadShopHeaderImage(MultipartFile file) {
+        User currentUser = getCurrentUser();
+        Shop shop = shopRepository.findByOwnerUsername(currentUser.getUsername())
+                .orElseThrow(() -> new ResourceNotFoundException("Merchant does not have an associated shop."));
+
+        String url = fileStorageService.storeFile(file, "shops");
+        shop.setHeaderImageUrl(url);
+        shopRepository.save(shop);
+
+        UploadFile uf = new UploadFile();
+        uf.setUrl(url);
+        uf.setShop(shop);
+        UploadFile saved = uploadFileRepository.save(uf);
+
+        return new UploadFileResponse(saved.getId(), saved.getUrl(), saved.getUploadedAt());
     }
 
     @Transactional

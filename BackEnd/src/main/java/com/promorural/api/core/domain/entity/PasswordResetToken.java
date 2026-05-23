@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.time.ZonedDateTime;
 
 @Entity
-@Table(name = "password_reset_token")
+@Table(schema = "auth", name = "password_reset_token")
 public class PasswordResetToken {
 
     @Id
@@ -15,15 +15,16 @@ public class PasswordResetToken {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "token_hash", nullable = false, unique = true)
     private String tokenHash;
 
-    @Column(nullable = false)
+    @Column(name = "expires_at", nullable = false)
     private ZonedDateTime expiresAt;
 
+    @Column(name = "used_at")
     private ZonedDateTime usedAt;
 
-    @Column(nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private ZonedDateTime createdAt = ZonedDateTime.now();
 
     public PasswordResetToken() {}

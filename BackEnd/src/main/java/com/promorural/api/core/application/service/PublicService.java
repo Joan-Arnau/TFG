@@ -15,6 +15,7 @@ import com.promorural.api.core.domain.entity.MunicipalityConfig;
 import com.promorural.api.core.domain.entity.Shop;
 import com.promorural.api.core.domain.entity.ShopStatus;
 import com.promorural.api.core.domain.entity.ProductImage;
+import com.promorural.api.core.domain.entity.PointOfInterest;
 import com.promorural.api.core.domain.entity.Promotion;
 import com.promorural.api.core.domain.exception.BadRequestException;
 import com.promorural.api.core.domain.exception.ResourceNotFoundException;
@@ -209,7 +210,7 @@ public class PublicService {
                 .toList();
     }
 
-    private PointOfInterestResponse mapToPointOfInterestResponse(com.promorural.api.core.domain.entity.PointOfInterest item) {
+    private PointOfInterestResponse mapToPointOfInterestResponse(PointOfInterest item) {
         return new PointOfInterestResponse(
                 item.getId(),
                 item.getName(),
