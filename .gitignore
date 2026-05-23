@@ -1,2 +1,5 @@
 /MobileApp/.expo
 node_modules
+/.idea
+/.vscode
+/.postman

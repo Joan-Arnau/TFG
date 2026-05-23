@@ -2,11 +2,11 @@ import { httpClient } from '../httpClient';
 import i18n from '../../i18n';
 import { formatImageUrl } from '../../utils/imageUtils';
 
-export const getTranslation = (translatedField) => {
+export const getTranslation = (translatedField, language) => {
   if (!translatedField) return '';
   if (typeof translatedField === 'string') return translatedField;
   
-  const currentLang = i18n.language || 'ca';
+  const currentLang = language || i18n.language || 'ca';
   return translatedField[currentLang] || translatedField['ca'] || Object.values(translatedField)[0] || '';
 };
 
@@ -15,7 +15,7 @@ export const publicService = {
     try {
       const response = await httpClient.get('/public/config');
       return response.data || {};
-    } catch (error) {
+    } catch {
       console.error('Error fetching config');
       return {};
     }
@@ -38,7 +38,7 @@ export const publicService = {
         latitude: shop.latitude,
         longitude: shop.longitude
       }));
-    } catch (error) {
+    } catch {
       console.error('Error fetching shops');
       return [];
     }
@@ -71,8 +71,8 @@ export const publicService = {
           endsAt: p.endsAt
         })) : []
       };
-    } catch (error) {
-      console.error(`Error fetching shop detail`);
+    } catch {
+      console.error('Error fetching shop detail');
       return null;
     }
   },
@@ -88,7 +88,7 @@ export const publicService = {
         name: getTranslation(cat.name),
         icon: cat.icon || 'apps-outline'
       }));
-    } catch (error) {
+    } catch {
       console.error('Error fetching categories');
       return [];
     }
@@ -106,7 +106,7 @@ export const publicService = {
         publishedAt: item.publishedAt,
         categoryName: item.category ? getTranslation(item.category.name) : ''
       }));
-    } catch (error) {
+    } catch {
       console.error('Error fetching announcements');
       return [];
     }
@@ -130,7 +130,7 @@ export const publicService = {
         categoryName: item.category ? getTranslation(item.category.name) : '',
         categoryId: item.category ? item.category.id : null
       }));
-    } catch (error) {
+    } catch {
       console.error('Error fetching events');
       return [];
     }
@@ -150,7 +150,7 @@ export const publicService = {
         longitude: item.longitude,
         categoryName: item.category ? getTranslation(item.category.name) : ''
       }));
-    } catch (error) {
+    } catch {
       console.error('Error fetching POIs');
       return [];
     }
@@ -171,8 +171,8 @@ export const publicService = {
         longitude: item.longitude,
         categoryName: item.category ? getTranslation(item.category.name) : ''
       };
-    } catch (error) {
-      console.error('Error fetching POI detail:', error.response?.status, error.message);
+    } catch {
+      console.error('Error fetching POI detail');
       return null;
     }
   },
@@ -189,7 +189,7 @@ export const publicService = {
         iconName: item.iconName || 'call-outline',
         categoryName: item.category ? getTranslation(item.category.name) : ''
       }));
-    } catch (error) {
+    } catch {
       console.error('Error fetching contacts');
       return [];
     }

@@ -1,15 +1,17 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { View, Text, ActivityIndicator, TextInput, ScrollView, TouchableOpacity, FlatList, Image } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import { useMapData } from '../hooks/useMapData';
+import { useLocation } from '../hooks/useLocation';
+import { calculateDistance, formatDistance } from '../utils/locationUtils';
 import { getCommonStyles } from '../styles/commonStyles';
 import { getMapStyles } from '../styles/Map.styles';
 import { Ionicons } from '@expo/vector-icons';
 import { ROUTES } from '../navigation/routes';
 import OSMMap from '../components/ui/OSMMap';
 
-const TourismMapScreen = ({ navigation, route }) => {
+const TourismMapScreen = ({ navigation }) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const commonStyles = getCommonStyles(theme);
@@ -17,6 +19,7 @@ const TourismMapScreen = ({ navigation, route }) => {
   const webViewRef = useRef(null);
   
   const { shops, pois, events, initialRegion, loading } = useMapData();
+  const { location } = useLocation();
   
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all'); 
@@ -24,8 +27,10 @@ const TourismMapScreen = ({ navigation, route }) => {
   const [isListVisible, setIsListVisible] = useState(false);
   const [isListExpanded, setIsListExpanded] = useState(false);
 
-  // Memoized markers for the map component
-  const mapMarkers = useMemo(() => {
+  const hasCoords = (item) => item?.latitude != null && item?.longitude != null;
+  const safeDistance = (value) => (value == null ? Infinity : value);
+
+  const baseData = useMemo(() => {
     return [
       ...shops.map(s => ({ ...s, mapType: 'shop' })),
       ...pois.map(p => ({ ...p, mapType: 'poi' })),
@@ -33,16 +38,8 @@ const TourismMapScreen = ({ navigation, route }) => {
     ];
   }, [shops, pois, events]);
 
-  // Center map when centerOn param changes (e.g. returning from detail)
-  useEffect(() => {
-    if (route.params?.centerOn && webViewRef.current) {
-      const { latitude, longitude } = route.params.centerOn;
-      webViewRef.current.injectJavaScript(`if(window.centerMap) window.centerMap(${latitude}, ${longitude}); true;`);
-    }
-  }, [route.params?.centerOn]);
-
-  const filteredData = useMemo(() => {
-    let combined = [...mapMarkers];
+  const filteredBase = useMemo(() => {
+    let combined = [...baseData];
 
     if (filter === 'shop') combined = combined.filter(i => i.mapType === 'shop');
     if (filter === 'poi') combined = combined.filter(i => i.mapType === 'poi');
@@ -50,18 +47,46 @@ const TourismMapScreen = ({ navigation, route }) => {
     if (filter === 'festival') combined = combined.filter(i => i.mapType === 'event' && i.isFestival);
 
     if (search) {
-      combined = combined.filter(i => 
-        i.name.toLowerCase().includes(search.toLowerCase()) || 
-        (i.title && i.title.toLowerCase().includes(search.toLowerCase()))
+      const lowerSearch = search.toLowerCase();
+      combined = combined.filter(i =>
+        i.name?.toLowerCase().includes(lowerSearch) ||
+        (i.title && i.title.toLowerCase().includes(lowerSearch))
       );
     }
 
     return combined;
-  }, [mapMarkers, filter, search]);
+  }, [baseData, filter, search]);
+
+  const listData = useMemo(() => {
+    return filteredBase.map(item => {
+      let distance = null;
+      if (location && hasCoords(item)) {
+        distance = calculateDistance(
+          location.latitude, location.longitude,
+          item.latitude, item.longitude
+        );
+      }
+      return { ...item, distance };
+    }).sort((a, b) => safeDistance(a.distance) - safeDistance(b.distance));
+  }, [filteredBase, location]);
+
+  const markers = useMemo(() => {
+    return filteredBase.map(({ id, latitude, longitude, mapType, name, title, isFestival }) => ({
+      id,
+      latitude,
+      longitude,
+      mapType,
+      name,
+      title,
+      isFestival
+    }));
+  }, [filteredBase]);
 
   const centerToMyPosition = () => {
     if (webViewRef.current) {
-      webViewRef.current.injectJavaScript(`if(window.centerMap) window.centerMap(${initialRegion.latitude}, ${initialRegion.longitude}); true;`);
+      const lat = location?.latitude || initialRegion.latitude;
+      const lon = location?.longitude || initialRegion.longitude;
+      webViewRef.current.injectJavaScript(`if(window.centerMap) window.centerMap(${lat}, ${lon}); true;`);
     }
   };
 
@@ -123,7 +148,14 @@ const TourismMapScreen = ({ navigation, route }) => {
         </View>
         <View style={styles.listItemContent}>
           <Text style={styles.listItemTitle}>{title}</Text>
-          <Text style={styles.listItemSub}>{item.categoryName || t('dashboard.tourism')}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Text style={styles.listItemSub}>{item.categoryName || t('dashboard.tourism')}</Text>
+            {item.distance !== null && (
+              <Text style={[styles.listItemSub, { marginLeft: 10, fontWeight: 'bold', color: theme.primaryColor }]}>
+                • {formatDistance(item.distance, t)}
+              </Text>
+            )}
+          </View>
         </View>
         <Ionicons name="chevron-forward" size={18} color={styles.iconChevron} />
       </TouchableOpacity>
@@ -252,12 +284,14 @@ const TourismMapScreen = ({ navigation, route }) => {
       {/* OSM Map Component */}
       <OSMMap
         webViewRef={webViewRef}
-        markers={filteredData}
+        markers={markers}
+        userLocation={location}
         initialRegion={initialRegion}
         onMarkerPress={handleMarkerPress}
         style={styles.map}
         theme={theme}
         detailLabel={t('app.details')}
+        interactive={true}
       />
 
       {/* Expandable floating list */}
@@ -277,7 +311,7 @@ const TourismMapScreen = ({ navigation, route }) => {
             {search || filter !== 'all' ? t('shop.search_results') : t('dashboard.tourism')}
           </Text>
           <FlatList
-            data={filteredData}
+            data={listData}
             renderItem={renderListItem}
             keyExtractor={item => `${item.mapType}-${item.id}`}
             ListEmptyComponent={

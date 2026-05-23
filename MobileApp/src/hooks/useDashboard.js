@@ -1,17 +1,17 @@
-import { useState, useEffect, useMemo } from 'react'; // Added useMemo
-import { useTranslation } from 'react-i18next'; // New import
-import { publicService, getTranslation } from '../api/services/publicService'; // Modified import
+import { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { publicService, getTranslation } from '../api/services/publicService';
 
 export const useDashboard = () => {
-  const { i18n } = useTranslation(); // New: Get i18n instance for reactive translation
-  const [rawFeaturedItem, setRawFeaturedItem] = useState(null); // Changed featuredItem to rawFeaturedItem
+  const { i18n } = useTranslation();
+  const [rawFeaturedItem, setRawFeaturedItem] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadFeatured = async () => {
+      await Promise.resolve(); // Evita setState síncron en l'effect
       try {
         setLoading(true);
-        // We fetch both and pick the most recent/urgent
         const [announcements, events] = await Promise.all([
           publicService.getAnnouncements(),
           publicService.getEvents()
@@ -19,22 +19,22 @@ export const useDashboard = () => {
         
         const urgent = announcements.find(a => a.urgent);
         if (urgent) {
-          setRawFeaturedItem({ // Use setRawFeaturedItem
+          setRawFeaturedItem({
             type: 'announcement',
-            title: urgent.title, // Keep raw title
-            subtitle: urgent.categoryName, // Keep raw categoryName
+            title: urgent.title,
+            subtitle: urgent.categoryName,
             isUrgent: true
           });
         } else if (events.length > 0) {
           const nextEvent = events[0];
-          setRawFeaturedItem({ // Use setRawFeaturedItem
+          setRawFeaturedItem({
             type: 'event',
-            title: nextEvent.title, // Keep raw title
-            subtitle: new Date(nextEvent.startsAt).toLocaleDateString(), // Keep as is
+            title: nextEvent.title,
+            subtitle: new Date(nextEvent.startsAt).toLocaleDateString(),
             isUrgent: false
           });
         }
-      } catch (error) {
+      } catch {
         console.error('Error loading dashboard featured item');
       } finally {
         setLoading(false);
@@ -42,7 +42,7 @@ export const useDashboard = () => {
     };
 
     loadFeatured();
-  }, [i18n.language]);
+  }, []);
 
   const translatedFeaturedItem = useMemo(() => {
     if (!rawFeaturedItem) return null;
@@ -50,14 +50,13 @@ export const useDashboard = () => {
     if (rawFeaturedItem.type === 'announcement') {
       return {
         ...rawFeaturedItem,
-        title: getTranslation(rawFeaturedItem.title),
-        subtitle: getTranslation(rawFeaturedItem.subtitle), // Translate subtitle (categoryName)
+        title: getTranslation(rawFeaturedItem.title, i18n.language),
+        subtitle: getTranslation(rawFeaturedItem.subtitle, i18n.language),
       };
     } else if (rawFeaturedItem.type === 'event') {
       return {
         ...rawFeaturedItem,
-        title: getTranslation(rawFeaturedItem.title),
-        // Subtitle is a date string, no translation needed
+        title: getTranslation(rawFeaturedItem.title, i18n.language),
       };
     }
     return null;

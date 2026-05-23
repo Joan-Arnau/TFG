@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { View, Text, FlatList, TextInput, Image, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
 import { Card } from '../components/ui/Card';
 import { useShops } from '../hooks/useShops';
+import { useLocation } from '../hooks/useLocation';
+import { calculateDistance, formatDistance } from '../utils/locationUtils';
 import { getCommonStyles } from '../styles/commonStyles';
 import { getShopDirectoryStyles } from '../styles/ShopDirectory.styles';
 import { ROUTES } from '../navigation/routes';
@@ -19,8 +21,25 @@ const ShopDirectoryScreen = ({ navigation }) => {
   const [activeCategory, setActiveCategory] = useState('all');
   
   const { shops, categories, loading, error, refetch } = useShops();
+  const { location } = useLocation();
 
-  const filteredShops = shops.filter(shop => {
+  const hasCoords = (item) => item?.latitude != null && item?.longitude != null;
+  const safeDistance = (value) => (value == null ? Infinity : value);
+
+  const shopsWithDistance = useMemo(() => {
+    return shops.map(shop => {
+      let distance = null;
+      if (location && hasCoords(shop)) {
+        distance = calculateDistance(
+          location.latitude, location.longitude,
+          shop.latitude, shop.longitude
+        );
+      }
+      return { ...shop, distance };
+    }).sort((a, b) => safeDistance(a.distance) - safeDistance(b.distance));
+  }, [shops, location]);
+
+  const filteredShops = shopsWithDistance.filter(shop => {
     const lowerCaseSearch = search.toLowerCase();
     const matchesSearch = shop.name.toLowerCase().includes(lowerCaseSearch) ||
                           shop.description.toLowerCase().includes(lowerCaseSearch) ||
@@ -48,7 +67,7 @@ const ShopDirectoryScreen = ({ navigation }) => {
         <View style={styles.distanceBadge}>
           <Ionicons name="location" size={12} color={theme.primaryColor} />
           <Text style={styles.distanceText}>
-            {item.distance ? `${item.distance.toFixed(1)} km` : '---'}
+            {item.distance !== null ? formatDistance(item.distance, t) : '---'}
           </Text>
         </View>
       </View>

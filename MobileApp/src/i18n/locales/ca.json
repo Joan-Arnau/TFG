@@ -22,14 +22,11 @@
     "read_more": "Llegir més",
     "no_announcements": "No hi ha comunicats oficials hores d'ara.",
     "search": "Cerca en els comunicats..."
-    },
-    "contact": {
+  },
+  "contact": {
     "title": "Telèfons d'interès",
     "no_contacts": "No hi ha contactes disponibles hores d'ara.",
     "retry": "Torna-ho a provar"
-    },
-    "shop": {
-    "detail": "Detall del lloc"
   },
   "shop": {
     "list": "Directori de comerços",
@@ -38,6 +35,7 @@
     "promotions": "Promocions vigents",
     "address": "On som?",
     "contact": "Contacta amb nosaltres",
+    "distance": "Distància",
     "search": "Cerca un comerç...",
     "no_results": "No s'han trobat comerços",
     "error_loading": "S'ha produït un error en carregar la informació. Torna-ho a provar més tard.",
@@ -53,7 +51,14 @@
     "close": "Tancar"
   },
   "settings": {
-    "title": "Ajustaments"
+    "title": "Ajustaments",
+    "about": "Sobre l'aplicació"
+  },
+  "about": {
+    "title": "Sobre l'aplicació",
+    "platform": "Plataforma Promo Rural",
+    "description": "Aquesta aplicació ha estat desenvolupada com a Treball de Final de Grau a la Universitat Rovira i Virgili per Joan Arnau Sagarra Canalda. Proposta tecnològica per a la dinamització del comerç local en municipis rurals mitjançant arquitectura white-label.",
+    "copyright": "© 2026 - Tots els drets reservats."
   },
   "event": {
     "title": "Agenda Rural i Festes",
@@ -78,5 +83,9 @@
     "ca": "Català",
     "es": "Espanyol",
     "en": "Anglès"
+  },
+  "distance": {
+    "meters": "{{value}} m",
+    "kilometers": "{{value}} km"
   }
 }

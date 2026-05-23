@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { publicService } from '../api/services/publicService';
 
 export const usePointOfInterestDetail = (id) => {
@@ -6,7 +6,7 @@ export const usePointOfInterestDetail = (id) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  const loadPoi = async () => {
+  const loadPoi = useCallback(async () => {
     if (!id) return;
     try {
       setLoading(true);
@@ -17,17 +17,20 @@ export const usePointOfInterestDetail = (id) => {
       } else {
         setPoi(data);
       }
-    } catch (error) {
+    } catch {
       console.error('Error loading POI detail');
       setError(true);
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
 
   useEffect(() => {
-    loadPoi();
-  }, [id]);
+    const timer = setTimeout(() => {
+      void loadPoi();
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [loadPoi]);
 
   return { poi, loading, error, refetch: loadPoi };
 };

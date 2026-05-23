@@ -28,7 +28,8 @@ export const useMapData = () => {
     Number.isFinite(Number(item?.latitude)) && Number.isFinite(Number(item?.longitude))
   );
 
-  const loadMapData = async () => {
+  const loadMapData = useCallback(async () => {
+    await Promise.resolve();
     try {
       setLoading(true);
       setError(false);
@@ -50,18 +51,18 @@ export const useMapData = () => {
           longitudeDelta: 0.02,
         }
       });
-    } catch (err) {
+    } catch {
       console.error('Error loading map data');
       setError(true);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
-      loadMapData();
-    }, [])
+      void loadMapData();
+    }, [loadMapData])
   );
 
   return useMemo(() => ({ 

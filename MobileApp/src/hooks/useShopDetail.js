@@ -1,14 +1,14 @@
-import { useState, useEffect, useMemo } from 'react'; // Added useMemo
-import { useTranslation } from 'react-i18next'; // New import
-import { publicService, getTranslation } from '../api/services/publicService'; // Modified import
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
+import { publicService, getTranslation } from '../api/services/publicService';
 
 export const useShopDetail = (id) => {
-  const { i18n } = useTranslation(); // New: Get i18n instance for reactive translation
-  const [rawShop, setRawShop] = useState(null); // Changed shop to rawShop
+  const { i18n } = useTranslation();
+  const [rawShop, setRawShop] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  const loadShop = async () => {
+  const loadShop = useCallback(async () => {
     if (!id) return;
     try {
       setLoading(true);
@@ -17,32 +17,35 @@ export const useShopDetail = (id) => {
       if (!data) {
         setError(true);
       } else {
-        setRawShop(data); // Use setRawShop
+        setRawShop(data);
       }
-    } catch (error) {
+    } catch {
       console.error('Error loading shop detail');
       setError(true);
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
 
   useEffect(() => {
-    loadShop();
-  }, [id]);
+    const timer = setTimeout(() => {
+      void loadShop();
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [loadShop]);
 
   const translatedShop = useMemo(() => {
     if (!rawShop) return null;
 
     return {
       ...rawShop,
-      name: getTranslation(rawShop.name),
-      description: getTranslation(rawShop.description),
-      categoryName: getTranslation(rawShop.categoryName),
+      name: getTranslation(rawShop.name, i18n.language),
+      description: getTranslation(rawShop.description, i18n.language),
+      categoryName: getTranslation(rawShop.categoryName, i18n.language),
       promotions: rawShop.promotions.map(p => ({
         ...p,
-        title: getTranslation(p.title),
-        description: getTranslation(p.description),
+        title: getTranslation(p.title, i18n.language),
+        description: getTranslation(p.description, i18n.language),
       }))
     };
   }, [rawShop, i18n.language]);

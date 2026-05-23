@@ -1,15 +1,15 @@
-import { useState, useEffect, useMemo } from 'react'; // Added useMemo
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { publicService, getTranslation } from '../api/services/publicService'; // Modified import to get getTranslation
+import { publicService, getTranslation } from '../api/services/publicService';
 
 export const useShops = () => {
-  const { t, i18n } = useTranslation(); // Destructure i18n for language dependency
-  const [rawShops, setRawShops] = useState([]); // Renamed shops to rawShops
-  const [rawCategories, setRawCategories] = useState([]); // Renamed categories to rawCategories
+  const { t, i18n } = useTranslation();
+  const [rawShops, setRawShops] = useState([]);
+  const [rawCategories, setRawCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       setLoading(true);
       setError(false);
@@ -17,41 +17,42 @@ export const useShops = () => {
         publicService.getShops(),
         publicService.getCategories()
       ]);
-      setRawShops(shopsData); // Use setRawShops
-      setRawCategories(categoriesData); // Use setRawCategories
-    } catch (error) {
+      setRawShops(shopsData);
+      setRawCategories(categoriesData);
+    } catch {
       console.error('Error loading shops data');
       setError(true);
     } finally {
       setLoading(false);
     }
-  };
-
-  useEffect(() => {
-    loadData();
   }, []);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      void loadData();
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [loadData]);
+
   const translatedCategories = useMemo(() => {
-    // Add 'all' category first, translated
     const allCategory = { id: 'all', name: t('shop.categories.all'), icon: 'apps-outline' };
-    
-    // Translate other categories
+
     const otherCategories = rawCategories.map(cat => ({
       id: cat.id,
-      name: getTranslation(cat.name),
+      name: getTranslation(cat.name, i18n.language),
       icon: cat.icon || 'apps-outline'
     }));
     return [allCategory, ...otherCategories];
-  }, [rawCategories, i18n.language, t]); // Add i18n.language and t to dependencies
+  }, [rawCategories, i18n.language, t]);
 
   const translatedShops = useMemo(() => {
     return rawShops.map(shop => ({
       ...shop,
-      name: getTranslation(shop.name),
-      description: getTranslation(shop.description),
-      categoryName: getTranslation(shop.categoryName)
+      name: getTranslation(shop.name, i18n.language),
+      description: getTranslation(shop.description, i18n.language),
+      categoryName: getTranslation(shop.categoryName, i18n.language)
     }));
-  }, [rawShops, i18n.language]); // Add i18n.language to dependencies
+  }, [rawShops, i18n.language]);
 
   return { shops: translatedShops, categories: translatedCategories, loading, error, refetch: loadData };
 };

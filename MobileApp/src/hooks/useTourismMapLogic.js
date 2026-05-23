@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { publicService, getTranslation } from '../api/services/publicService';
+import { getTranslation } from '../api/services/publicService';
 import { useMapData } from './useMapData';
 
 export const useTourismMapLogic = (navigation, route) => {
@@ -19,43 +19,20 @@ export const useTourismMapLogic = (navigation, route) => {
   const [activeItem, setActiveItem] = useState(null);
   const [markersFrozen, setMarkersFrozen] = useState(false);
 
-  useEffect(() => {
-    setMarkersFrozen(false);
-    const freezeTimer = setTimeout(() => {
-      setMarkersFrozen(true);
-    }, 350);
-    return () => clearTimeout(freezeTimer);
-  }, [filteredData]);
-
-  useEffect(() => {
-    if (route.params?.centerOn && mapRef.current) {
-      const { latitude, longitude } = route.params.centerOn;
-      mapRef.current.animateToRegion({
-        latitude,
-        longitude,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-      }, 1000);
-      if (route.params.centerOn.id && route.params.centerOn.mapType) {
-        setSelectedMarkerId(`${route.params.centerOn.mapType}-${route.params.centerOn.id}`);
-      }
-    }
-  }, [route.params?.centerOn]);
-
   const filteredData = useMemo(() => {
     const translatedShops = shops.map(s => ({
       ...s,
-      name: getTranslation(s.name),
-      description: getTranslation(s.description),
-      categoryName: getTranslation(s.categoryName),
+      name: getTranslation(s.name, i18n.language),
+      description: getTranslation(s.description, i18n.language),
+      categoryName: getTranslation(s.categoryName, i18n.language),
       mapType: 'shop'
     }));
 
     const translatedPois = pois.map(p => ({
       ...p,
-      name: getTranslation(p.name),
-      description: getTranslation(p.description),
-      categoryName: getTranslation(p.categoryName),
+      name: getTranslation(p.name, i18n.language),
+      description: getTranslation(p.description, i18n.language),
+      categoryName: getTranslation(p.categoryName, i18n.language),
       mapType: 'poi'
     }));
 
@@ -75,6 +52,37 @@ export const useTourismMapLogic = (navigation, route) => {
 
     return combined;
   }, [shops, pois, filter, search, i18n.language]);
+
+  useEffect(() => {
+    let timeoutId;
+    Promise.resolve().then(() => {
+      setMarkersFrozen(false);
+      timeoutId = setTimeout(() => {
+        setMarkersFrozen(true);
+      }, 350);
+    });
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [filteredData]);
+
+  useEffect(() => {
+    if (route.params?.centerOn && mapRef.current) {
+      const { latitude, longitude } = route.params.centerOn;
+      mapRef.current.animateToRegion({
+        latitude,
+        longitude,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
+      }, 1000);
+
+      if (route.params.centerOn.id && route.params.centerOn.mapType) {
+        Promise.resolve().then(() => {
+          setSelectedMarkerId(`${route.params.centerOn.mapType}-${route.params.centerOn.id}`);
+        });
+      }
+    }
+  }, [route.params?.centerOn]);
 
   const centerToMyPosition = () => {
     if (mapRef.current) {
@@ -108,9 +116,9 @@ export const useTourismMapLogic = (navigation, route) => {
     if (!activeItem) return null;
     return {
       ...activeItem,
-      name: getTranslation(activeItem.name),
-      description: getTranslation(activeItem.description),
-      categoryName: getTranslation(activeItem.categoryName),
+      name: getTranslation(activeItem.name, i18n.language),
+      description: getTranslation(activeItem.description, i18n.language),
+      categoryName: getTranslation(activeItem.categoryName, i18n.language),
     };
   }, [activeItem, i18n.language]);
 

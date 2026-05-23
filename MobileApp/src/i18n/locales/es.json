@@ -32,6 +32,7 @@
     "promotions": "Promociones vigentes",
     "address": "¿Dónde estamos?",
     "contact": "Contacta con nosotros",
+    "distance": "Distancia",
     "search": "Busca un comercio...",
     "no_results": "No se han encontrado comercios",
     "error_loading": "Se ha producido un error al cargar la información. Inténtalo de nuevo más tarde.",
@@ -47,7 +48,14 @@
     "close": "Cerrar"
   },
   "settings": {
-    "title": "Ajustes"
+    "title": "Ajustes",
+    "about": "Sobre la aplicación"
+  },
+  "about": {
+    "title": "Sobre la aplicación",
+    "platform": "Plataforma Promo Rural",
+    "description": "Esta aplicación ha sido desarrollada como Trabajo de Fin de Grado en la Universidad Rovira i Virgili por Joan Arnau Sagarra Canalda.\n\nPropuesta tecnológica para la dinamización del comercio local en municipios rurales mediante arquitectura white-label.",
+    "copyright": "© 2026 - Todos los derechos reservados."
   },
   "event": {
     "title": "Agenda Rural y Fiestas",
@@ -72,6 +80,9 @@
     "ca": "Catalán",
     "es": "Español",
     "en": "Inglés"
+  },
+  "distance": {
+    "meters": "{{value}} m",
+    "kilometers": "{{value}} km"
   }
 }
-

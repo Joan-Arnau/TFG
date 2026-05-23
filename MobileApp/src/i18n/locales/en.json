@@ -47,7 +47,14 @@
     "close": "Close"
   },
   "settings": {
-    "title": "Settings"
+    "title": "Settings",
+    "about": "About the app"
+  },
+  "about": {
+    "title": "About the app",
+    "platform": "Promo Rural Platform",
+    "description": "This application has been developed as a Bachelor's Thesis at the Rovira i Virgili University by Joan Arnau Sagarra Canalda.\n\nTechnological proposal for boosting local commerce in rural municipalities through white-label architecture.",
+    "copyright": "© 2026 - All rights reserved."
   },
   "event": {
     "title": "Rural Agenda & Festivals",
@@ -72,5 +79,9 @@
     "ca": "Catalan",
     "es": "Spanish",
     "en": "English"
+  },
+  "distance": {
+    "meters": "{{value}} m",
+    "kilometers": "{{value}} km"
   }
 }

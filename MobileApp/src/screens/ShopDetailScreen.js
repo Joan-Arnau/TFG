@@ -1,11 +1,12 @@
-import React from 'react';
-import { View, Text, Image, ScrollView, Linking, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { useMemo } from 'react';
+import { View, Text, Image, ScrollView, Linking, ActivityIndicator } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
 import { IconButton } from '../components/ui/Button';
-import { Card } from '../components/ui/Card';
 import { useShopDetail } from '../hooks/useShopDetail';
+import { useLocation } from '../hooks/useLocation';
+import { calculateDistance, formatDistance } from '../utils/locationUtils';
 import { getCommonStyles } from '../styles/commonStyles';
 import { getShopDetailStyles } from '../styles/ShopDetail.styles';
 import { ROUTES } from '../navigation/routes';
@@ -19,6 +20,29 @@ const ShopDetailScreen = ({ navigation, route }) => {
   const styles = getShopDetailStyles(theme);
   
   const { shop, loading, error } = useShopDetail(id);
+  const { location } = useLocation();
+
+  const distance = useMemo(() => {
+    if (location && shop?.latitude && shop?.longitude) {
+      return calculateDistance(
+        location.latitude, location.longitude,
+        shop.latitude, shop.longitude
+      );
+    }
+    return null;
+  }, [location, shop]);
+
+  // Memoize markers to prevent OSMMap from reloading when location updates
+  const shopMarkers = useMemo(() => {
+    if (!shop) return [];
+    return [{
+      id: shop.id,
+      latitude: shop.latitude,
+      longitude: shop.longitude,
+      name: shop.name,
+      mapType: 'shop'
+    }];
+  }, [shop]);
 
   const handleCall = () => {
     if (shop.phoneNumber) {
@@ -60,8 +84,8 @@ const ShopDetailScreen = ({ navigation, route }) => {
       <View style={styles.infoContainer}>
         <View style={styles.headerRow}>
           <Text style={styles.name}>{shop.name}</Text>
-          <View style={styles.categoryBadge}>
-            <Text style={styles.categoryText}>{shop.categoryName}</Text>
+          <View style={{ backgroundColor: theme.secondaryColor, paddingHorizontal: 10, paddingVertical: 4, borderRadius: 15 }}>
+            <Text style={{ color: '#FFF', fontSize: 12, fontWeight: 'bold' }}>{shop.categoryName}</Text>
           </View>
         </View>
         
@@ -79,59 +103,28 @@ const ShopDetailScreen = ({ navigation, route }) => {
           />
         </View>
 
-        {shop.promotions && shop.promotions.length > 0 && (
-          <View style={styles.section}>
-            <Text style={commonStyles.sectionTitle}>{t('shop.promotions')}</Text>
-            {shop.promotions.map(promo => (
-              <Card key={promo.id} style={styles.promoCard}>
-                <Image source={{ uri: promo.imageUrl }} style={styles.promoImage} />
-                <View style={styles.promoContent}>
-                  <Text style={styles.promoTitle}>{promo.title}</Text>
-                  <Text style={styles.promoDescription}>{promo.description}</Text>
-                </View>
-              </Card>
-            ))}
-          </View>
-        )}
-
-        <View style={styles.section}>
-          <Text style={commonStyles.sectionTitle}>{t('shop.gallery')}</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.galleryScroll}>
-            {shop.images && shop.images.length > 0 ? (
-              shop.images.map((img, index) => (
-                <Image key={index} source={{ uri: img }} style={styles.galleryImage} />
-              ))
-            ) : (
-              <View style={styles.emptyGallery}>
-                <Ionicons name="images-outline" size={32} color="#CCC" />
-                <Text style={styles.emptyGalleryText}>No images available</Text>
-              </View>
-            )}
-          </ScrollView>
-        </View>
-
         <View style={styles.section}>
           <Text style={commonStyles.sectionTitle}>{t('shop.address')}</Text>
           <View style={styles.addressBox}>
             <Ionicons name="location-outline" size={20} color="#666" />
             <Text style={styles.addressText}>{shop.address}</Text>
           </View>
+          {distance !== null && (
+            <Text style={{ marginTop: 5, fontWeight: 'bold', color: theme.primaryColor }}>
+              {t('shop.distance')}: {formatDistance(distance, t)}
+            </Text>
+          )}
           
           <View style={styles.mapContainer}>
             <OSMMap
-              markers={[{
-                id: shop.id,
-                latitude: shop.latitude,
-                longitude: shop.longitude,
-                name: shop.name,
-                mapType: 'shop'
-              }]}
-              initialRegion={{
+              markers={shopMarkers}
+              center={{
                 latitude: shop.latitude,
                 longitude: shop.longitude
               }}
               style={styles.map}
               theme={theme}
+              interactive={false}
             />
           </View>
         </View>

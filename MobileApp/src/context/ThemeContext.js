@@ -34,14 +34,14 @@ export const ThemeProvider = ({ children }) => {
             loading: false
           });
         }
-      } catch (error) {
+      } catch {
         console.error('Failed to fetch theme config');
         setTheme(prev => ({ ...prev, loading: false }));
       }
     };
 
     fetchConfig();
-  }, [isInitialized]); // Removed i18n from deps to avoid re-triggering on manual change
+  }, [isInitialized, i18n]);
 
   return (
     <ThemeContext.Provider value={theme}>

@@ -1,10 +1,10 @@
-import React from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity, Alert, Platform } from 'react-native';
-import * as Calendar from 'expo-calendar';
+import { useMemo } from 'react';
+import { View, Text, ScrollView, Image } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
+import { useLocation } from '../hooks/useLocation';
+import { calculateDistance, formatDistance } from '../utils/locationUtils';
 import { getEventStyles } from '../styles/Event.styles';
-import { getCommonStyles } from '../styles/commonStyles';
 import { Ionicons } from '@expo/vector-icons';
 import { IconButton } from '../components/ui/Button';
 import { ROUTES } from '../navigation/routes';
@@ -15,50 +15,29 @@ const EventDetailScreen = ({ route, navigation }) => {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
   const styles = getEventStyles(theme);
-  const commonStyles = getCommonStyles(theme);
+  const { location } = useLocation();
 
-  const requestCalendarPermissions = async () => {
-    const { status } = await Calendar.requestCalendarPermissionsAsync();
-    if (status === 'granted') {
-      if (Platform.OS === 'ios') {
-        const { status: remindStatus } = await Calendar.requestRemindersPermissionsAsync();
-        return remindStatus === 'granted';
-      }
-      return true;
+  const distance = useMemo(() => {
+    if (location && event?.latitude && event?.longitude) {
+      return calculateDistance(
+        location.latitude, location.longitude,
+        event.latitude, event.longitude
+      );
     }
-    return false;
-  };
+    return null;
+  }, [location, event]);
 
-  const getDefaultCalendarSource = async () => {
-    const defaultCalendar = await Calendar.getDefaultCalendarAsync();
-    return defaultCalendar.id;
-  };
-
-  const handleAddToCalendar = async () => {
-    try {
-      const hasPermissions = await requestCalendarPermissions();
-      if (!hasPermissions) {
-        Alert.alert('Error', 'Calendar permissions are required');
-        return;
-      }
-
-      const calendarId = await getDefaultCalendarSource();
-      
-      await Calendar.createEventAsync(calendarId, {
-        title: event.title,
-        startDate: new Date(event.startsAt),
-        endDate: new Date(event.endsAt),
-        location: event.locationText,
-        notes: event.description,
-        timeZone: 'GMT',
-      });
-
-      Alert.alert('Success', 'Event added to your calendar!');
-    } catch (error) {
-      console.error('Error adding to calendar:', error);
-      Alert.alert('Error', 'Could not add event to calendar');
-    }
-  };
+  const eventMarkers = useMemo(() => {
+    if (!event) return [];
+    return [{
+      id: event.id,
+      latitude: event.latitude,
+      longitude: event.longitude,
+      title: event.title,
+      mapType: 'event',
+      isFestival: event.isFestival
+    }];
+  }, [event]);
 
   const formatDate = (dateString) => {
     if (!dateString) return '';
@@ -119,12 +98,6 @@ const EventDetailScreen = ({ route, navigation }) => {
 
         <View style={styles.detailActions}>
           <IconButton 
-            icon="calendar-outline" 
-            onPress={handleAddToCalendar}
-            label={t('event.add_calendar')}
-          />
-
-          <IconButton 
             icon="map-outline" 
             color={theme.secondaryColor} 
             onPress={() => navigation.navigate(ROUTES.TOURISM_MAP, { 
@@ -135,22 +108,24 @@ const EventDetailScreen = ({ route, navigation }) => {
         </View>
 
         {event.latitude && event.longitude && (
-          <View style={styles.mapContainer}>
-            <OSMMap
-              markers={[{
-                id: event.id,
-                latitude: event.latitude,
-                longitude: event.longitude,
-                name: event.title,
-                mapType: 'event'
-              }]}
-              initialRegion={{
-                latitude: event.latitude,
-                longitude: event.longitude
-              }}
-              style={styles.map}
-              theme={theme}
-            />
+          <View>
+            {distance !== null && (
+              <Text style={{ marginTop: 10, marginBottom: 10, fontWeight: 'bold', color: theme.primaryColor }}>
+                {t('shop.distance')}: {formatDistance(distance, t)}
+              </Text>
+            )}
+            <View style={styles.mapContainer}>
+              <OSMMap
+                markers={eventMarkers}
+                center={{
+                  latitude: event.latitude,
+                  longitude: event.longitude
+                }}
+                style={styles.map}
+                theme={theme}
+                interactive={false}
+              />
+            </View>
           </View>
         )}
       </View>

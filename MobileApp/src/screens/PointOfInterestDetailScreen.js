@@ -1,10 +1,12 @@
-import React from 'react';
+import { useMemo } from 'react';
 import { View, Text, Image, ScrollView, ActivityIndicator } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
 import { IconButton } from '../components/ui/Button';
 import { usePointOfInterestDetail } from '../hooks/usePointOfInterestDetail';
+import { useLocation } from '../hooks/useLocation';
+import { calculateDistance, formatDistance } from '../utils/locationUtils';
 import { getCommonStyles } from '../styles/commonStyles';
 import { getShopDetailStyles } from '../styles/ShopDetail.styles';
 import { ROUTES } from '../navigation/routes';
@@ -18,6 +20,28 @@ const PointOfInterestDetailScreen = ({ navigation, route }) => {
   const styles = getShopDetailStyles(theme);
   
   const { poi, loading, error } = usePointOfInterestDetail(id);
+  const { location } = useLocation();
+
+  const distance = useMemo(() => {
+    if (location && poi?.latitude && poi?.longitude) {
+      return calculateDistance(
+        location.latitude, location.longitude,
+        poi.latitude, poi.longitude
+      );
+    }
+    return null;
+  }, [location, poi]);
+
+  const poiMarkers = useMemo(() => {
+    if (!poi) return [];
+    return [{
+      id: poi.id,
+      latitude: poi.latitude,
+      longitude: poi.longitude,
+      name: poi.name,
+      mapType: 'poi'
+    }];
+  }, [poi]);
 
   if (loading) {
     return (
@@ -64,22 +88,22 @@ const PointOfInterestDetailScreen = ({ navigation, route }) => {
         </View>
 
         <View style={styles.section}>
-          <Text style={commonStyles.sectionTitle}>{t('shop.address')}</Text>
+          {distance !== null && (
+            <Text style={{ marginTop: 5, fontWeight: 'bold', color: theme.primaryColor }}>
+              {t('shop.distance')}: {formatDistance(distance, t)}
+            </Text>
+          )}
           
           <View style={styles.mapContainer}>
             <OSMMap
-              markers={[{
-                id: poi.id,
-                latitude: poi.latitude,
-                longitude: poi.longitude,
-                name: poi.name,
-                mapType: 'poi'
-              }]}
-              initialRegion={{
+              markers={poiMarkers}
+              center={{
                 latitude: poi.latitude,
                 longitude: poi.longitude
               }}
               style={styles.map}
+              theme={theme}
+              interactive={false}
             />
           </View>
         </View>
