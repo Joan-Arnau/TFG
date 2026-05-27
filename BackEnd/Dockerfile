@@ -19,20 +19,18 @@ FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
 RUN apk upgrade --no-cache && \
-    apk add --no-cache libcrypto3 libssl3 && \
+    apk add --no-cache libcrypto3 libssl3 su-exec && \
     addgroup -S spring && \
     adduser -S -s /sbin/nologin -G spring spring
 
+RUN mkdir -p /app/uploads
+
 COPY --from=build --chown=spring:spring /app/target/api-server-0.0.1-SNAPSHOT.jar app.jar
+COPY docker-entrypoint.sh /app/docker-entrypoint.sh
 
 RUN chmod 500 app.jar
-
-USER spring:spring
+RUN chmod 500 /app/docker-entrypoint.sh
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", \
-            "-XX:+UseContainerSupport", \
-            "-XX:MaxRAMPercentage=75.0", \
-            "-XX:+ExitOnOutOfMemoryError", \
-            "-jar", "app.jar"]
+ENTRYPOINT ["/app/docker-entrypoint.sh"]

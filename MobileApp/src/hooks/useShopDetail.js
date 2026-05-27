@@ -42,7 +42,7 @@ export const useShopDetail = (id) => {
       name: getTranslation(rawShop.name, i18n.language),
       description: getTranslation(rawShop.description, i18n.language),
       categoryName: getTranslation(rawShop.categoryName, i18n.language),
-      promotions: rawShop.promotions.map(p => ({
+      promotions: rawShop.promotions.filter(Boolean).map(p => ({
         ...p,
         title: getTranslation(p.title, i18n.language),
         description: getTranslation(p.description, i18n.language),

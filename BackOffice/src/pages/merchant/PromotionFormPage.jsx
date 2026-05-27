@@ -6,7 +6,7 @@ import MerchantPromotionFormView from './components/MerchantPromotionFormView';
 const PromotionFormPage = () => {
   const { id } = useParams();
   const { t } = useTranslation();
-  const { draft, loading, error, canSubmit, submit, setLocalizedField, setField } = useMerchantPromotionForm(id);
+  const { draft, loading, error, canSubmit, submit, setLocalizedField, setField, uploadImage, uploading, uploadError, validationMessage } = useMerchantPromotionForm(id);
 
   return (
     <MerchantPromotionFormView
@@ -16,6 +16,10 @@ const PromotionFormPage = () => {
       onLocalizedChange={setLocalizedField}
       onFieldChange={setField}
       onSubmit={submit}
+      onFileUpload={uploadImage}
+      uploading={uploading}
+      uploadError={uploadError}
+      validationMessage={validationMessage}
       canSubmit={canSubmit}
       saving={loading}
       error={error}

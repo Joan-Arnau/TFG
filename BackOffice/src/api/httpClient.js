@@ -12,7 +12,7 @@ const publicAuthPaths = [
 const shouldSkipAuthHeader = (url = '') => publicAuthPaths.some((path) => url.includes(path))
 
 export const httpClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL ?? 'http://localhost/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL ?? '/api',
   timeout: 10000,
 })
 

@@ -1,15 +1,68 @@
+import React, { useRef, useState, useEffect } from 'react';
 import Button from '../../../components/ui/Button';
 import MerchantPageHeader from './MerchantPageHeader';
 import LocalizedFieldSet from './LocalizedFieldSet';
+import { resolveBackendStaticUrl } from '../../../utils/backendUrls';
 
-const MerchantPromotionFormView = ({ t, title, draft, onLocalizedChange, onFieldChange, onSubmit, canSubmit, saving, error }) => {
+const resolvePreviewSrc = (url) => resolveBackendStaticUrl(url);
+
+const MerchantPromotionFormView = ({ t, title, draft, onLocalizedChange, onFieldChange, onSubmit, canSubmit, saving, error, onFileUpload, uploading, uploadError, validationMessage }) => {
+  const fileInputRef = useRef(null);
+  const [previewUrl, setPreviewUrl] = useState(resolvePreviewSrc(draft.imageUrl || ''));
+  const [lastObjectUrl, setLastObjectUrl] = useState(null);
+
+  useEffect(() => {
+    // Keep preview in sync when draft.imageUrl changes (e.g., loaded existing promotion)
+    if (draft?.imageUrl && draft.imageUrl !== previewUrl) {
+      setPreviewUrl(resolvePreviewSrc(draft.imageUrl));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [draft?.imageUrl]);
+
+  useEffect(() => {
+    return () => {
+      if (lastObjectUrl) URL.revokeObjectURL(lastObjectUrl);
+    };
+  }, [lastObjectUrl]);
+
+  const handleChoose = () => {
+    if (fileInputRef.current) fileInputRef.current.click();
+  };
+
+  const handleFile = async (e) => {
+    const f = e.target.files && e.target.files[0];
+    if (!f) return;
+
+    // show immediate local preview
+    try {
+      if (lastObjectUrl) {
+        URL.revokeObjectURL(lastObjectUrl);
+      }
+      const obj = URL.createObjectURL(f);
+      setLastObjectUrl(obj);
+      setPreviewUrl(obj);
+    } catch {
+      // ignore preview errors
+    }
+
+    if (onFileUpload) {
+      const url = await onFileUpload(f);
+      if (url) {
+        onFieldChange('imageUrl', url);
+        setPreviewUrl(url);
+      }
+    }
+
+    e.target.value = '';
+  };
+
   return (
     <section className="merchant-page">
       <MerchantPageHeader eyebrow={t('merchant.promotionsTitle', 'Promotions')} title={title} />
 
       <form className="merchant-form" onSubmit={onSubmit}>
         <LocalizedFieldSet
-          legend={t('merchant.titleLabel', 'Title')}
+          legend={`${t('merchant.titleLabel', 'Title')} *`}
           values={draft.title}
           onChange={(lang, value) => onLocalizedChange('title', lang, value)}
           requiredLanguage="ca"
@@ -27,23 +80,42 @@ const MerchantPromotionFormView = ({ t, title, draft, onLocalizedChange, onField
         />
 
         <label>
-          <span>{t('merchant.startDate', 'Start date')}</span>
-          <input type="datetime-local" value={draft.startsAt} onChange={(event) => onFieldChange('startsAt', event.target.value)} />
+          <span>{t('merchant.startDate', 'Start date')} *</span>
+          <input required type="datetime-local" value={draft.startsAt} onChange={(event) => onFieldChange('startsAt', event.target.value)} />
         </label>
 
         <label>
-          <span>{t('merchant.endDate', 'End date')}</span>
-          <input type="datetime-local" value={draft.endsAt} onChange={(event) => onFieldChange('endsAt', event.target.value)} />
+          <span>{t('merchant.endDate', 'End date')} *</span>
+          <input required type="datetime-local" value={draft.endsAt} onChange={(event) => onFieldChange('endsAt', event.target.value)} />
         </label>
 
-        <label>
-          <span>{t('merchant.imageUrl', 'Image URL')}</span>
-          <input value={draft.imageUrl} onChange={(event) => onFieldChange('imageUrl', event.target.value)} />
-        </label>
+        <div>
+          <span>{t('merchant.imagePreviewLabel', 'Image')}</span>
+          <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 8 }}>
+            <input
+              ref={fileInputRef}
+              id="promotion-image-file-hidden"
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              onChange={handleFile}
+              style={{ display: 'none' }}
+            />
+            <Button type="button" onClick={handleChoose} disabled={uploading}>{uploading ? t('merchant.uploading', 'Uploading...') : t('merchant.upload', 'Upload')}</Button>
+            {uploadError ? <div className="error" style={{ marginTop: 6 }}>{uploadError}</div> : null}
+          </div>
+
+          {previewUrl ? (
+            <div style={{ marginTop: 10 }}>
+              <img src={previewUrl} alt={t('merchant.imagePreviewAlt', 'Image preview')} style={{ maxWidth: 320, maxHeight: 180, objectFit: 'cover', border: '1px solid #ddd' }} />
+            </div>
+          ) : null}
+        </div>
 
         <div className="merchant-form-actions">
-          <Button type="submit" disabled={!canSubmit || saving}>{saving ? t('merchant.saving', 'Saving...') : t('merchant.save', 'Save')}</Button>
+          <Button type="submit" disabled={!canSubmit || saving || uploading}>{saving ? t('merchant.saving', 'Saving...') : t('merchant.save', 'Save')}</Button>
         </div>
+        <p className="merchant-form-hint">{t('merchant.requiredFieldsHint', 'Camps obligatoris: títol en català, data d’inici i data de fi.')}</p>
+        {!canSubmit && validationMessage ? <div className="error">{validationMessage}</div> : null}
         {error ? <div className="error">{error}</div> : null}
       </form>
     </section>

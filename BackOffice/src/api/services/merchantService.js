@@ -34,9 +34,8 @@ export const merchantService = {
   uploadImage: async (file) => {
     const fd = new FormData();
     fd.append('file', file);
-    const r = await httpClient.post(MERCHANT_API.IMAGES, fd, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    // Let the browser set the Content-Type with the proper multipart boundary
+    const r = await httpClient.post(MERCHANT_API.IMAGES, fd);
     return r.data;
   },
   getImages: async () => {

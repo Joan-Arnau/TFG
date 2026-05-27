@@ -170,15 +170,18 @@ public class SeedDataConfig {
 
                 createShop(shopRepository, merchant1, foodCat, "Cal Fruiter", 
                     "Productes de proximitat i km0.", "Carrer Major, 12", "977123456", 
-                    geometryFactory.createPoint(new Coordinate(1.1040, 41.1570)));
+                    geometryFactory.createPoint(new Coordinate(1.1040, 41.1570)),
+                    "/seed-images/shop-cal-fruiter.svg");
 
                 createShop(shopRepository, merchant2, hostCat, "Restaurant El Racó", 
                     "Cuina tradicional catalana.", "Plaça de la Vila, 5", "977654321", 
-                    geometryFactory.createPoint(new Coordinate(1.1050, 41.1555)));
+                    geometryFactory.createPoint(new Coordinate(1.1050, 41.1555)),
+                    "/seed-images/shop-restaurant-el-raco.svg");
 
                 createShop(shopRepository, merchant3, servCat, "Farmàcia de Baix", 
                     "Atenció farmacèutica i parafarmàcia.", "Carrer de Baix, 3", "977889900", 
-                    geometryFactory.createPoint(new Coordinate(1.1030, 41.1550)));
+                    geometryFactory.createPoint(new Coordinate(1.1030, 41.1550)),
+                    "/seed-images/shop-farmacia-de-baix.svg");
                 log.info("Shops and merchants seeded.");
             }
 
@@ -238,7 +241,7 @@ public class SeedDataConfig {
                         Map.of("ca", "Teatre Municipal", "es", "Teatro Municipal", "en", "Municipal Theatre"),
                         OffsetDateTime.now().plusDays(3),
                         OffsetDateTime.now().plusDays(3).plusHours(2),
-                        "https://images.unsplash.com/photo-1507838153414-b4b713384a76?q=80&w=800",
+                        "/seed-images/default.svg",
                         geometryFactory.createPoint(new Coordinate(1.1045, 41.1568)));
 
                     createEvent(eventRepository, cultureCat, false,
@@ -247,7 +250,7 @@ public class SeedDataConfig {
                         Map.of("ca", "Centre Cultural", "es", "Centro Cultural", "en", "Cultural Center"),
                         OffsetDateTime.now().plusDays(5),
                         OffsetDateTime.now().plusDays(5).plusHours(3),
-                        "https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?q=80&w=800",
+                        "/seed-images/default.svg",
                         geometryFactory.createPoint(new Coordinate(1.1055, 41.1558)));
 
                     createEvent(eventRepository, cultureCat, false,
@@ -256,7 +259,7 @@ public class SeedDataConfig {
                         Map.of("ca", "Sala d'Exposicions Municipal", "es", "Sala de Exposiciones Municipal", "en", "Municipal Exhibition Hall"),
                         OffsetDateTime.now().plusDays(10),
                         OffsetDateTime.now().plusDays(17),
-                        "https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=800",
+                        "/seed-images/default.svg",
                         geometryFactory.createPoint(new Coordinate(1.1038, 41.1562)));
 
                     // Festival events (Festa Major)
@@ -266,7 +269,7 @@ public class SeedDataConfig {
                         Map.of("ca", "Plaça de la Vila", "es", "Plaza de la Villa", "en", "Town Square"),
                         OffsetDateTime.now().plusDays(15),
                         OffsetDateTime.now().plusDays(15).plusHours(3),
-                        "https://images.unsplash.com/photo-1560523159-4a9692d222ef?q=80&w=800",
+                        "/seed-images/default.svg",
                         geometryFactory.createPoint(new Coordinate(1.1050, 41.1570)));
 
                     createEvent(eventRepository, cultureCat, true,
@@ -275,7 +278,7 @@ public class SeedDataConfig {
                         Map.of("ca", "Pavelló Municipal d'Esports", "es", "Pabellón Municipal de Deportes", "en", "Municipal Sports Hall"),
                         OffsetDateTime.now().plusDays(15).plusHours(8),
                         OffsetDateTime.now().plusDays(15).plusHours(11),
-                        "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?q=80&w=800",
+                        "/seed-images/default.svg",
                         geometryFactory.createPoint(new Coordinate(1.1065, 41.1575)));
 
                     createEvent(eventRepository, cultureCat, true,
@@ -284,7 +287,7 @@ public class SeedDataConfig {
                         Map.of("ca", "Parc del Riu", "es", "Parque del Río", "en", "Riverside Park"),
                         OffsetDateTime.now().plusDays(16),
                         OffsetDateTime.now().plusDays(16).plusHours(1),
-                        "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=800",
+                        "/seed-images/default.svg",
                         geometryFactory.createPoint(new Coordinate(1.1020, 41.1540)));
                 }
                 log.info("Events seeded.");
@@ -326,7 +329,7 @@ public class SeedDataConfig {
                         promo.setShop(shop);
                         promo.setTitle(Map.of("ca", "Promocio inicial", "es", "Promoción inicial", "en", "Initial promotion"));
                         promo.setDescription(Map.of("ca", "Descompte especial", "es", "Descuento especial", "en", "Special discount"));
-                        promo.setImageUrl("https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=800");
+                        promo.setImageUrl("/seed-images/default.svg");
                         promo.setStartsAt(OffsetDateTime.now());
                         promo.setEndsAt(OffsetDateTime.now().plusDays(7));
                         promotionRepository.save(promo);
@@ -345,7 +348,7 @@ public class SeedDataConfig {
         repo.save(cat);
     }
 
-    private void createShop(ShopRepository repo, User owner, Category cat, String name, String desc, String addr, String phone, Point loc) {
+    private void createShop(ShopRepository repo, User owner, Category cat, String name, String desc, String addr, String phone, Point loc, String imageUrl) {
         Shop shop = new Shop();
         shop.setName(Map.of("ca", name, "es", name, "en", name));
         shop.setDescription(Map.of("ca", desc, "es", desc, "en", desc));
@@ -355,13 +358,13 @@ public class SeedDataConfig {
         shop.setOwner(owner);
         shop.setCategory(cat);
         shop.setLocation(loc);
-        shop.setHeaderImageUrl("https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=800");
+        shop.setHeaderImageUrl(imageUrl);
         
         List<ProductImage> gallery = new ArrayList<>();
         String[] fruitImages = {
-            "https://images.unsplash.com/photo-1610832958506-aa56368176cf?q=80&w=400",
-            "https://images.unsplash.com/photo-1512149177596-f817c7ef5d4c?q=80&w=400",
-            "https://images.unsplash.com/photo-1606787366850-de6330128bfc?q=80&w=400"
+            imageUrl,
+            "/seed-images/default.svg",
+            "/seed-images/default.svg"
         };
         for (int i = 0; i < fruitImages.length; i++) {
             ProductImage img = new ProductImage();
@@ -380,7 +383,7 @@ public class SeedDataConfig {
         poi.setDescription(Map.of("ca", desc, "es", desc, "en", desc));
         poi.setCategory(cat);
         poi.setLocation(loc);
-        poi.setImageUrl("https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=800");
+        poi.setImageUrl("/seed-images/default.svg");
         repo.save(poi);
     }
 

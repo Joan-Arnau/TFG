@@ -16,6 +16,7 @@ i18n
     },
     fallbackLng: 'ca',
     supportedLngs: ['ca', 'es', 'en'],
+    react: { useSuspense: false },
     interpolation: {
       escapeValue: false,
     },

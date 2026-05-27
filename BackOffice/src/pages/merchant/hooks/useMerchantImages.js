@@ -6,7 +6,19 @@ export function useMerchantImages() {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
+  const [pendingImageFile, setPendingImageFile] = useState(null);
+  const [pendingPreviewUrl, setPendingPreviewUrl] = useState('');
   const confirm = useConfirm();
+
+  useEffect(() => {
+    return () => {
+      if (pendingPreviewUrl && pendingPreviewUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(pendingPreviewUrl);
+      }
+    };
+  }, [pendingPreviewUrl]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -43,11 +55,48 @@ export function useMerchantImages() {
     return () => { mounted = false; };
   }, []);
 
-  const upload = useCallback(async (file) => {
-    const uploaded = await merchantService.uploadImage(file);
-    setImages((s) => [uploaded, ...s]);
-    return uploaded;
-  }, []);
+  const stageUpload = useCallback(async (file) => {
+    if (!file) return '';
+    const MAX_BYTES = 2 * 1024 * 1024;
+    if (file.size > MAX_BYTES) {
+      setUploadError('File is too large. Maximum allowed size is 2MB.');
+      return '';
+    }
+
+    if (pendingPreviewUrl && pendingPreviewUrl.startsWith('blob:')) {
+      URL.revokeObjectURL(pendingPreviewUrl);
+    }
+
+    const previewUrl = URL.createObjectURL(file);
+    setPendingImageFile(file);
+    setPendingPreviewUrl(previewUrl);
+    setUploadError('');
+    return previewUrl;
+  }, [pendingPreviewUrl]);
+
+  const saveUpload = useCallback(async () => {
+    if (!pendingImageFile) return null;
+
+    setUploading(true);
+    setUploadError('');
+    try {
+      const uploaded = await merchantService.uploadImage(pendingImageFile);
+      setImages((s) => [uploaded, ...s]);
+      setPendingImageFile(null);
+
+      if (pendingPreviewUrl && pendingPreviewUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(pendingPreviewUrl);
+      }
+      setPendingPreviewUrl('');
+
+      return uploaded;
+    } catch (error) {
+      setUploadError(error?.message || 'Upload failed');
+      return null;
+    } finally {
+      setUploading(false);
+    }
+  }, [pendingImageFile, pendingPreviewUrl]);
 
   const remove = useCallback(async (id) => {
     const ok = await confirm('merchant.confirmDeleteImage', 'Delete image?');
@@ -57,7 +106,18 @@ export function useMerchantImages() {
     return true;
   }, [confirm]);
 
-  return { images, loading, error, load, upload, remove };
+  return {
+    images,
+    loading,
+    error,
+    load,
+    stageUpload,
+    saveUpload,
+    remove,
+    uploading,
+    uploadError,
+    pendingPreviewUrl,
+  };
 }
 
 export default useMerchantImages;

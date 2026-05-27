@@ -4,16 +4,26 @@ import MerchantImagesView from './components/MerchantImagesView';
 
 const ImagesPage = () => {
   const { t } = useTranslation();
-  const { images, upload, remove } = useMerchantImages();
+  const { images, stageUpload, saveUpload, remove, uploading, uploadError, pendingPreviewUrl } = useMerchantImages();
 
   const onFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    await upload(file);
+    await stageUpload(file);
+    e.target.value = '';
   };
 
   return (
-    <MerchantImagesView t={t} images={images} onUpload={onFileChange} onDelete={remove} />
+    <MerchantImagesView
+      t={t}
+      images={images}
+      onUpload={onFileChange}
+      onSave={saveUpload}
+      onDelete={remove}
+      uploading={uploading}
+      uploadError={uploadError}
+      pendingPreviewUrl={pendingPreviewUrl}
+    />
   );
 };
 

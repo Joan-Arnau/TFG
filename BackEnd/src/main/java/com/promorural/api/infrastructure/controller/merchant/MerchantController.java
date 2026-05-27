@@ -21,11 +21,15 @@ import org.springframework.web.multipart.MultipartFile;
 import com.promorural.api.core.application.validation.ValidationGroups;
 
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/merchant")
 @PreAuthorize("hasAuthority('ROLE_MERCHANT')")
 public class MerchantController {
+
+    private static final Logger log = LoggerFactory.getLogger(MerchantController.class);
 
     private final ShopProfileUseCase shopProfileUseCase;
     private final PromotionUseCase promotionUseCase;
@@ -76,8 +80,15 @@ public class MerchantController {
 
     @PostMapping("/my-shop/images")
     public ResponseEntity<ProductImageResponse> uploadImage(@RequestParam("file") MultipartFile file) {
-        ProductImageResponse imageResponse = productImageUseCase.upload(file);
-        return ResponseEntity.status(HttpStatus.CREATED).body(imageResponse);
+        log.info("POST /api/merchant/my-shop/images called - filename={}, size={}, contentType={}", file.getOriginalFilename(), file.getSize(), file.getContentType());
+        try {
+            ProductImageResponse imageResponse = productImageUseCase.upload(file);
+            log.info("Image uploaded: id={}, imageUrl={}", imageResponse.id(), imageResponse.imageUrl());
+            return ResponseEntity.status(HttpStatus.CREATED).body(imageResponse);
+        } catch (Exception e) {
+            log.error("Error uploading image to /api/merchant/my-shop/images - filename={}", file.getOriginalFilename(), e);
+            throw e;
+        }
     }
 
     @GetMapping("/my-shop/images")
@@ -87,8 +98,15 @@ public class MerchantController {
 
     @PostMapping("/promotions/images")
     public ResponseEntity<UploadFileResponse> uploadPromotionImage(@RequestParam("file") MultipartFile file) {
-        UploadFileResponse resp = merchantService.uploadPromotionImage(file);
-        return ResponseEntity.status(HttpStatus.CREATED).body(resp);
+        log.info("POST /api/merchant/promotions/images called - filename={}, size={}, contentType={}", file.getOriginalFilename(), file.getSize(), file.getContentType());
+        try {
+            UploadFileResponse resp = merchantService.uploadPromotionImage(file);
+            log.info("Promotion image uploaded: id={}, url={}", resp.id(), resp.url());
+            return ResponseEntity.status(HttpStatus.CREATED).body(resp);
+        } catch (Exception e) {
+            log.error("Error uploading promotion image - filename={}", file.getOriginalFilename(), e);
+            throw e;
+        }
     }
 
     @GetMapping("/promotions/{id}")
@@ -110,8 +128,15 @@ public class MerchantController {
 
     @PostMapping("/my-shop/header-image")
     public ResponseEntity<UploadFileResponse> uploadShopHeaderImage(@RequestParam("file") MultipartFile file) {
-        UploadFileResponse resp = merchantService.uploadShopHeaderImage(file);
-        return ResponseEntity.status(HttpStatus.CREATED).body(resp);
+        log.info("POST /api/merchant/my-shop/header-image called - filename={}, size={}, contentType={}", file.getOriginalFilename(), file.getSize(), file.getContentType());
+        try {
+            UploadFileResponse resp = merchantService.uploadShopHeaderImage(file);
+            log.info("Shop header image uploaded: id={}, url={}", resp.id(), resp.url());
+            return ResponseEntity.status(HttpStatus.CREATED).body(resp);
+        } catch (Exception e) {
+            log.error("Error uploading shop header image - filename={}", file.getOriginalFilename(), e);
+            throw e;
+        }
     }
 
     @DeleteMapping("/my-shop/images/{id}")

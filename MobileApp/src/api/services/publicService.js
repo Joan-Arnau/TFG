@@ -62,7 +62,7 @@ export const publicService = {
         latitude: shop.latitude,
         longitude: shop.longitude,
         images: Array.isArray(shop.images) ? shop.images.map(img => formatImageUrl(img)) : [],
-        promotions: Array.isArray(shop.promotions) ? shop.promotions.map(p => ({
+        promotions: Array.isArray(shop.promotions) ? shop.promotions.filter(Boolean).map(p => ({
           id: p.id,
           title: getTranslation(p.title),
           description: getTranslation(p.description),

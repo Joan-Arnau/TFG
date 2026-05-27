@@ -4,6 +4,7 @@ import { useAsyncSubmit } from '../../../hooks/useAsyncSubmit';
 import { buildLocalizedMap, getLocalizedDraft } from '../../../utils/localization';
 import { MERCHANT_ROUTES } from '../constants';
 import { useMerchantPromotions } from './useMerchantPromotions';
+import { merchantService } from '../../../api/services/merchantService';
 
 const emptyLocalized = { ca: '', es: '', en: '' };
 
@@ -33,8 +34,11 @@ export function useMerchantPromotionForm(id) {
   const navigate = useNavigate();
   const { getPromotion, create, update, validatePromotion } = useMerchantPromotions();
   const [draft, setDraft] = useState(createDraft(null));
+  const [pendingImageFile, setPendingImageFile] = useState(null);
   const [loadingDraft, setLoadingDraft] = useState(Boolean(id));
   const [loadError, setLoadError] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
 
   useEffect(() => {
     let active = true;
@@ -42,6 +46,7 @@ export function useMerchantPromotionForm(id) {
     const loadPromotion = async () => {
       if (!id) {
         setDraft(createDraft(null));
+        setPendingImageFile(null);
         setLoadingDraft(false);
         return;
       }
@@ -51,6 +56,7 @@ export function useMerchantPromotionForm(id) {
         const promotion = await getPromotion(id);
         if (active) {
           setDraft(createDraft(promotion));
+          setPendingImageFile(null);
           setLoadError('');
         }
       } catch (error) {
@@ -83,32 +89,74 @@ export function useMerchantPromotionForm(id) {
     setDraft((current) => ({ ...current, [field]: value }));
   }, []);
 
+  const uploadImage = useCallback(async (file) => {
+    if (!file) return null;
+    const MAX_BYTES = 2 * 1024 * 1024;
+    if (file.size > MAX_BYTES) {
+      setUploadError('File is too large. Maximum allowed size is 2MB.');
+      return null;
+    }
+    setPendingImageFile(file);
+    setUploadError('');
+    return URL.createObjectURL(file);
+  }, []);
+
   const submit = useCallback(async (event) => {
     event.preventDefault();
+    setUploading(true);
+    setUploadError('');
     try {
+      let imageUrl = draft.imageUrl;
+
+      if (pendingImageFile) {
+        const resp = await merchantService.uploadImage(pendingImageFile);
+        imageUrl = resp?.imageUrl || resp?.url || resp?.fileUrl || '';
+        if (!imageUrl) {
+          throw new Error('Upload succeeded but the server did not return an image URL.');
+        }
+        setDraft((current) => ({ ...current, imageUrl }));
+        setPendingImageFile(null);
+      }
+
       return await handleSubmit({
         title: buildLocalizedMap(draft.title),
         description: buildLocalizedMap(draft.description),
         startsAt: toIsoString(draft.startsAt),
         endsAt: toIsoString(draft.endsAt),
-        imageUrl: draft.imageUrl,
+        imageUrl,
       });
-    } catch {
+    } catch (err) {
+      setUploadError(err?.message || 'Upload failed');
       return null;
+    } finally {
+      setUploading(false);
     }
-  }, [draft, handleSubmit]);
+  }, [draft, handleSubmit, pendingImageFile]);
 
   const canSubmit = useMemo(() => validatePromotion({ title: draft.title, startsAt: draft.startsAt, endsAt: draft.endsAt }), [draft, validatePromotion]);
+  const validationMessage = (() => {
+    const title = draft.title.ca.trim() || draft.title.es.trim() || draft.title.en.trim();
+    if (!title) return 'Omple el títol en català.';
+    if (!draft.startsAt || !draft.endsAt) return 'Omple la data d’inici i la data de fi.';
+    if (new Date(draft.endsAt).getTime() < new Date(draft.startsAt).getTime()) {
+      return 'La data de fi ha de ser posterior a la data d’inici.';
+    }
+    return '';
+  })();
 
   return {
     draft,
     loading: loadingDraft || saving,
     error: loadError || submitError,
     canSubmit,
+    validationMessage,
     isEdit: Boolean(id),
     submit,
     setLocalizedField,
     setField,
+    uploadImage,
+    uploading,
+    uploadError,
   };
 }
 
