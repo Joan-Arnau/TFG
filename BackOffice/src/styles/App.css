@@ -226,6 +226,42 @@
   border-radius: 8px;
 }
 
+.ui-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.ui-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border: 1px solid #0f172a;
+  border-radius: 8px;
+  background: #0f172a;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 0.6rem 0.9rem;
+  font: inherit;
+  text-decoration: none;
+}
+
+.ui-button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.ui-button--secondary {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.ui-button--ghost {
+  background: transparent;
+  color: #0f172a;
+}
+
 .merchant-dashboard {
   display: grid;
   gap: 1rem;
@@ -308,10 +344,23 @@
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
+  padding: 1rem;
 }
 
 .merchant-page-header h3 {
   margin: 0;
+}
+
+.merchant-page-subtitle {
+  margin: 0.35rem 0 0;
+  color: #475569;
+}
+
+.merchant-page-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
 .merchant-status {
@@ -325,6 +374,20 @@
 .merchant-form {
   display: grid;
   gap: 1rem;
+}
+
+.merchant-readonly-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.merchant-summary-card {
+  padding: 1rem;
+}
+
+.merchant-summary-card h4 {
+  margin: 0 0 0.75rem;
 }
 
 .merchant-form label {
@@ -352,17 +415,6 @@
   justify-content: flex-end;
 }
 
-.merchant-form button,
-.merchant-page-header button,
-.merchant-list-actions button {
-  border: 1px solid #0f172a;
-  border-radius: 8px;
-  background: #0f172a;
-  color: #ffffff;
-  cursor: pointer;
-  padding: 0.6rem 0.9rem;
-}
-
 .merchant-list {
   list-style: none;
   margin: 0;
@@ -376,8 +428,6 @@
   justify-content: space-between;
   gap: 1rem;
   align-items: center;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
   padding: 1rem;
   background: #fff;
 }
@@ -391,6 +441,10 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
+}
+
+.merchant-list-actions .ui-button {
+  padding-inline: 0.75rem;
 }
 
 .merchant-list-actions a {
@@ -409,8 +463,6 @@
 }
 
 .merchant-image-card {
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
   overflow: hidden;
   background: #fff;
 }

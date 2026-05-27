@@ -16,6 +16,8 @@ export const MERCHANT_TEXT_KEYS = {
   HERO_DESC: 'merchant.heroDescription',
 };
 
+export const MERCHANT_LANGUAGES = ['ca', 'es', 'en'];
+
 // API endpoints (can be overridden via Vite env)
 export const MERCHANT_API_BASE = import.meta.env.VITE_MERCHANT_API_BASE || '/merchant';
 export const MERCHANT_API = {

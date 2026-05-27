@@ -1,39 +1,26 @@
 
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { MERCHANT_ROUTES, buildPromotionEditPath } from './constants';
 import { useMerchantPromotions } from './hooks/useMerchantPromotions';
+import { getLocalizedValue } from '../../utils/localization';
+import MerchantPromotionsListView from './components/MerchantPromotionsListView';
 
 const PromotionsListPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const { promotions, loading, remove } = useMerchantPromotions();
+  const { promotions, remove } = useMerchantPromotions();
 
   return (
-    <section className="merchant-page">
-      <div className="merchant-page-header">
-        <div>
-          <p className="merchant-eyebrow">{t('merchant.promotionsTitle', 'Promotions')}</p>
-          <h3>{t('merchant.promotionsSubtitle', 'Active promotions')}</h3>
-        </div>
-        <button onClick={() => navigate(MERCHANT_ROUTES.PROMOTION_NEW)}>{t('merchant.newPromotion', 'New promotion')}</button>
-      </div>
-
-      <ul className="merchant-list">
-        {promotions.map((promo) => (
-          <li className="merchant-list-item" key={promo.id}>
-            <div>
-              <strong>{promo.title}</strong>
-              <p>{promo.description}</p>
-            </div>
-            <div className="merchant-list-actions">
-              <Link to={buildPromotionEditPath(promo.id)}>{t('merchant.edit', 'Edit')}</Link>
-              <button onClick={() => remove(promo.id)}>Delete</button>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </section>
+    <MerchantPromotionsListView
+      t={t}
+      promotions={promotions}
+      onCreate={() => navigate(MERCHANT_ROUTES.PROMOTION_NEW)}
+      onEditPath={buildPromotionEditPath}
+      onDelete={remove}
+      getTitle={(promo) => getLocalizedValue(promo.title, i18n.language, t('merchant.newPromotion', 'New promotion'))}
+      getDescription={(promo) => getLocalizedValue(promo.description, i18n.language, '')}
+    />
   );
 };
 

@@ -19,7 +19,7 @@ export function useMerchantProfile() {
       try {
         const s = await merchantService.getMyShop();
         if (mounted) setShop(s);
-      } catch (e) {
+      } catch {
         // ignore
       }
     })();

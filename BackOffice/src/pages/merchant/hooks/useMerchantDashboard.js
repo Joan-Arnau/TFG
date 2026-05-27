@@ -3,18 +3,19 @@ import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { MERCHANT_BASE_PATH, MERCHANT_ROUTES, MERCHANT_TEXT_KEYS } from '../constants';
 import { useMerchantProfile } from './useMerchantProfile';
+import { getLocalizedValue } from '../../../utils/localization';
 
 export function useMerchantDashboard() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const location = useLocation();
 
   const { shop } = useMerchantProfile();
 
   const hero = useMemo(() => ({
     eyebrow: t(MERCHANT_TEXT_KEYS.EYEBROW, 'Merchant backoffice'),
-    title: shop ? (shop.name?.ca || shop.name || t(MERCHANT_TEXT_KEYS.HERO_TITLE, 'Manage your shop content')) : t(MERCHANT_TEXT_KEYS.HERO_TITLE, 'Manage your shop content'),
+    title: shop ? getLocalizedValue(shop.name, i18n.language, t(MERCHANT_TEXT_KEYS.HERO_TITLE, 'Manage your shop content')) : t(MERCHANT_TEXT_KEYS.HERO_TITLE, 'Manage your shop content'),
     description: t(MERCHANT_TEXT_KEYS.HERO_DESC, 'Update your profile, publish promotions and manage the image gallery from one place.'),
-  }), [t, shop]);
+  }), [i18n.language, shop, t]);
 
   const navItems = useMemo(() => ([
     { key: 'profile', label: t('merchant.profile', 'Profile'), to: MERCHANT_ROUTES.PROFILE },

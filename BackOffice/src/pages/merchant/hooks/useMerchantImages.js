@@ -14,14 +14,34 @@ export function useMerchantImages() {
       const i = await merchantService.getImages();
       setImages(i || []);
       setError(null);
-    } catch (e) {
-      setError(e);
+    } catch (error) {
+      setError(error);
     } finally {
       setLoading(false);
     }
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    let mounted = true;
+    const fetchImages = async () => {
+      if (!mounted) return;
+      setLoading(true);
+      try {
+        const i = await merchantService.getImages();
+        if (mounted) {
+          setImages(i || []);
+          setError(null);
+        }
+      } catch (error) {
+        if (mounted) setError(error);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    };
+
+    void fetchImages();
+    return () => { mounted = false; };
+  }, []);
 
   const upload = useCallback(async (file) => {
     const uploaded = await merchantService.uploadImage(file);

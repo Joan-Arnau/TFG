@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { merchantService } from '../../../api/services/merchantService';
 import useConfirm from '../../../hooks/useConfirm';
+import { getLocalizedValue } from '../../../utils/localization';
 
 export function useMerchantPromotions() {
   const [promotions, setPromotions] = useState([]);
@@ -14,14 +15,34 @@ export function useMerchantPromotions() {
       const p = await merchantService.getPromotions();
       setPromotions(p || []);
       setError(null);
-    } catch (e) {
-      setError(e);
+    } catch (error) {
+      setError(error);
     } finally {
       setLoading(false);
     }
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    let mounted = true;
+    const fetchPromotions = async () => {
+      if (!mounted) return;
+      setLoading(true);
+      try {
+        const p = await merchantService.getPromotions();
+        if (mounted) {
+          setPromotions(p || []);
+          setError(null);
+        }
+      } catch (error) {
+        if (mounted) setError(error);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    };
+
+    void fetchPromotions();
+    return () => { mounted = false; };
+  }, []);
 
   const getPromotion = useCallback(async (id) => {
     return merchantService.getPromotion(id);
@@ -49,9 +70,13 @@ export function useMerchantPromotions() {
 
   const validatePromotion = useCallback((data) => {
     if (!data) return false;
-    const title = data.title != null ? String(data.title).trim() : '';
-    // Future: validate dates when added (startDate/endDate)
-    return title.length > 0;
+    const title = typeof data.title === 'object'
+      ? getLocalizedValue(data.title, 'ca', '').trim() || getLocalizedValue(data.title, 'es', '').trim() || getLocalizedValue(data.title, 'en', '').trim()
+      : (data.title != null ? String(data.title).trim() : '');
+    const startsAt = data.startsAt != null ? String(data.startsAt).trim() : '';
+    const endsAt = data.endsAt != null ? String(data.endsAt).trim() : '';
+    if (!title || !startsAt || !endsAt) return false;
+    return new Date(endsAt).getTime() >= new Date(startsAt).getTime();
   }, []);
 
   return { promotions, loading, error, load, getPromotion, create, update, remove, validatePromotion };
