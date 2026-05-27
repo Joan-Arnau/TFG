@@ -20,6 +20,8 @@ import com.promorural.api.core.domain.repository.MunicipalityConfigRepository;
 import com.promorural.api.core.domain.repository.PointOfInterestRepository;
 import com.promorural.api.core.domain.repository.ShopRepository;
 import com.promorural.api.core.domain.repository.UserRepository;
+import com.promorural.api.core.domain.repository.PromotionRepository;
+import com.promorural.api.core.domain.entity.Promotion;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,6 +52,7 @@ public class SeedDataConfig {
             ShopRepository shopRepository,
             PointOfInterestRepository poiRepository,
             AnnouncementRepository announcementRepository,
+            PromotionRepository promotionRepository,
             EventRepository eventRepository,
             ContactRepository contactRepository,
             AppProperties appProperties,
@@ -314,6 +317,24 @@ public class SeedDataConfig {
             }
 
             log.info("Database seeding process completed successfully.");
+
+            // 9. Promotions (seed a sample promotion for merchant)
+            try {
+                if (promotionRepository.count() == 0) {
+                    shopRepository.findByOwnerUsername(merchantUsername).ifPresent(shop -> {
+                        Promotion promo = new Promotion();
+                        promo.setShop(shop);
+                        promo.setTitle(Map.of("ca", "Promocio inicial", "es", "Promoción inicial", "en", "Initial promotion"));
+                        promo.setDescription(Map.of("ca", "Descompte especial", "es", "Descuento especial", "en", "Special discount"));
+                        promo.setImageUrl("https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=800");
+                        promo.setStartsAt(OffsetDateTime.now());
+                        promo.setEndsAt(OffsetDateTime.now().plusDays(7));
+                        promotionRepository.save(promo);
+                    });
+                }
+            } catch (Exception e) {
+                log.warn("Could not seed promotions: {}", e.getMessage());
+            }
         };
     }
 

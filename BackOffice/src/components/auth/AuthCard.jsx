@@ -1,8 +1,6 @@
-import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 const AuthCard = ({ title, children, success, successMessage, error, links = [] }) => {
-  const { t } = useTranslation();
 
   return (
     <div className="auth-page">

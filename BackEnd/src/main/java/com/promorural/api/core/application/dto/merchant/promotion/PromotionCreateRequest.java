@@ -8,7 +8,7 @@ import java.time.OffsetDateTime;
 import java.util.Map;
 
 public record PromotionCreateRequest(
-    @NotEmpty(message = "Title is required", groups = ValidationGroups.Create.class) Map<String, String> title,
+    @NotEmpty(message = "Title is required", groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}) Map<String, String> title,
     Map<String, String> description,
     OffsetDateTime startsAt,
     OffsetDateTime endsAt,

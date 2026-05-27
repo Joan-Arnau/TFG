@@ -64,6 +64,13 @@ public class ProductImageUseCase {
         productImageRepository.delete(image);
     }
 
+    public java.util.List<ProductImageResponse> getMyImages() {
+        Shop shop = getCurrentUserShop();
+        return productImageRepository.findByShopId(shop.getId()).stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
     private Shop getCurrentUserShop() {
         User currentUser = getCurrentUser();
         return shopRepository.findByOwnerUsername(currentUser.getUsername())

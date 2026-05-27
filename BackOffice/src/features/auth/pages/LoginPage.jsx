@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { MERCHANT_ROUTES } from '../../../pages/merchant/constants';
 import { useAuth } from '../../../context/AuthContext';
 import { useAsyncSubmit } from '../../../hooks/useAsyncSubmit';
 import AuthCard from '../../../components/auth/AuthCard';
@@ -24,7 +25,7 @@ const LoginPage = () => {
       }
     },
     (user) => {
-      const from = location.state?.from?.pathname || (user.role === 'ROLE_ADMIN' ? '/admin' : '/merchant');
+      const from = location.state?.from?.pathname || (user.role === 'ROLE_ADMIN' ? '/admin' : MERCHANT_ROUTES.BASE);
       navigate(from, { replace: true });
     }
   );

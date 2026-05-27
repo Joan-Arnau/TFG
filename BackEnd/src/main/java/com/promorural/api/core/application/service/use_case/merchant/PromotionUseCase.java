@@ -63,6 +63,38 @@ public class PromotionUseCase {
         }
     }
 
+    public PromotionMerchantResponse getById(Long promotionId) {
+        if (promotionId == null) {
+            throw new BadRequestException("Promotion ID cannot be null");
+        }
+        Promotion promotion = promotionRepository.findById(promotionId)
+                .orElseThrow(() -> new ResourceNotFoundException("Promotion not found with ID: " + promotionId));
+
+        Shop shop = getCurrentUserShop();
+        if (!promotion.getShop().getId().equals(shop.getId())) {
+            throw new AccessDeniedException("Promotion does not belong to this merchant.");
+        }
+
+        return mapToResponse(promotion);
+    }
+
+    public PromotionMerchantResponse update(Long promotionId, PromotionCreateRequest request) {
+        if (promotionId == null) {
+            throw new BadRequestException("Promotion ID cannot be null");
+        }
+        Promotion promotion = promotionRepository.findById(promotionId)
+                .orElseThrow(() -> new ResourceNotFoundException("Promotion not found with ID: " + promotionId));
+
+        Shop shop = getCurrentUserShop();
+        if (!promotion.getShop().getId().equals(shop.getId())) {
+            throw new AccessDeniedException("Promotion does not belong to this merchant.");
+        }
+
+        request.applyToEntity(promotion, shop);
+        Promotion saved = promotionRepository.save(promotion);
+        return mapToResponse(saved);
+    }
+
     private Shop getCurrentUserShop() {
         User currentUser = getCurrentUser();
         return shopRepository.findByOwnerUsername(currentUser.getUsername())

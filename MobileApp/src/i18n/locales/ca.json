@@ -78,14 +78,14 @@
     "no_agenda": "No hi ha actes a l'agenda properament.",
     "no_festivals": "No hi ha actes de Festa Major programats."
   },
+  "distance": {
+    "meters": "{{value}} m",
+    "kilometers": "{{value}} km"
+  },
   "language": {
     "label": "Idioma",
     "ca": "Català",
     "es": "Espanyol",
     "en": "Anglès"
-  },
-  "distance": {
-    "meters": "{{value}} m",
-    "kilometers": "{{value}} km"
   }
 }

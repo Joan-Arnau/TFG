@@ -74,6 +74,10 @@
     "no_agenda": "No upcoming events in the agenda.",
     "no_festivals": "No Town Festival events scheduled."
   },
+  "distance": {
+    "meters": "{{value}} m",
+    "kilometers": "{{value}} km"
+  },
   "language": {
     "label": "Language",
     "ca": "Catalan",

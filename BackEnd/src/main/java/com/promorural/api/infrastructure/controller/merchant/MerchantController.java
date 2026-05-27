@@ -10,6 +10,8 @@ import com.promorural.api.core.application.service.use_case.merchant.PromotionUs
 import com.promorural.api.core.application.service.use_case.merchant.ShopProfileUseCase;
 import com.promorural.api.core.application.service.MerchantService;
 import com.promorural.api.core.application.dto.merchant.shop.UploadFileResponse;
+import com.promorural.api.core.application.service.PublicService;
+import com.promorural.api.core.domain.entity.CategoryType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,15 +31,18 @@ public class MerchantController {
     private final PromotionUseCase promotionUseCase;
     private final ProductImageUseCase productImageUseCase;
     private final MerchantService merchantService;
+    private final PublicService publicService;
 
     public MerchantController(ShopProfileUseCase shopProfileUseCase,
                                PromotionUseCase promotionUseCase,
                                ProductImageUseCase productImageUseCase,
-                               MerchantService merchantService) {
+                               MerchantService merchantService,
+                               PublicService publicService) {
         this.shopProfileUseCase = shopProfileUseCase;
         this.promotionUseCase = promotionUseCase;
         this.productImageUseCase = productImageUseCase;
         this.merchantService = merchantService;
+        this.publicService = publicService;
     }
 
     @GetMapping("/my-shop")
@@ -75,10 +80,32 @@ public class MerchantController {
         return ResponseEntity.status(HttpStatus.CREATED).body(imageResponse);
     }
 
+    @GetMapping("/my-shop/images")
+    public ResponseEntity<java.util.List<ProductImageResponse>> getMyShopImages() {
+        return ResponseEntity.ok(productImageUseCase.getMyImages());
+    }
+
     @PostMapping("/promotions/images")
     public ResponseEntity<UploadFileResponse> uploadPromotionImage(@RequestParam("file") MultipartFile file) {
         UploadFileResponse resp = merchantService.uploadPromotionImage(file);
         return ResponseEntity.status(HttpStatus.CREATED).body(resp);
+    }
+
+    @GetMapping("/promotions/{id}")
+    public ResponseEntity<PromotionMerchantResponse> getPromotion(@PathVariable("id") Long promotionId) {
+        return ResponseEntity.ok(promotionUseCase.getById(promotionId));
+    }
+
+    @PutMapping("/promotions/{id}")
+    public ResponseEntity<PromotionMerchantResponse> updatePromotion(@PathVariable("id") Long promotionId,
+                                                                     @Validated(ValidationGroups.Update.class) @RequestBody PromotionCreateRequest promotionUpdateDto) {
+        return ResponseEntity.ok(promotionUseCase.update(promotionId, promotionUpdateDto));
+    }
+
+    @GetMapping("/categories")
+    public ResponseEntity<java.util.List<com.promorural.api.core.application.dto.guest.CategoryResponse>> getCategories(
+            @RequestParam(required = false, defaultValue = "SHOP") CategoryType type) {
+        return ResponseEntity.ok(publicService.getCategories(type));
     }
 
     @PostMapping("/my-shop/header-image")

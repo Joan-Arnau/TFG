@@ -8,6 +8,7 @@ import ResetPasswordPage from './features/auth/pages/ResetPasswordPage';
 import UnauthorizedPage from './features/auth/pages/UnauthorizedPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import MerchantDashboard from './pages/merchant/MerchantDashboard';
+import { MERCHANT_ROUTES } from './pages/merchant/constants';
 import LanguageSwitcher from './components/common/LanguageSwitcher';
 import './styles/App.css';
 
@@ -35,7 +36,7 @@ function App() {
           />
           
           <Route 
-            path="/merchant/*" 
+            path={`${MERCHANT_ROUTES.BASE}/*`} 
             element={
               <ProtectedRoute allowedRoles={['ROLE_MERCHANT']}>
                 <MerchantDashboard />
