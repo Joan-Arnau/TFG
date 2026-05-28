@@ -36,7 +36,8 @@ public final class ShopMapper {
                 shop.getHeaderImageUrl(),
                 CategoryMapper.toRef(shop.getCategory()),
                 shop.getLocation() != null ? shop.getLocation().getY() : null,
-                shop.getLocation() != null ? shop.getLocation().getX() : null
+            shop.getLocation() != null ? shop.getLocation().getX() : null,
+            shop.getStatus()
         );
     }
 }

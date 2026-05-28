@@ -20,6 +20,10 @@ import com.promorural.api.core.domain.repository.PromotionRepository;
 import com.promorural.api.core.domain.repository.ShopRepository;
 import com.promorural.api.core.domain.repository.UploadFileRepository;
 import com.promorural.api.core.domain.repository.UserRepository;
+import com.promorural.api.core.domain.repository.CategoryRepository;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -53,6 +57,12 @@ public class MerchantService {
     @Autowired
     private UploadFileRepository uploadFileRepository;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
+    private GeometryFactory geometryFactory;
+
     public ShopMerchantResponse getShopForMerchant() {
         User currentUser = getCurrentUser();
         Shop shop = shopRepository.findByOwnerUsername(currentUser.getUsername())
@@ -67,7 +77,25 @@ public class MerchantService {
         Shop shop = shopRepository.findByOwnerUsername(currentUser.getUsername())
                 .orElseThrow(() -> new ResourceNotFoundException("Merchant does not have an associated shop."));
 
-        request.updateEntity(shop);
+        Category category = null;
+        if (request.hasCategory()) {
+            category = categoryRepository.findById(request.categoryId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + request.categoryId()));
+        }
+
+        Point location = null;
+        if (request.hasLocation()) {
+            location = geometryFactory.createPoint(new Coordinate(request.longitude(), request.latitude()));
+        }
+
+        shop.updateProfile(
+                request.name(),
+                request.description(),
+                request.address(),
+                request.phoneNumber(),
+                category,
+                location
+        );
         
         Shop savedShop = Objects.requireNonNull(shopRepository.save(shop));
         return mapToShopMerchantResponse(savedShop);
@@ -211,7 +239,8 @@ public class MerchantService {
                 shop.getHeaderImageUrl(),
                 mapToCategoryRef(shop.getCategory()),
                 shop.getLocation() != null ? shop.getLocation().getY() : null,
-                shop.getLocation() != null ? shop.getLocation().getX() : null
+                shop.getLocation() != null ? shop.getLocation().getX() : null,
+                shop.getStatus()
         );
     }
 

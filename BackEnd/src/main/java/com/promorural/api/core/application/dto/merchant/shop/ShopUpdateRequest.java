@@ -1,22 +1,36 @@
 package com.promorural.api.core.application.dto.merchant.shop;
 
-import com.promorural.api.core.domain.entity.Shop;
 import java.util.Map;
-import java.util.Optional;
+import com.promorural.api.core.application.validation.ValidationGroups;
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 public record ShopUpdateRequest(
     Map<String, String> name,
     Map<String, String> description,
-    String address,
-    String phoneNumber
+    @Size(max = 255, groups = ValidationGroups.Update.class) String address,
+    @Size(max = 30, groups = ValidationGroups.Update.class) String phoneNumber,
+    @Positive(groups = ValidationGroups.Update.class) Long categoryId,
+    @DecimalMin(value = "-90.0", groups = ValidationGroups.Update.class)
+    @DecimalMax(value = "90.0", groups = ValidationGroups.Update.class)
+    Double latitude,
+    @DecimalMin(value = "-180.0", groups = ValidationGroups.Update.class)
+    @DecimalMax(value = "180.0", groups = ValidationGroups.Update.class)
+    Double longitude
 ) {
-    /**
-     * Applies non-null fields from this DTO to the given Shop entity.
-     */
-    public void updateEntity(Shop shop) {
-        Optional.ofNullable(name).ifPresent(shop::setName);
-        Optional.ofNullable(description).ifPresent(shop::setDescription);
-        Optional.ofNullable(address).ifPresent(shop::setAddress);
-        Optional.ofNullable(phoneNumber).ifPresent(shop::setPhoneNumber);
+    @AssertTrue(message = "Latitude and longitude must be provided together", groups = ValidationGroups.Update.class)
+    public boolean isLocationPairValid() {
+        return (latitude == null && longitude == null) || (latitude != null && longitude != null);
+    }
+
+    public boolean hasLocation() {
+        return latitude != null && longitude != null;
+    }
+
+    public boolean hasCategory() {
+        return categoryId != null;
     }
 }

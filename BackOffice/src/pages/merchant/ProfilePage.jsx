@@ -3,7 +3,7 @@ import useMerchantProfileEditor from './hooks/useMerchantProfileEditor';
 import MerchantProfileView from './components/MerchantProfileView';
 
 const ProfilePage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const {
     shop,
     hasShop,
@@ -12,6 +12,8 @@ const ProfilePage = () => {
     success,
     isEditing,
     draft,
+    categories,
+    categoriesLoading,
     startEditing,
     cancelEditing,
     setLocalizedField,
@@ -27,6 +29,9 @@ const ProfilePage = () => {
       t={t}
       shop={shop}
       draft={draft}
+      categories={categories}
+      categoriesLoading={categoriesLoading}
+      language={i18n.language}
       isEditing={isEditing}
       saving={loading}
       onEdit={startEditing}

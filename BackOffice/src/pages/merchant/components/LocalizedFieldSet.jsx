@@ -1,10 +1,10 @@
 import { MERCHANT_LANGUAGES } from '../constants';
 
-const LocalizedFieldSet = ({ legend, values, onChange, renderAs = 'input', rows = 4, requiredLanguage = null, t }) => {
+const LocalizedFieldSet = ({ legend, values, onChange, renderAs = 'input', rows = 4, requiredLanguage = null, t, className = '' }) => {
   const FieldComponent = renderAs;
 
   return (
-    <fieldset className="merchant-fieldset">
+    <fieldset className={`merchant-fieldset ${className}`.trim()}>
       <legend>{legend}</legend>
       {MERCHANT_LANGUAGES.map((lang) => (
         <label key={lang}>

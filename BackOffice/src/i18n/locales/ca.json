@@ -61,6 +61,18 @@
     "contactData": "Dades de contacte",
     "address": "Adreça",
     "phoneNumber": "Telèfon",
+    "categoryLabel": "Categoria",
+    "categoryPlaceholder": "Selecciona una categoria",
+    "locationLabel": "Ubicació",
+    "latitudeLabel": "Latitud",
+    "longitudeLabel": "Longitud",
+    "revalidationWarning": "Canviar el nom, la categoria o la ubicació farà que la botiga passi a revisió municipal i s'oculti temporalment del catàleg públic.",
+    "coordsBothRequired": "Latitud i longitud s'han d'informar juntes.",
+    "confirmCriticalChanges": "Aquests canvis enviaran la botiga a revisió municipal. Vols continuar?",
+    "status": {
+      "approved": "Aprovada",
+      "pending": "En revisió"
+    },
     "saveChanges": "Desa els canvis",
     "updated": "Actualitzat",
     "promotions": "Promocions",

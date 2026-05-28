@@ -10,6 +10,10 @@ export const merchantService = {
     const r = await httpClient.put(MERCHANT_API.MY_SHOP, data);
     return r.data;
   },
+  getCategories: async (type = 'SHOP') => {
+    const r = await httpClient.get(MERCHANT_API.CATEGORIES, { params: { type } });
+    return r.data;
+  },
 
   getPromotions: async () => {
     const r = await httpClient.get(MERCHANT_API.PROMOTIONS);

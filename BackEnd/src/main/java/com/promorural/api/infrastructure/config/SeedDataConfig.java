@@ -170,18 +170,15 @@ public class SeedDataConfig {
 
                 createShop(shopRepository, merchant1, foodCat, "Cal Fruiter", 
                     "Productes de proximitat i km0.", "Carrer Major, 12", "977123456", 
-                    geometryFactory.createPoint(new Coordinate(1.1040, 41.1570)),
-                    "/seed-images/shop-cal-fruiter.svg");
+                    geometryFactory.createPoint(new Coordinate(1.1040, 41.1570)));
 
                 createShop(shopRepository, merchant2, hostCat, "Restaurant El Racó", 
                     "Cuina tradicional catalana.", "Plaça de la Vila, 5", "977654321", 
-                    geometryFactory.createPoint(new Coordinate(1.1050, 41.1555)),
-                    "/seed-images/shop-restaurant-el-raco.svg");
+                    geometryFactory.createPoint(new Coordinate(1.1050, 41.1555)));
 
                 createShop(shopRepository, merchant3, servCat, "Farmàcia de Baix", 
                     "Atenció farmacèutica i parafarmàcia.", "Carrer de Baix, 3", "977889900", 
-                    geometryFactory.createPoint(new Coordinate(1.1030, 41.1550)),
-                    "/seed-images/shop-farmacia-de-baix.svg");
+                    geometryFactory.createPoint(new Coordinate(1.1030, 41.1550)));
                 log.info("Shops and merchants seeded.");
             }
 
@@ -348,7 +345,7 @@ public class SeedDataConfig {
         repo.save(cat);
     }
 
-    private void createShop(ShopRepository repo, User owner, Category cat, String name, String desc, String addr, String phone, Point loc, String imageUrl) {
+    private void createShop(ShopRepository repo, User owner, Category cat, String name, String desc, String addr, String phone, Point loc) {
         Shop shop = new Shop();
         shop.setName(Map.of("ca", name, "es", name, "en", name));
         shop.setDescription(Map.of("ca", desc, "es", desc, "en", desc));
@@ -358,11 +355,11 @@ public class SeedDataConfig {
         shop.setOwner(owner);
         shop.setCategory(cat);
         shop.setLocation(loc);
-        shop.setHeaderImageUrl(imageUrl);
+        shop.setHeaderImageUrl("/seed-images/default.svg");
         
         List<ProductImage> gallery = new ArrayList<>();
         String[] fruitImages = {
-            imageUrl,
+            "/seed-images/default.svg",
             "/seed-images/default.svg",
             "/seed-images/default.svg"
         };

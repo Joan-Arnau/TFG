@@ -394,13 +394,68 @@
 }
 
 .merchant-form input,
-.merchant-form textarea {
+.merchant-form textarea,
+.merchant-form select {
   width: 100%;
   border: 1px solid #cbd5e1;
   border-radius: 10px;
   padding: 0.75rem 0.85rem;
   font: inherit;
   background: #fff;
+}
+
+.merchant-fieldset {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0.85rem 1rem 1rem;
+}
+
+.merchant-fieldset legend {
+  padding: 0 0.4rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.merchant-fieldset--critical {
+  border-color: #fdba74;
+  background: #fff7ed;
+}
+
+.merchant-field--critical span {
+  color: #9a3412;
+}
+
+.merchant-field--critical input,
+.merchant-field--critical textarea,
+.merchant-field--critical select {
+  border-color: #fdba74;
+  background: #fff7ed;
+}
+
+.merchant-warning {
+  border: 1px solid #fdba74;
+  background: #fff7ed;
+  color: #9a3412;
+  border-radius: 12px;
+  padding: 0.75rem 0.9rem;
+}
+
+.merchant-coordinates {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+}
+
+.merchant-status--approved {
+  background: #ecfdf3;
+  border-color: #86efac;
+  color: #15803d;
+}
+
+.merchant-status--pending {
+  background: #fff7ed;
+  border-color: #fdba74;
+  color: #9a3412;
 }
 
 .merchant-form-actions {

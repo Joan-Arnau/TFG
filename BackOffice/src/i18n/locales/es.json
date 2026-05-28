@@ -61,6 +61,18 @@
     "contactData": "Datos de contacto",
     "address": "Dirección",
     "phoneNumber": "Teléfono",
+    "categoryLabel": "Categoría",
+    "categoryPlaceholder": "Selecciona una categoría",
+    "locationLabel": "Ubicación",
+    "latitudeLabel": "Latitud",
+    "longitudeLabel": "Longitud",
+    "revalidationWarning": "Cambiar el nombre, la categoría o la ubicación hará que la tienda pase a revisión municipal y se oculte temporalmente del catálogo público.",
+    "coordsBothRequired": "Latitud y longitud deben informarse juntas.",
+    "confirmCriticalChanges": "Estos cambios enviarán la tienda a revisión municipal. ¿Quieres continuar?",
+    "status": {
+      "approved": "Aprobada",
+      "pending": "En revisión"
+    },
     "saveChanges": "Guardar cambios",
     "updated": "Actualizado",
     "promotions": "Promociones",

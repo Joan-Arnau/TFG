@@ -1,6 +1,7 @@
 package com.promorural.api.core.application.dto.merchant.shop;
 
 import com.promorural.api.core.application.dto.admin.CategoryRef;
+import com.promorural.api.core.domain.entity.ShopStatus;
 import java.util.Map;
 
 public record ShopMerchantResponse(
@@ -12,5 +13,6 @@ public record ShopMerchantResponse(
         String headerImageUrl,
         CategoryRef category,
         Double latitude,
-        Double longitude
+        Double longitude,
+        ShopStatus status
 ) {}

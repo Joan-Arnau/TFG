@@ -5,7 +5,7 @@ import { useAsyncSubmit } from '../../../hooks/useAsyncSubmit';
 export function useMerchantProfile() {
   const [shop, setShop] = useState(null);
 
-  const { loading, error, success, handleSubmit } = useAsyncSubmit(
+  const { loading, error, success, handleSubmit, setError } = useAsyncSubmit(
     async (data) => {
       const updated = await merchantService.updateMyShop(data);
       setShop(updated);
@@ -28,7 +28,7 @@ export function useMerchantProfile() {
 
   const save = (data) => handleSubmit(data);
 
-  return { shop, loading, error, success, save };
+  return { shop, loading, error, success, save, setError };
 }
 
 export default useMerchantProfile;

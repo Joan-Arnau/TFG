@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import org.locationtech.jts.geom.Point;
@@ -144,5 +145,58 @@ public class Shop {
 
     public OffsetDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public void updateProfile(
+            Map<String, String> name,
+            Map<String, String> description,
+            String address,
+            String phoneNumber,
+            Category category,
+            Point location
+    ) {
+        boolean criticalChange = false;
+
+        if (name != null && !Objects.equals(name, this.name)) {
+            this.name = name;
+            criticalChange = true;
+        }
+
+        if (description != null && !Objects.equals(description, this.description)) {
+            this.description = description;
+        }
+
+        if (address != null && !Objects.equals(address, this.address)) {
+            this.address = address;
+        }
+
+        if (phoneNumber != null && !Objects.equals(phoneNumber, this.phoneNumber)) {
+            this.phoneNumber = phoneNumber;
+        }
+
+        if (category != null && !sameCategory(category)) {
+            this.category = category;
+            criticalChange = true;
+        }
+
+        if (location != null && !sameLocation(location)) {
+            this.location = location;
+            criticalChange = true;
+        }
+
+        if (criticalChange && this.status == ShopStatus.APPROVED) {
+            this.status = ShopStatus.PENDING;
+        }
+    }
+
+    private boolean sameCategory(Category category) {
+        if (this.category == null) return false;
+        return Objects.equals(this.category.getId(), category.getId());
+    }
+
+    private boolean sameLocation(Point location) {
+        if (this.location == null) return false;
+        return Objects.equals(this.location.getX(), location.getX())
+                && Objects.equals(this.location.getY(), location.getY());
     }
 }

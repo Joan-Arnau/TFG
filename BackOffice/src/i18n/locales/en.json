@@ -61,6 +61,18 @@
     "contactData": "Contact data",
     "address": "Address",
     "phoneNumber": "Phone number",
+    "categoryLabel": "Category",
+    "categoryPlaceholder": "Select a category",
+    "locationLabel": "Location",
+    "latitudeLabel": "Latitude",
+    "longitudeLabel": "Longitude",
+    "revalidationWarning": "Changing the shop name, category or location will send the shop to municipal review and temporarily hide it from the public catalogue.",
+    "coordsBothRequired": "Latitude and longitude must be provided together.",
+    "confirmCriticalChanges": "These changes will send the shop to municipal review. Continue?",
+    "status": {
+      "approved": "Approved",
+      "pending": "Pending review"
+    },
     "saveChanges": "Save changes",
     "updated": "Updated",
     "promotions": "Promotions",
