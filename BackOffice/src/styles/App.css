@@ -269,21 +269,25 @@
 
 .merchant-hero {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
+  align-items: flex-start;
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
   color: #f8fafc;
 }
 
-.merchant-hero h2,
-.merchant-hero p {
+.merchant-hero-content {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.merchant-hero-content h2,
+.merchant-hero-content p {
   margin: 0;
 }
 
-.merchant-hero p {
+.merchant-hero-content p {
   color: #cbd5e1;
-  max-width: 60ch;
 }
 
 .merchant-eyebrow {
@@ -291,17 +295,6 @@
   letter-spacing: 0.12em;
   font-size: 0.75rem;
   color: #94a3b8;
-  margin-bottom: 0.35rem;
-}
-
-.merchant-hero-badge {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 999px;
-  padding: 0.6rem 0.9rem;
-  color: #e2e8f0;
-  font-size: 0.9rem;
-  white-space: nowrap;
 }
 
 .merchant-shell {

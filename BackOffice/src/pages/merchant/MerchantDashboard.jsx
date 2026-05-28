@@ -7,17 +7,16 @@ import useMerchantDashboard from './hooks/useMerchantDashboard';
 import { MERCHANT_ROUTES } from './constants';
 
 const MerchantDashboard = () => {
-  const { hero, navItems, badge } = useMerchantDashboard();
+  const { hero, navItems } = useMerchantDashboard();
 
   return (
     <div className="merchant-dashboard">
       <header className="merchant-hero panel">
-        <div>
+        <div className="merchant-hero-content">
           <p className="merchant-eyebrow">{hero.eyebrow}</p>
           <h2>{hero.title}</h2>
           <p>{hero.description}</p>
         </div>
-        <div className="merchant-hero-badge">{badge}</div>
       </header>
 
       <div className="merchant-shell">

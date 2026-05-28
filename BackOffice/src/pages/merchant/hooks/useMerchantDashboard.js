@@ -1,13 +1,11 @@
 import { useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { MERCHANT_BASE_PATH, MERCHANT_ROUTES, MERCHANT_TEXT_KEYS } from '../constants';
+import { MERCHANT_ROUTES, MERCHANT_TEXT_KEYS } from '../constants';
 import { useMerchantProfile } from './useMerchantProfile';
 import { getLocalizedValue } from '../../../utils/localization';
 
 export function useMerchantDashboard() {
   const { t, i18n } = useTranslation();
-  const location = useLocation();
 
   const { shop } = useMerchantProfile();
 
@@ -23,9 +21,7 @@ export function useMerchantDashboard() {
     { key: 'images', label: t('merchant.images', 'Images'), to: MERCHANT_ROUTES.IMAGES },
   ]), [t]);
 
-  const badge = location.pathname.replace(MERCHANT_BASE_PATH, '') || '/profile';
-
-  return { hero, navItems, badge };
+  return { hero, navItems };
 }
 
 export default useMerchantDashboard;
