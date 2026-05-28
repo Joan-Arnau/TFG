@@ -25,10 +25,13 @@ public class Shop {
     @Column(columnDefinition = "jsonb", nullable = false)
     private Map<String, String> description;
 
+    @Column(length = 255)
     private String address;
 
+    @Column(length = 20)
     private String phoneNumber;
 
+    @Column(length = 500)
     private String headerImageUrl;
 
     @Enumerated(EnumType.STRING)

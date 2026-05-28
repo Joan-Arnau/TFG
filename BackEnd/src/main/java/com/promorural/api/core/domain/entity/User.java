@@ -15,10 +15,10 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 100)
     private String username;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -28,7 +28,7 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private boolean enabled = true;
 
-    @Column
+    @Column(nullable = false, unique = true, length = 100)
     private String email;
 
     public Long getId() {
@@ -75,6 +75,9 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (role == null) {
+            throw new IllegalStateException("User role cannot be null");
+        }
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
 

@@ -2,6 +2,7 @@ package com.promorural.api.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.promorural.api.core.application.dto.merchant.promotion.PromotionCreateRequest;
+import com.promorural.api.core.application.dto.merchant.shop.ShopUpdateRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.OffsetDateTime;
+import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -80,5 +82,39 @@ public class MerchantControllerIntegrationTest {
         mockMvc.perform(get("/api/merchant/categories?type=SHOP"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
+    }
+
+    @Test
+    @WithMockUser(username = "merchant", authorities = {"ROLE_MERCHANT"})
+    void putMyShop_updateValidation_returnsBadRequestWhenPhoneIsInvalid() throws Exception {
+        ShopUpdateRequest req = new ShopUpdateRequest(validI18n("Shop"), null, null, "555-ABC", null, null, null);
+
+        mockMvc.perform(put("/api/merchant/my-shop")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(req)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser(username = "merchant", authorities = {"ROLE_MERCHANT"})
+    void putMyShop_updateValidation_returnsBadRequestWhenI18nIsTooLong() throws Exception {
+        ShopUpdateRequest req = new ShopUpdateRequest(
+                Map.of("ca", "x".repeat(101), "es", "Botiga", "en", "Shop"),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        mockMvc.perform(put("/api/merchant/my-shop")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(req)))
+                .andExpect(status().isBadRequest());
+    }
+
+    private Map<String, String> validI18n(String value) {
+        return Map.of("ca", value, "es", value, "en", value);
     }
 }

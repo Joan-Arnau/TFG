@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class FileStorageServiceTest {
 
@@ -59,11 +60,8 @@ class FileStorageServiceTest {
                 "PDFDATA".getBytes()
         );
 
-        try {
-            service.storeFile(file, "gallery");
-        } catch (Exception e) {
-            assertThat(e).hasMessageContaining("Unsupported file type");
-        }
+        assertThatThrownBy(() -> service.storeFile(file, "gallery"))
+                .hasMessageContaining("Unsupported file type");
     }
 
     @Test
@@ -76,10 +74,20 @@ class FileStorageServiceTest {
                 big
         );
 
-        try {
-            service.storeFile(file, "gallery");
-        } catch (Exception e) {
-            assertThat(e).hasMessageContaining("File is too large");
-        }
+        assertThatThrownBy(() -> service.storeFile(file, "gallery"))
+                .hasMessageContaining("File is too large");
+    }
+
+    @Test
+    void storeFile_rejectsEmptyFile() {
+        MockMultipartFile file = new MockMultipartFile(
+                "file",
+                "empty.png",
+                "image/png",
+                new byte[0]
+        );
+
+        assertThatThrownBy(() -> service.storeFile(file, "gallery"))
+                .hasMessageContaining("Uploaded file is empty");
     }
 }

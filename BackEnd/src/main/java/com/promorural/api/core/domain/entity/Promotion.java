@@ -26,6 +26,7 @@ public class Promotion {
     @Column(columnDefinition = "jsonb", nullable = false)
     private Map<String, String> description;
 
+    @Column(length = 500)
     private String imageUrl;
 
     @Column(nullable = false)

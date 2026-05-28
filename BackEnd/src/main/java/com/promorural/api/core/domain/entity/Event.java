@@ -40,7 +40,7 @@ public class Event {
     @Column(nullable = false)
     private OffsetDateTime endsAt;
 
-    @Column(name = "image_url")
+    @Column(name = "image_url", length = 500)
     private String imageUrl;
 
     @Column(columnDefinition = "geometry(Point,4326)")

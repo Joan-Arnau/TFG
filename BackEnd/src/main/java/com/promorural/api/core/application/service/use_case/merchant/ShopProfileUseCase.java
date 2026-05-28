@@ -4,8 +4,10 @@ import com.promorural.api.core.application.dto.merchant.shop.ShopMerchantRespons
 import com.promorural.api.core.application.dto.merchant.shop.ShopUpdateRequest;
 import com.promorural.api.core.application.mapper.ShopMapper;
 import com.promorural.api.core.domain.entity.Category;
+import com.promorural.api.core.domain.entity.CategoryType;
 import com.promorural.api.core.domain.entity.Shop;
 import com.promorural.api.core.domain.entity.User;
+import com.promorural.api.core.domain.exception.BadRequestException;
 import com.promorural.api.core.domain.exception.ResourceNotFoundException;
 import com.promorural.api.core.domain.repository.CategoryRepository;
 import com.promorural.api.core.domain.repository.ShopRepository;
@@ -56,7 +58,10 @@ public class ShopProfileUseCase {
         Category category = null;
         if (request.hasCategory()) {
             category = categoryRepository.findById(request.categoryId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + request.categoryId()));
+                    .orElseThrow(() -> new BadRequestException("Category not found with ID: " + request.categoryId()));
+            if (category.getType() != CategoryType.SHOP) {
+                throw new BadRequestException("Category must be of type SHOP");
+            }
         }
 
         Point location = null;
