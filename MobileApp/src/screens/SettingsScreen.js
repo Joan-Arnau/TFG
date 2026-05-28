@@ -45,7 +45,7 @@ const SettingsScreen = () => {
             >
               <Text style={[
                 styles.languageLabel,
-                i18n.language === lang.code && styles.languageItemActive
+                i18n.language === lang.code && styles.languageLabelActive
               ]}>
                 {lang.label}
               </Text>

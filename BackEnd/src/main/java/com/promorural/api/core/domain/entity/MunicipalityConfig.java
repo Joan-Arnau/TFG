@@ -15,6 +15,9 @@ public class MunicipalityConfig {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, length = 100)
+    private String municipalityName;
+
     @Column(nullable = false)
     private String defaultLanguage;
 
@@ -31,6 +34,14 @@ public class MunicipalityConfig {
 
     public Long getId() {
         return id;
+    }
+
+    public String getMunicipalityName() {
+        return municipalityName;
+    }
+
+    public void setMunicipalityName(String municipalityName) {
+        this.municipalityName = municipalityName;
     }
 
     public String getDefaultLanguage() {

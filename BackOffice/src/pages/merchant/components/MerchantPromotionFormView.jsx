@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import Button from '../../../components/ui/Button';
 import MerchantPageHeader from './MerchantPageHeader';
 import LocalizedFieldSet from './LocalizedFieldSet';
@@ -8,16 +8,8 @@ const resolvePreviewSrc = (url) => resolveBackendStaticUrl(url);
 
 const MerchantPromotionFormView = ({ t, title, draft, onLocalizedChange, onFieldChange, onSubmit, canSubmit, saving, error, onFileUpload, uploading, uploadError, validationMessage }) => {
   const fileInputRef = useRef(null);
-  const [previewUrl, setPreviewUrl] = useState(resolvePreviewSrc(draft.imageUrl || ''));
+  const [localPreviewUrl, setLocalPreviewUrl] = useState(resolvePreviewSrc(draft.imageUrl || ''));
   const [lastObjectUrl, setLastObjectUrl] = useState(null);
-
-  useEffect(() => {
-    // Keep preview in sync when draft.imageUrl changes (e.g., loaded existing promotion)
-    if (draft?.imageUrl && draft.imageUrl !== previewUrl) {
-      setPreviewUrl(resolvePreviewSrc(draft.imageUrl));
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [draft?.imageUrl]);
 
   useEffect(() => {
     return () => {
@@ -40,7 +32,7 @@ const MerchantPromotionFormView = ({ t, title, draft, onLocalizedChange, onField
       }
       const obj = URL.createObjectURL(f);
       setLastObjectUrl(obj);
-      setPreviewUrl(obj);
+      setLocalPreviewUrl(obj);
     } catch {
       // ignore preview errors
     }
@@ -49,7 +41,7 @@ const MerchantPromotionFormView = ({ t, title, draft, onLocalizedChange, onField
       const url = await onFileUpload(f);
       if (url) {
         onFieldChange('imageUrl', url);
-        setPreviewUrl(url);
+        setLocalPreviewUrl(url);
       }
     }
 
@@ -104,9 +96,13 @@ const MerchantPromotionFormView = ({ t, title, draft, onLocalizedChange, onField
             {uploadError ? <div className="error" style={{ marginTop: 6 }}>{uploadError}</div> : null}
           </div>
 
-          {previewUrl ? (
+          {(localPreviewUrl || draft?.imageUrl) ? (
             <div style={{ marginTop: 10 }}>
-              <img src={previewUrl} alt={t('merchant.imagePreviewAlt', 'Image preview')} style={{ maxWidth: 320, maxHeight: 180, objectFit: 'cover', border: '1px solid #ddd' }} />
+              <img
+                src={localPreviewUrl || resolvePreviewSrc(draft.imageUrl)}
+                alt={t('merchant.imagePreviewAlt', 'Image preview')}
+                style={{ maxWidth: 320, maxHeight: 180, objectFit: 'cover', border: '1px solid #ddd' }}
+              />
             </div>
           ) : null}
         </div>

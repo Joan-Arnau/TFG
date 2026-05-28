@@ -62,10 +62,16 @@ const PointOfInterestDetailScreen = ({ navigation, route }) => {
 
   return (
     <ScrollView style={commonStyles.container}>
-      <Image 
-        source={{ uri: poi.imageUrl || 'https://via.placeholder.com/800x400' }} 
-        style={styles.heroImage} 
-      />
+      {poi.imageUrl ? (
+        <Image
+          source={{ uri: poi.imageUrl }}
+          style={styles.heroImage}
+        />
+      ) : (
+        <View style={[styles.heroImage, styles.heroImagePlaceholder]}>
+          <Ionicons name="image-outline" size={48} color="#94A3B8" />
+        </View>
+      )}
       
       <View style={styles.infoContainer}>
         <View style={{ marginBottom: 15 }}>

@@ -1,6 +1,6 @@
 {
   "app": {
-    "title": "Promo Rural App",
+    "title": "PromoRural App",
     "welcome": "Welcome to",
     "apiBaseUrl": "API base URL"
   },
@@ -52,7 +52,7 @@
   },
   "about": {
     "title": "About the app",
-    "platform": "Promo Rural Platform",
+    "platform": "PromoRural Platform",
     "description": "This application has been developed as a Bachelor's Thesis at the Rovira i Virgili University by Joan Arnau Sagarra Canalda.\n\nTechnological proposal for boosting local commerce in rural municipalities through white-label architecture.",
     "copyright": "© 2026 - All rights reserved."
   },

@@ -1,7 +1,7 @@
 .app {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 2rem 1rem 3rem;
+  width: 100%;
+  min-height: 100vh;
+  padding: 1.5rem clamp(1rem, 3vw, 3rem) 3rem;
 }
 
 .app-header {
@@ -10,11 +10,43 @@
   align-items: center;
   gap: 1rem;
   margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.app-brand-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid var(--brand-muted, #e2e8f0);
+  background: #ffffff;
+}
+
+.app-brand-text {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.app-brand-text span {
+  color: #64748b;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .app-header h1 {
   margin: 0;
   font-size: 1.5rem;
+  color: var(--brand-primary, #0f172a);
+  overflow-wrap: anywhere;
 }
 
 .panel {
@@ -43,8 +75,8 @@
 }
 
 .panel-inline code {
-  background: #0f172a;
-  color: #f8fafc;
+  background: var(--brand-primary, #0f172a);
+  color: var(--brand-primary-contrast, #ffffff);
   border-radius: 6px;
   padding: 0.2rem 0.5rem;
 }
@@ -59,10 +91,11 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 1rem;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: linear-gradient(135deg, var(--brand-primary, #0f172a) 0%, var(--brand-secondary, #2563eb) 100%);
+  border: 1px solid var(--brand-primary, #0f172a);
   border-radius: 10px;
   padding: 1rem;
+  color: var(--brand-primary-contrast, #ffffff);
 }
 
 .dashboard-header h2,
@@ -72,15 +105,15 @@
 }
 
 .dashboard-header p {
-  color: #334155;
+  color: rgba(255, 255, 255, 0.82);
   margin-top: 0.35rem;
 }
 
 .dashboard-header button {
-  border: 1px solid #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.75);
   border-radius: 6px;
-  background: #0f172a;
-  color: #ffffff;
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--brand-primary-contrast, #ffffff);
   cursor: pointer;
   padding: 0.5rem 0.75rem;
 }
@@ -139,7 +172,7 @@
 }
 
 .language-switcher select {
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--brand-muted, #cbd5e1);
   border-radius: 6px;
   padding: 0.4rem 0.5rem;
   background: #fff;
@@ -178,7 +211,7 @@
 
 .auth-form input,
 .auth-form textarea {
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--brand-muted, #cbd5e1);
   border-radius: 8px;
   padding: 0.65rem 0.75rem;
   font: inherit;
@@ -189,10 +222,10 @@
 }
 
 .auth-form button {
-  border: 1px solid #0f172a;
+  border: 1px solid var(--brand-primary, #0f172a);
   border-radius: 8px;
-  background: #0f172a;
-  color: #ffffff;
+  background: var(--brand-primary, #0f172a);
+  color: var(--brand-primary-contrast, #ffffff);
   cursor: pointer;
   padding: 0.6rem 0.75rem;
 }
@@ -210,7 +243,7 @@
 }
 
 .auth-links a {
-  color: #0f172a;
+  color: var(--brand-primary, #0f172a);
   text-decoration: none;
 }
 
@@ -237,10 +270,10 @@
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
-  border: 1px solid #0f172a;
+  border: 1px solid var(--brand-primary, #0f172a);
   border-radius: 8px;
-  background: #0f172a;
-  color: #ffffff;
+  background: var(--brand-primary, #0f172a);
+  color: var(--brand-primary-contrast, #ffffff);
   cursor: pointer;
   padding: 0.6rem 0.9rem;
   font: inherit;
@@ -254,12 +287,12 @@
 
 .ui-button--secondary {
   background: #ffffff;
-  color: #0f172a;
+  color: var(--brand-primary, #0f172a);
 }
 
 .ui-button--ghost {
   background: transparent;
-  color: #0f172a;
+  color: var(--brand-primary, #0f172a);
 }
 
 .merchant-dashboard {
@@ -270,8 +303,8 @@
 .merchant-hero {
   display: flex;
   align-items: flex-start;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  color: #f8fafc;
+  background: linear-gradient(135deg, var(--brand-primary, #0f172a) 0%, var(--brand-secondary, #2563eb) 100%);
+  color: var(--brand-primary-contrast, #ffffff);
 }
 
 .merchant-hero-content {
@@ -313,7 +346,7 @@
   display: block;
   padding: 0.75rem 0.9rem;
   border-radius: 8px;
-  color: #0f172a;
+  color: var(--brand-primary, #0f172a);
   text-decoration: none;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
@@ -397,7 +430,7 @@
 .merchant-form textarea,
 .merchant-form select {
   width: 100%;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--brand-muted, #cbd5e1);
   border-radius: 10px;
   padding: 0.75rem 0.85rem;
   font: inherit;
@@ -572,7 +605,7 @@
 }
 
 .merchant-list-actions a {
-  color: #0f172a;
+  color: var(--brand-primary, #0f172a);
   text-decoration: none;
   font-weight: 600;
 }
@@ -613,10 +646,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #0f172a;
+  border: 1px solid var(--brand-primary, #0f172a);
   border-radius: 8px;
-  background: #0f172a;
-  color: #ffffff;
+  background: var(--brand-primary, #0f172a);
+  color: var(--brand-primary-contrast, #ffffff);
   cursor: pointer;
   padding: 0.6rem 0.9rem;
   position: relative;

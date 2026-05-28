@@ -1,34 +1,34 @@
 import Constants from 'expo-constants';
 
 // Detect host IP automatically during development
-const getBaseUrl = () => {
+const getAssetBaseUrl = () => {
   const debuggerHost = Constants.expoConfig?.hostUri;
   const localhost = debuggerHost?.split(':')[0] || 'localhost';
-  // Use port 8080 (backend) to serve images from /uploads
-  return `http://${localhost}:8080`;
+  return `http://${localhost}`;
 };
 
-const BASE_URL = getBaseUrl();
+const ASSET_BASE_URL = getAssetBaseUrl();
+const ALLOWED_IMAGE_PATHS = ['/uploads/', '/seed-images/'];
+
+const isAllowedRelativeImagePath = (path) => (
+  ALLOWED_IMAGE_PATHS.some((prefix) => path.startsWith(prefix))
+);
 
 /**
- * Formats an image URL. 
- * If it's already an absolute URL (starts with http), it returns it.
- * If it's a relative path, it prefixes it with the server's base URL.
- * Also performs aggressive cleaning of whitespace and newlines.
+ * Converts API-owned relative image paths to device-accessible URLs.
+ * Absolute URLs are intentionally rejected; image fields must be persisted as relative paths.
  */
 export const formatImageUrl = (url) => {
   if (!url || typeof url !== 'string') {
-    return 'https://via.placeholder.com/800x400?text=No+Image';
+    return null;
   }
 
-  // CLEANING: Remove newlines, tabs and trim whitespace
   const cleanUrl = url.replace(/[\n\r\t]/g, "").trim();
+  const path = cleanUrl.startsWith('/') ? cleanUrl : `/${cleanUrl}`;
 
-  let finalUrl = cleanUrl;
-  if (!cleanUrl.startsWith('http')) {
-    const path = cleanUrl.startsWith('/') ? cleanUrl : `/${cleanUrl}`;
-    finalUrl = `${BASE_URL}${path}`;
+  if (!isAllowedRelativeImagePath(path)) {
+    return null;
   }
-  
-  return finalUrl;
+
+  return `${ASSET_BASE_URL}${path}`;
 };

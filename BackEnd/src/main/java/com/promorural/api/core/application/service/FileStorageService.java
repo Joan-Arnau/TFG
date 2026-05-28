@@ -70,21 +70,42 @@ public class FileStorageService {
         }
 
         String relative = (subdir != null && !subdir.isBlank()) ? subdir + "/" + fileName : fileName;
-        return baseUrl + "/" + relative;
+        return normalizeBaseUrl() + "/" + relative;
     }
 
     public void deleteFile(String fileUrl) {
-        if (fileUrl == null || !fileUrl.startsWith(baseUrl)) {
+        String normalizedBaseUrl = normalizeBaseUrl();
+        if (fileUrl == null || !fileUrl.startsWith(normalizedBaseUrl)) {
             return;
         }
 
-        String fileName = fileUrl.substring(baseUrl.length() + 1);
+        String fileName = fileUrl.substring(normalizedBaseUrl.length() + 1);
         Path filePath = Paths.get(uploadDir).resolve(fileName);
         try {
             Files.deleteIfExists(filePath);
         } catch (IOException e) {
             throw new FileStorageException("Could not delete stored file", e);
         }
+    }
+
+    private String normalizeBaseUrl() {
+        if (baseUrl == null || baseUrl.isBlank()) {
+            return "/uploads";
+        }
+
+        return normalizeRelativeBaseUrl(baseUrl.trim());
+    }
+
+    private String normalizeRelativeBaseUrl(String value) {
+        if (value == null || value.isBlank()) {
+            return "/uploads";
+        }
+
+        String relative = value.startsWith("/") ? value : "/" + value;
+        while (relative.endsWith("/") && relative.length() > 1) {
+            relative = relative.substring(0, relative.length() - 1);
+        }
+        return relative;
     }
 
     private String getFileExtension(String originalName, String contentType) {

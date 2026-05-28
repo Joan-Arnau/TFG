@@ -5,6 +5,11 @@ export const getShopDetailStyles = (theme) => StyleSheet.create({
     width: '100%',
     height: 250,
   },
+  heroImagePlaceholder: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F1F5F9',
+  },
   infoContainer: {
     padding: 20,
     marginTop: -20,

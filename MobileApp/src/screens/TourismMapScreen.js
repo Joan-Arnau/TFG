@@ -71,15 +71,7 @@ const TourismMapScreen = ({ navigation }) => {
   }, [filteredBase, location]);
 
   const markers = useMemo(() => {
-    return filteredBase.map(({ id, latitude, longitude, mapType, name, title, isFestival }) => ({
-      id,
-      latitude,
-      longitude,
-      mapType,
-      name,
-      title,
-      isFestival
-    }));
+    return filteredBase.map(item => ({ ...item }));
   }, [filteredBase]);
 
   const centerToMyPosition = () => {

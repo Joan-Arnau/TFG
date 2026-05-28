@@ -5,15 +5,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { GridCard } from '../components/ui/GridCard';
 import { ThemedCard } from '../components/ui/Card';
 import { useDashboard } from '../hooks/useDashboard';
-import { getCommonStyles } from '../styles/commonStyles';
 import { getDashboardStyles } from '../styles/Dashboard.styles';
 import { ROUTES } from '../navigation/routes';
+
+const DASHBOARD_ACCENT = '#35524A';
 
 const DashboardScreen = ({ navigation }) => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const commonStyles = getCommonStyles(theme);
-  const styles = getDashboardStyles(theme);
+  const styles = getDashboardStyles();
   
   const { featuredItem, loading } = useDashboard();
 
@@ -27,10 +27,10 @@ const DashboardScreen = ({ navigation }) => {
   ];
 
   return (
-    <ScrollView style={commonStyles.container} contentContainerStyle={styles.content}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.header}>
         <Text style={styles.welcome}>{t('app.welcome')}</Text>
-        <Text style={styles.villageName}>PromoRural</Text>
+        <Text style={styles.villageName}>{theme.municipalityName}</Text>
       </View>
 
       <View style={styles.grid}>
@@ -39,14 +39,14 @@ const DashboardScreen = ({ navigation }) => {
             key={item.id}
             title={item.title}
             icon={item.icon}
-            color={theme.primaryColor}
+            color={DASHBOARD_ACCENT}
             onPress={item.onPress}
           />
         ))}
       </View>
 
       {loading ? (
-        <ActivityIndicator size="small" color={theme.primaryColor} />
+        <ActivityIndicator size="small" color={DASHBOARD_ACCENT} />
       ) : featuredItem && (
         <ThemedCard style={styles.highlightCard}>
           <View style={styles.highlightBadge}>

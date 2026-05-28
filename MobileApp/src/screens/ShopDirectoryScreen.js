@@ -53,10 +53,16 @@ const ShopDirectoryScreen = ({ navigation }) => {
       style={styles.shopCard} 
       onPress={() => navigation.navigate(ROUTES.SHOP_DETAIL, { id: item.id })}
     >
-      <Image 
-        source={{ uri: item.headerImageUrl || 'https://via.placeholder.com/400' }} 
-        style={styles.shopImage} 
-      />
+      {item.headerImageUrl ? (
+        <Image
+          source={{ uri: item.headerImageUrl }}
+          style={styles.shopImage}
+        />
+      ) : (
+        <View style={[styles.shopImage, styles.shopImagePlaceholder]}>
+          <Ionicons name="image-outline" size={32} color="#94A3B8" />
+        </View>
+      )}
       <View style={styles.shopInfo}>
         <View style={{ flex: 1 }}>
           <Text style={styles.shopName} numberOfLines={1}>{item.name}</Text>

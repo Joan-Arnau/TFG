@@ -65,6 +65,10 @@ export const getShopDirectoryStyles = (theme) => StyleSheet.create({
     overflow: 'hidden',
     backgroundColor: '#F1F3F5',
   },
+  shopImagePlaceholder: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   shopInfo: {
     flex: 1,
     marginLeft: 15,

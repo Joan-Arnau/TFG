@@ -14,6 +14,8 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 public record ConfigUpdateRequest(
+        @Size(max = 100, message = "{validation.municipalityName.length}", groups = ValidationGroups.Update.class)
+        String municipalityName,
         Map<String, String> branding,
         @Size(max = 10, groups = ValidationGroups.Update.class)
         String defaultLanguage,
@@ -57,6 +59,7 @@ public record ConfigUpdateRequest(
      * Updates the given MunicipalityConfig entity with non-null values from this DTO.
      */
     public void updateEntity(MunicipalityConfig config, GeometryFactory geometryFactory) {
+        Optional.ofNullable(municipalityName).ifPresent(config::setMunicipalityName);
         Optional.ofNullable(branding).ifPresent(config::setBranding);
         Optional.ofNullable(defaultLanguage).ifPresent(config::setDefaultLanguage);
         Optional.ofNullable(supportedLanguages).ifPresent(config::setSupportedLanguages);

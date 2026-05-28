@@ -105,13 +105,14 @@ public class SeedDataConfig {
             if (municipalityConfigRepository.findFirstByOrderByIdAsc().isEmpty()) {
                 log.info("Seeding municipality configuration...");
                 MunicipalityConfig config = new MunicipalityConfig();
+                config.setMunicipalityName("Ajuntament de Fontserena");
                 config.setDefaultLanguage(appProperties.defaultLanguage());
                 config.setSupportedLanguages(appProperties.supportedLanguages());
                 
                 Map<String, String> branding = new HashMap<>();
                 branding.put("primaryColor", "#2E7D32");
                 branding.put("secondaryColor", "#1565C0");
-                branding.put("logoUrl", "https://via.placeholder.com/200x200?text=Ajuntament");
+                branding.put("logoUrl", "/seed-images/default.png");
                 config.setBranding(branding);
                 
                 Point center = geometryFactory.createPoint(new Coordinate(1.1033, 41.1561));
@@ -238,7 +239,7 @@ public class SeedDataConfig {
                         Map.of("ca", "Teatre Municipal", "es", "Teatro Municipal", "en", "Municipal Theatre"),
                         OffsetDateTime.now().plusDays(3),
                         OffsetDateTime.now().plusDays(3).plusHours(2),
-                        "/seed-images/default.svg",
+                        "/seed-images/default.png",
                         geometryFactory.createPoint(new Coordinate(1.1045, 41.1568)));
 
                     createEvent(eventRepository, cultureCat, false,
@@ -247,7 +248,7 @@ public class SeedDataConfig {
                         Map.of("ca", "Centre Cultural", "es", "Centro Cultural", "en", "Cultural Center"),
                         OffsetDateTime.now().plusDays(5),
                         OffsetDateTime.now().plusDays(5).plusHours(3),
-                        "/seed-images/default.svg",
+                        "/seed-images/default.png",
                         geometryFactory.createPoint(new Coordinate(1.1055, 41.1558)));
 
                     createEvent(eventRepository, cultureCat, false,
@@ -256,7 +257,7 @@ public class SeedDataConfig {
                         Map.of("ca", "Sala d'Exposicions Municipal", "es", "Sala de Exposiciones Municipal", "en", "Municipal Exhibition Hall"),
                         OffsetDateTime.now().plusDays(10),
                         OffsetDateTime.now().plusDays(17),
-                        "/seed-images/default.svg",
+                        "/seed-images/default.png",
                         geometryFactory.createPoint(new Coordinate(1.1038, 41.1562)));
 
                     // Festival events (Festa Major)
@@ -266,7 +267,7 @@ public class SeedDataConfig {
                         Map.of("ca", "Plaça de la Vila", "es", "Plaza de la Villa", "en", "Town Square"),
                         OffsetDateTime.now().plusDays(15),
                         OffsetDateTime.now().plusDays(15).plusHours(3),
-                        "/seed-images/default.svg",
+                        "/seed-images/default.png",
                         geometryFactory.createPoint(new Coordinate(1.1050, 41.1570)));
 
                     createEvent(eventRepository, cultureCat, true,
@@ -275,7 +276,7 @@ public class SeedDataConfig {
                         Map.of("ca", "Pavelló Municipal d'Esports", "es", "Pabellón Municipal de Deportes", "en", "Municipal Sports Hall"),
                         OffsetDateTime.now().plusDays(15).plusHours(8),
                         OffsetDateTime.now().plusDays(15).plusHours(11),
-                        "/seed-images/default.svg",
+                        "/seed-images/default.png",
                         geometryFactory.createPoint(new Coordinate(1.1065, 41.1575)));
 
                     createEvent(eventRepository, cultureCat, true,
@@ -284,7 +285,7 @@ public class SeedDataConfig {
                         Map.of("ca", "Parc del Riu", "es", "Parque del Río", "en", "Riverside Park"),
                         OffsetDateTime.now().plusDays(16),
                         OffsetDateTime.now().plusDays(16).plusHours(1),
-                        "/seed-images/default.svg",
+                        "/seed-images/default.png",
                         geometryFactory.createPoint(new Coordinate(1.1020, 41.1540)));
                 }
                 log.info("Events seeded.");
@@ -326,7 +327,7 @@ public class SeedDataConfig {
                         promo.setShop(shop);
                         promo.setTitle(Map.of("ca", "Promocio inicial", "es", "Promoción inicial", "en", "Initial promotion"));
                         promo.setDescription(Map.of("ca", "Descompte especial", "es", "Descuento especial", "en", "Special discount"));
-                        promo.setImageUrl("/seed-images/default.svg");
+                        promo.setImageUrl("/seed-images/default.png");
                         promo.setStartsAt(OffsetDateTime.now());
                         promo.setEndsAt(OffsetDateTime.now().plusDays(7));
                         promotionRepository.save(promo);
@@ -355,13 +356,13 @@ public class SeedDataConfig {
         shop.setOwner(owner);
         shop.setCategory(cat);
         shop.setLocation(loc);
-        shop.setHeaderImageUrl("/seed-images/default.svg");
+        shop.setHeaderImageUrl("/seed-images/default.png");
         
         List<ProductImage> gallery = new ArrayList<>();
         String[] fruitImages = {
-            "/seed-images/default.svg",
-            "/seed-images/default.svg",
-            "/seed-images/default.svg"
+            "/seed-images/default.png",
+            "/seed-images/default.png",
+            "/seed-images/default.png"
         };
         for (int i = 0; i < fruitImages.length; i++) {
             ProductImage img = new ProductImage();
@@ -380,7 +381,7 @@ public class SeedDataConfig {
         poi.setDescription(Map.of("ca", desc, "es", desc, "en", desc));
         poi.setCategory(cat);
         poi.setLocation(loc);
-        poi.setImageUrl("/seed-images/default.svg");
+        poi.setImageUrl("/seed-images/default.png");
         repo.save(poi);
     }
 

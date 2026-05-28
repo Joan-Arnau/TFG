@@ -76,10 +76,16 @@ const ShopDetailScreen = ({ navigation, route }) => {
 
   return (
     <ScrollView style={commonStyles.container}>
-      <Image 
-        source={{ uri: shop.headerImageUrl || 'https://via.placeholder.com/800x400' }} 
-        style={styles.heroImage} 
-      />
+      {shop.headerImageUrl ? (
+        <Image
+          source={{ uri: shop.headerImageUrl }}
+          style={styles.heroImage}
+        />
+      ) : (
+        <View style={[styles.heroImage, styles.heroImagePlaceholder]}>
+          <Ionicons name="image-outline" size={48} color="#94A3B8" />
+        </View>
+      )}
       
       <View style={styles.infoContainer}>
         <View style={styles.headerRow}>

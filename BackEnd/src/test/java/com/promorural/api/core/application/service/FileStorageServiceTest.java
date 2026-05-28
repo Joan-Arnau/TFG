@@ -19,7 +19,7 @@ class FileStorageServiceTest {
 
     public FileStorageServiceTest() {
         ReflectionTestUtils.setField(service, "uploadDir", testDir.toString());
-        ReflectionTestUtils.setField(service, "baseUrl", "http://localhost:8080/uploads");
+        ReflectionTestUtils.setField(service, "baseUrl", "/uploads");
     }
 
     @AfterEach
@@ -42,11 +42,11 @@ class FileStorageServiceTest {
 
         String url = service.storeFile(file, "gallery");
 
-        assertThat(url).startsWith("http://localhost:8080/uploads/");
+        assertThat(url).startsWith("/uploads/");
         assertThat(url).contains("gallery/");
 
         // Verify file exists on disk
-        String relative = url.substring("http://localhost:8080/uploads/".length());
+        String relative = url.substring("/uploads/".length());
         Path stored = testDir.resolve(relative);
         assertThat(Files.exists(stored)).isTrue();
     }

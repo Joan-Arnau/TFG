@@ -1,6 +1,6 @@
 {
   "app": {
-    "title": "Aplicació Promo Rural",
+    "title": "Aplicació PromoRural",
     "welcome": "Benvingut a",
     "apiBaseUrl": "API base URL",
     "details": "Detalls"
@@ -56,7 +56,7 @@
   },
   "about": {
     "title": "Sobre l'aplicació",
-    "platform": "Plataforma Promo Rural",
+    "platform": "Plataforma PromoRural",
     "description": "Aquesta aplicació ha estat desenvolupada com a Treball de Final de Grau a la Universitat Rovira i Virgili per Joan Arnau Sagarra Canalda. Proposta tecnològica per a la dinamització del comerç local en municipis rurals mitjançant arquitectura white-label.",
     "copyright": "© 2026 - Tots els drets reservats."
   },

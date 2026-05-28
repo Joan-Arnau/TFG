@@ -1,12 +1,21 @@
 import { StyleSheet } from 'react-native';
 
-export const getDashboardStyles = (theme) => StyleSheet.create({
+export const getDashboardStyles = () => StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F8F9FA',
+  },
   content: {
     padding: 10,
   },
   header: {
-    paddingVertical: 20,
-    paddingHorizontal: 10,
+    paddingVertical: 22,
+    paddingHorizontal: 16,
+    marginBottom: 14,
+    borderRadius: 14,
+    backgroundColor: '#FFFFFF',
+    borderLeftWidth: 6,
+    borderLeftColor: '#35524A',
   },
   welcome: {
     fontSize: 16,
@@ -15,7 +24,7 @@ export const getDashboardStyles = (theme) => StyleSheet.create({
   villageName: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: theme.primaryColor,
+    color: '#212529',
   },
   grid: {
     flexDirection: 'row',
@@ -31,7 +40,7 @@ export const getDashboardStyles = (theme) => StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 8,
     marginBottom: 10,
-    backgroundColor: theme.primaryColor,
+    backgroundColor: '#35524A',
   },
   highlightBadgeText: {
     color: '#FFFFFF',

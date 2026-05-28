@@ -9,4 +9,4 @@ app:
     expiration-ms: 3600000
   fileupload:
     upload-dir: target/test-uploads
-    base-url: http://localhost:8080/uploads
+    base-url: /uploads

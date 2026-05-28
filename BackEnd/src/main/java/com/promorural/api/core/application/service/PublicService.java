@@ -75,6 +75,7 @@ public class PublicService {
         MunicipalityConfig config = getMunicipalityConfig();
         
         return new ConfigResponse(
+                config.getMunicipalityName(),
                 config.getDefaultLanguage(),
                 config.getSupportedLanguages(),
                 config.getBranding(),

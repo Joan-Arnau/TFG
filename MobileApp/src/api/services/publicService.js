@@ -2,6 +2,10 @@ import { httpClient } from '../httpClient';
 import i18n from '../../i18n';
 import { formatImageUrl } from '../../utils/imageUtils';
 
+const formatImageList = (images) => (
+  Array.isArray(images) ? images.map(img => formatImageUrl(img)).filter(Boolean) : []
+);
+
 export const getTranslation = (translatedField, language) => {
   if (!translatedField) return '';
   if (typeof translatedField === 'string') return translatedField;
@@ -61,7 +65,7 @@ export const publicService = {
         categoryName: shop.category ? getTranslation(shop.category.name) : '',
         latitude: shop.latitude,
         longitude: shop.longitude,
-        images: Array.isArray(shop.images) ? shop.images.map(img => formatImageUrl(img)) : [],
+        images: formatImageList(shop.images),
         promotions: Array.isArray(shop.promotions) ? shop.promotions.filter(Boolean).map(p => ({
           id: p.id,
           title: getTranslation(p.title),

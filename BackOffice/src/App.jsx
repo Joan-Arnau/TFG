@@ -1,5 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
+import { APP_NAME, DEFAULT_THEME } from './context/themeConfig';
+import { useTheme } from './context/useTheme';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import LoginPage from './features/auth/pages/LoginPage';
 import RegisterPage from './features/auth/pages/RegisterPage';
@@ -12,12 +15,32 @@ import { MERCHANT_ROUTES } from './pages/merchant/constants';
 import LanguageSwitcher from './components/common/LanguageSwitcher';
 import './styles/App.css';
 
-function App() {
+function AppShell() {
+  const { theme } = useTheme();
+
   return (
-    <AuthProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <div className="app">
         <header className="app-header">
-          <h1>PromoRural BackOffice</h1>
+          <div className="app-brand">
+            {theme.logoUrl ? (
+              <img
+                className="app-brand-logo"
+                src={theme.logoUrl}
+                alt=""
+                aria-hidden="true"
+                onError={(event) => {
+                  if (event.currentTarget.src !== DEFAULT_THEME.logoUrl) {
+                    event.currentTarget.src = DEFAULT_THEME.logoUrl;
+                  }
+                }}
+              />
+            ) : null}
+            <div className="app-brand-text">
+              <span>{APP_NAME}</span>
+              <h1>{theme.name}</h1>
+            </div>
+          </div>
           <LanguageSwitcher />
         </header>
         <Routes>
@@ -49,7 +72,17 @@ function App() {
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="*" element={<div>404 Not Found</div>} />
         </Routes>
-      </BrowserRouter>
+      </div>
+    </BrowserRouter>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <ThemeProvider>
+        <AppShell />
+      </ThemeProvider>
     </AuthProvider>
   );
 }
