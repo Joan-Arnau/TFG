@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { merchantService } from '../../../api/services/merchantService';
 import useConfirm from '../../../hooks/useConfirm';
-import { getLocalizedValue } from '../../../utils/localization';
 
 export function useMerchantPromotions() {
   const [promotions, setPromotions] = useState([]);

@@ -164,6 +164,42 @@ public class SeedDataConfig {
                     return userRepository.save(m);
                 });
 
+                User merchant4 = userRepository.findByUsername("merchant4").orElseGet(() -> {
+                    User m = new User();
+                    m.setUsername("merchant4");
+                    m.setEmail("merchant4@promorural.local");
+                    m.setPassword(passwordEncoder.encode("merchant1234"));
+                    m.setRole(Role.ROLE_MERCHANT);
+                    return userRepository.save(m);
+                });
+
+                User merchant5 = userRepository.findByUsername("merchant5").orElseGet(() -> {
+                    User m = new User();
+                    m.setUsername("merchant5");
+                    m.setEmail("merchant5@promorural.local");
+                    m.setPassword(passwordEncoder.encode("merchant1234"));
+                    m.setRole(Role.ROLE_MERCHANT);
+                    return userRepository.save(m);
+                });
+
+                User merchant6 = userRepository.findByUsername("merchant6").orElseGet(() -> {
+                    User m = new User();
+                    m.setUsername("merchant6");
+                    m.setEmail("merchant6@promorural.local");
+                    m.setPassword(passwordEncoder.encode("merchant1234"));
+                    m.setRole(Role.ROLE_MERCHANT);
+                    return userRepository.save(m);
+                });
+
+                User merchant7 = userRepository.findByUsername("merchant7").orElseGet(() -> {
+                    User m = new User();
+                    m.setUsername("merchant7");
+                    m.setEmail("merchant7@promorural.local");
+                    m.setPassword(passwordEncoder.encode("merchant1234"));
+                    m.setRole(Role.ROLE_MERCHANT);
+                    return userRepository.save(m);
+                });
+
                 List<Category> shopCats = categoryRepository.findByType(CategoryType.SHOP);
                 Category foodCat = shopCats.stream().filter(c -> c.getName().get("en").equals("Food")).findFirst().orElse(shopCats.get(0));
                 Category hostCat = shopCats.stream().filter(c -> c.getName().get("en").equals("Hospitality")).findFirst().orElse(shopCats.get(0));
@@ -180,7 +216,60 @@ public class SeedDataConfig {
                 createShop(shopRepository, merchant3, servCat, "Farmàcia de Baix", 
                     "Atenció farmacèutica i parafarmàcia.", "Carrer de Baix, 3", "977889900", 
                     geometryFactory.createPoint(new Coordinate(1.1030, 41.1550)));
-                log.info("Shops and merchants seeded.");
+
+                // Create a PENDING shop
+                Shop pendingShop = new Shop();
+                pendingShop.setName(Map.of("ca", "Forn Nou", "es", "Horno Nuevo", "en", "New Bakery"));
+                pendingShop.setDescription(Map.of("ca", "Pa artesà i pastes.", "es", "Pan artesano y pastas.", "en", "Artisan bread and pastries."));
+                pendingShop.setAddress("Carrer Nou, 1");
+                pendingShop.setPhoneNumber("977112233");
+                pendingShop.setStatus(ShopStatus.PENDING);
+                pendingShop.setOwner(merchant4);
+                pendingShop.setCategory(foodCat);
+                pendingShop.setLocation(geometryFactory.createPoint(new Coordinate(1.1045, 41.1565)));
+                pendingShop.setHeaderImageUrl("/seed-images/default.png");
+                shopRepository.save(pendingShop);
+
+                // Create another PENDING shop
+                Shop pendingShop2 = new Shop();
+                pendingShop2.setName(Map.of("ca", "Restaurant La Vall", "es", "Restaurante La Vall", "en", "La Vall Restaurant"));
+                pendingShop2.setDescription(Map.of("ca", "Cuina de mercat.", "es", "Cocina de mercado.", "en", "Market cuisine."));
+                pendingShop2.setAddress("Plaça de la Font, 2");
+                pendingShop2.setPhoneNumber("977445566");
+                pendingShop2.setStatus(ShopStatus.PENDING);
+                pendingShop2.setOwner(merchant5);
+                pendingShop2.setCategory(hostCat);
+                pendingShop2.setLocation(geometryFactory.createPoint(new Coordinate(1.1055, 41.1545)));
+                pendingShop2.setHeaderImageUrl("/seed-images/default.png");
+                shopRepository.save(pendingShop2);
+
+                // Create a third PENDING shop
+                Shop pendingShop3 = new Shop();
+                pendingShop3.setName(Map.of("ca", "Joieria Mar", "es", "Joyería Mar", "en", "Mar Jewelry"));
+                pendingShop3.setDescription(Map.of("ca", "Joies artesanes.", "es", "Joyas artesanas.", "en", "Handmade jewelry."));
+                pendingShop3.setAddress("Carrer de l'Aigua, 4");
+                pendingShop3.setPhoneNumber("977223344");
+                pendingShop3.setStatus(ShopStatus.PENDING);
+                pendingShop3.setOwner(merchant6);
+                pendingShop3.setCategory(servCat);
+                pendingShop3.setLocation(geometryFactory.createPoint(new Coordinate(1.1025, 41.1555)));
+                pendingShop3.setHeaderImageUrl("/seed-images/default.png");
+                shopRepository.save(pendingShop3);
+
+                // Create a fourth PENDING shop
+                Shop pendingShop4 = new Shop();
+                pendingShop4.setName(Map.of("ca", "Llibreria Papyrus", "es", "Librería Papyrus", "en", "Papyrus Bookstore"));
+                pendingShop4.setDescription(Map.of("ca", "Llibres i material d'oficina.", "es", "Libros y material de oficina.", "en", "Books and office supplies."));
+                pendingShop4.setAddress("Carrer Major, 45");
+                pendingShop4.setPhoneNumber("977334455");
+                pendingShop4.setStatus(ShopStatus.PENDING);
+                pendingShop4.setOwner(merchant7);
+                pendingShop4.setCategory(servCat);
+                pendingShop4.setLocation(geometryFactory.createPoint(new Coordinate(1.1035, 41.1575)));
+                pendingShop4.setHeaderImageUrl("/seed-images/default.png");
+                shopRepository.save(pendingShop4);
+
+                log.info("Shops and merchants seeded (including 4 pending shops).");
             }
 
             // 5. Points of Interest

@@ -2,12 +2,27 @@ package com.promorural.api.core.application.service.use_case.admin;
 
 import com.promorural.api.core.application.dto.admin.ShopModerationResponse;
 import com.promorural.api.core.application.dto.admin.moderation.ShopStatusUpdateRequest;
+import com.promorural.api.core.application.dto.merchant.shop.ShopUpdateRequest;
 import com.promorural.api.core.application.mapper.ShopMapper;
+import com.promorural.api.core.domain.entity.Category;
+import com.promorural.api.core.domain.entity.CategoryType;
+import com.promorural.api.core.domain.entity.Promotion;
 import com.promorural.api.core.domain.entity.Shop;
 import com.promorural.api.core.domain.entity.ShopStatus;
+import com.promorural.api.core.domain.entity.UploadFile;
 import com.promorural.api.core.domain.exception.BadRequestException;
 import com.promorural.api.core.domain.exception.ResourceNotFoundException;
+import com.promorural.api.core.domain.repository.CategoryRepository;
+import com.promorural.api.core.domain.repository.PromotionRepository;
 import com.promorural.api.core.domain.repository.ShopRepository;
+import com.promorural.api.core.domain.repository.UploadFileRepository;
+import com.promorural.api.core.application.service.EmailService;
+import com.promorural.api.core.application.service.EmailTemplateService;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,16 +33,96 @@ import java.util.stream.Collectors;
 @Transactional
 public class ShopModerationUseCase {
 
-    private final ShopRepository shopRepository;
+    private static final Logger log = LoggerFactory.getLogger(ShopModerationUseCase.class);
 
-    public ShopModerationUseCase(ShopRepository shopRepository) {
+    private final ShopRepository shopRepository;
+    private final CategoryRepository categoryRepository;
+    private final GeometryFactory geometryFactory;
+    private final PromotionRepository promotionRepository;
+    private final UploadFileRepository uploadFileRepository;
+    private final EmailService emailService;
+    private final EmailTemplateService emailTemplateService;
+
+    public ShopModerationUseCase(
+            ShopRepository shopRepository,
+            CategoryRepository categoryRepository,
+            GeometryFactory geometryFactory,
+            PromotionRepository promotionRepository,
+            UploadFileRepository uploadFileRepository,
+            EmailService emailService,
+            EmailTemplateService emailTemplateService
+    ) {
         this.shopRepository = shopRepository;
+        this.categoryRepository = categoryRepository;
+        this.geometryFactory = geometryFactory;
+        this.promotionRepository = promotionRepository;
+        this.uploadFileRepository = uploadFileRepository;
+        this.emailService = emailService;
+        this.emailTemplateService = emailTemplateService;
     }
 
     public List<ShopModerationResponse> getPendingShops() {
         return shopRepository.findByStatusOrderByCreatedAtDesc(ShopStatus.PENDING).stream()
                 .map(ShopMapper::toModerationResponse)
                 .collect(Collectors.toList());
+    }
+
+    public List<ShopModerationResponse> getAllShops() {
+        return shopRepository.findAll().stream()
+                .map(ShopMapper::toModerationResponse)
+                .collect(Collectors.toList());
+    }
+
+    public ShopModerationResponse updateShop(Long id, ShopUpdateRequest request) {
+        if (id == null) {
+            throw new BadRequestException("Shop ID cannot be null");
+        }
+        Shop shop = shopRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Shop not found with ID: " + id));
+
+        Category category = null;
+        if (request.hasCategory()) {
+            category = categoryRepository.findById(request.categoryId())
+                    .orElseThrow(() -> new BadRequestException("Category not found with ID: " + request.categoryId()));
+            if (category.getType() != CategoryType.SHOP) {
+                throw new BadRequestException("Category must be of type SHOP");
+            }
+        }
+
+        Point location = null;
+        if (request.hasLocation()) {
+            location = geometryFactory.createPoint(new Coordinate(request.longitude(), request.latitude()));
+        }
+
+        shop.updateProfile(
+                request.name(),
+                request.description(),
+                request.address(),
+                request.phoneNumber(),
+                category,
+                location
+        );
+        Shop savedShop = shopRepository.save(shop);
+        return ShopMapper.toModerationResponse(savedShop);
+    }
+
+    public void deleteShop(Long id) {
+        if (id == null) {
+            throw new BadRequestException("Shop ID cannot be null");
+        }
+        Shop shop = shopRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Shop not found with ID: " + id));
+
+        // Delete promotions associated with the shop
+        List<Promotion> promotions = promotionRepository.findByShopId(shop.getId());
+        promotionRepository.deleteAll(promotions);
+
+        // Delete uploaded files associated with the shop
+        List<UploadFile> uploadFiles = uploadFileRepository.findByShopId(shop.getId());
+        uploadFileRepository.deleteAll(uploadFiles);
+
+        // Finally delete the shop
+        shopRepository.delete(shop);
     }
 
     public void updateShopStatus(Long id, ShopStatusUpdateRequest request) {
@@ -42,5 +137,38 @@ public class ShopModerationUseCase {
         }
         shop.setStatus(status);
         shopRepository.save(shop);
+
+        // Send email notification to owner if present
+        if (shop.getOwner() != null && shop.getOwner().getEmail() != null) {
+            String email = shop.getOwner().getEmail();
+            String shopName = null;
+            if (shop.getName() != null) {
+                shopName = shop.getName().get("ca");
+                if (shopName == null) {
+                    shopName = shop.getName().values().stream().filter(v -> v != null && !v.isEmpty()).findFirst().orElse(null);
+                }
+            }
+            if (shopName == null) {
+                shopName = "Comerç #" + shop.getId();
+            }
+
+            try {
+                if (status == ShopStatus.APPROVED) {
+                    String htmlContent = emailTemplateService.renderShopApprovedTemplate(shopName);
+                    emailService.sendHtmlEmail(email, "Comerç aprovat", htmlContent);
+                    log.info("Approval email sent to owner of shop id={}", id);
+                } else if (status == ShopStatus.REJECTED) {
+                    String reason = request.rejectionReason();
+                    if (reason == null) {
+                        reason = "";
+                    }
+                    String htmlContent = emailTemplateService.renderShopRejectedTemplate(shopName, reason);
+                    emailService.sendHtmlEmail(email, "Sol·licitud de comerç rebutjada", htmlContent);
+                    log.info("Rejection email sent to owner of shop id={} (reason: {})", id, reason);
+                }
+            } catch (Exception e) {
+                log.error("Failed to send moderation email for shop id={}: {}", id, e.getMessage());
+            }
+        }
     }
 }

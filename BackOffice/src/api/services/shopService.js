@@ -5,6 +5,10 @@ export const shopService = {
     const response = await httpClient.get('/public/shops');
     return response.data;
   },
+  adminGetAll: async () => {
+    const response = await httpClient.get('/admin/shops');
+    return response.data;
+  },
   getPendingShops: async () => {
     const response = await httpClient.get('/admin/shops/pending');
     return response.data;
@@ -23,5 +27,16 @@ export const shopService = {
   },
   delete: async (id) => {
     await httpClient.delete(`/shops/${id}`);
+  },
+  updateStatus: async (id, status, rejectionReason) => {
+    const response = await httpClient.patch(`/admin/shops/${id}/status`, { status, rejectionReason });
+    return response.data;
+  },
+  adminUpdate: async (id, shopData) => {
+    const response = await httpClient.put(`/admin/shops/${id}`, shopData);
+    return response.data;
+  },
+  adminDelete: async (id) => {
+    await httpClient.delete(`/admin/shops/${id}`);
   }
 };

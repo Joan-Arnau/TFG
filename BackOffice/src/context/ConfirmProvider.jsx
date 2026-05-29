@@ -1,8 +1,7 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ConfirmContext } from './ConfirmContext';
 import ConfirmDialog from '../components/ui/ConfirmDialog';
-
-const ConfirmContext = createContext(null);
 
 export const ConfirmProvider = ({ children }) => {
   const { t } = useTranslation();
@@ -41,12 +40,4 @@ export const ConfirmProvider = ({ children }) => {
       )}
     </ConfirmContext.Provider>
   );
-};
-
-export const useConfirm = () => {
-  const context = useContext(ConfirmContext);
-  if (!context) {
-    throw new Error('useConfirm must be used within a ConfirmProvider');
-  }
-  return context;
 };

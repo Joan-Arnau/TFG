@@ -1,7 +1,3 @@
-import { useConfirm as useConfirmFromContext } from '../context/ConfirmContext';
-
-export function useConfirm() {
-  return useConfirmFromContext();
-}
+import { useConfirm } from '../context/ConfirmContext';
 
 export default useConfirm;

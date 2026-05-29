@@ -121,10 +121,59 @@
       "pendingShops": "Pending shops"
     },
     "shops": {
-      "pendingTitle": "Pending shops",
-      "loading": "Loading pending shops...",
-      "error": "Pending shops could not be loaded.",
-      "noPendingShops": "No pending shops found."
+      "pendingTitle": "Shops pending moderation",
+      "loading": "Loading shops...",
+      "error": "Shops could not be loaded.",
+      "noPendingShops": "No pending shops found.",
+      "noShops": "No shops found.",
+      "review": "Review data",
+      "name": "Name",
+      "category": "Category",
+      "owner": "Owner",
+      "status": "Status",
+      "actions": "Actions",
+      "edit": "Edit",
+      "suspend": "Suspend",
+      "approve": "Approve",
+      "delete": "Deregister",
+      "editTitle": "Edit Shop Details",
+      "multilingualFields": "Localized Texts",
+      "nameLabel": "Shop Name",
+      "descLabel": "Description",
+      "phoneLabel": "Phone Number",
+      "categoryLabel": "Category",
+      "selectCategory": "Select category",
+      "addressLabel": "Address",
+      "mapLabel": "Shop Location on Map",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving...",
+      "close": "Close",
+      "reject": "Reject",
+      "submitting": "Processing...",
+      "noImage": "No Header Image",
+      "descriptionTitle": "Shop Description",
+      "phone": "Contact Phone",
+      "address": "Physical Address",
+      "coordinates": "Geolocation Coordinates",
+      "rejectionReasonLabel": "Rejection Reason (will be emailed to the merchant)",
+      "rejectionReasonPlaceholder": "Type the detailed rejection reason to notify the merchant...",
+      "confirmRejectAction": "Confirm Rejection",
+      "confirmApprove": "Are you sure you want to approve the shop \"{{name}}\"?",
+      "confirmSuspend": "Are you sure you want to suspend the shop \"{{name}}\"? This will return it to pending status.",
+      "confirmDelete": "Are you sure you want to deregister the shop \"{{name}}\"? This action cannot be undone.",
+      "errorNameRequired": "Catalan name is required.",
+      "errorSave": "Failed to save shop details. Please check input values.",
+      "suspendedByAdmin": "Suspended by administration."
+    },
+    "tabs": {
+      "pending": "Requests Inbox",
+      "active": "Manage Shops"
+    },
+    "status": {
+      "approved": "Approved",
+      "pending": "Pending",
+      "rejected": "Rejected"
     }
   }
 }

@@ -121,10 +121,59 @@
       "pendingShops": "Comercios pendientes"
     },
     "shops": {
-      "pendingTitle": "Comercios pendientes",
-      "loading": "Cargando comercios pendientes...",
-      "error": "No se han podido cargar los comercios pendientes.",
-      "noPendingShops": "No hay comercios pendientes."
+      "pendingTitle": "Comercios pendientes de moderación",
+      "loading": "Cargando comercios...",
+      "error": "No se han podido cargar los comercios.",
+      "noPendingShops": "No hay comercios pendientes de moderación.",
+      "noShops": "No se ha encontrado ningún comercio.",
+      "review": "Revisar datos",
+      "name": "Nombre",
+      "category": "Categoría",
+      "owner": "Propietario",
+      "status": "Estado",
+      "actions": "Acciones",
+      "edit": "Editar",
+      "suspend": "Suspender",
+      "approve": "Aprobar",
+      "delete": "Dar de baja",
+      "editTitle": "Editar datos del comercio",
+      "multilingualFields": "Textos en diferentes idiomas",
+      "nameLabel": "Nombre del comercio",
+      "descLabel": "Descripción",
+      "phoneLabel": "Teléfono",
+      "categoryLabel": "Categoría",
+      "selectCategory": "Selecciona una categoría",
+      "addressLabel": "Dirección",
+      "mapLabel": "Ubicación del comercio en el mapa",
+      "cancel": "Cancelar",
+      "save": "Guardar",
+      "saving": "Guardando...",
+      "close": "Cerrar",
+      "reject": "Rechazar",
+      "submitting": "Procesando...",
+      "noImage": "Sin imagen de cabecera",
+      "descriptionTitle": "Descripción del comercio",
+      "phone": "Teléfono de contacto",
+      "address": "Dirección física",
+      "coordinates": "Coordenadas de geolocalización",
+      "rejectionReasonLabel": "Motivo del rechazo (se enviará por email al comerciante)",
+      "rejectionReasonPlaceholder": "Escribe el motivo detallado del rechazo para informar al comerciante...",
+      "confirmRejectAction": "Confirmar el rechazo",
+      "confirmApprove": "¿Seguro que quieres aprobar el comercio \"{{name}}\"?",
+      "confirmSuspend": "¿Seguro que quieres suspender el comercio \"{{name}}\"? Esto lo devolverá al estado pendiente de revisión.",
+      "confirmDelete": "¿Seguro que quieres dar de baja el comercio \"{{name}}\"? Esta acción no se puede deshacer.",
+      "errorNameRequired": "El nombre en catalán es obligatorio.",
+      "errorSave": "Error al guardar los detalles del comercio. Verifica los datos.",
+      "suspendedByAdmin": "Suspendido temporalmente por la administración."
+    },
+    "tabs": {
+      "pending": "Solicitudes pendientes",
+      "active": "Gestión de Comercios"
+    },
+    "status": {
+      "approved": "Aprobado",
+      "pending": "Pendiente",
+      "rejected": "Rechazado"
     }
   }
 }

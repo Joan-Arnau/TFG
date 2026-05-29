@@ -5,5 +5,6 @@ import com.promorural.api.core.domain.entity.ShopStatus;
 import jakarta.validation.constraints.NotNull;
 
 public record ShopStatusUpdateRequest(
-        @NotNull(message = "Status is required", groups = ValidationGroups.Update.class) ShopStatus status
+        @NotNull(message = "Status is required", groups = ValidationGroups.Update.class) ShopStatus status,
+        String rejectionReason
 ) {}

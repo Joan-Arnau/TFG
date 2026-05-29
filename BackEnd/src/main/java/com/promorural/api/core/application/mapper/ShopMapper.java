@@ -18,7 +18,7 @@ public final class ShopMapper {
                 shop.getPhoneNumber(),
                 shop.getHeaderImageUrl(),
                 shop.getStatus().name(),
-                shop.getOwner() != null ? shop.getOwner().getUsername() : null,
+                shop.getOwner() != null ? shop.getOwner().getEmail() : null,
                 CategoryMapper.toRef(shop.getCategory()),
                 shop.getLocation() != null ? shop.getLocation().getY() : null,
                 shop.getLocation() != null ? shop.getLocation().getX() : null

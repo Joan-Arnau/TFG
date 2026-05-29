@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
-import { ConfirmProvider } from './context/ConfirmContext';
+import { ConfirmProvider } from './context/ConfirmProvider';
 import { APP_NAME, DEFAULT_THEME } from './context/themeConfig';
 import { useTheme } from './context/useTheme';
 import ProtectedRoute from './components/auth/ProtectedRoute';

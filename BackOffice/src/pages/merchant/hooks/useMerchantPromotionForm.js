@@ -202,7 +202,7 @@ export function useMerchantPromotionForm(id) {
     } finally {
       setUploading(false);
     }
-  }, [canSubmit, draft, handleSubmit, id, originalPromotion, pendingImageFile]);
+  }, [draft, handleSubmit, id, originalPromotion, pendingImageFile, validatePromotion]);
 
   return {
     draft,

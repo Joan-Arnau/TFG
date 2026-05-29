@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sol·licitud de comerç rebutjada</title>
+</head>
+<body>
+    <p>Lamentem informar-te que el teu comerç <strong th:text="${shopName}">Nom del comerç</strong> no ha pogut ser aprovat.</p>
+    <p th:if="${reason != null && !reason.isEmpty()}"><strong>Motiu del rebuig:</strong> <span th:text="${reason}">Motiu detallat</span></p>
+    <p>Si us plau, corregeix les dades i torna a enviar la sol·licitud.</p>
+</body>
+</html>

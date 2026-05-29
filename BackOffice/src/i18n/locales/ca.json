@@ -121,10 +121,59 @@
       "pendingShops": "Comerços pendents"
     },
     "shops": {
-      "pendingTitle": "Comerços pendents",
-      "loading": "Carregant comerços pendents...",
-      "error": "No s'han pogut carregar els comerços pendents.",
-      "noPendingShops": "No hi ha comerços pendents."
+      "pendingTitle": "Comerços pendents de moderació",
+      "loading": "Carregant comerços...",
+      "error": "No s'han pogut carregar els comerços.",
+      "noPendingShops": "No hi ha comerços pendents de moderació.",
+      "noShops": "No s'ha trobat cap comerç.",
+      "review": "Revisa dades",
+      "name": "Nom",
+      "category": "Categoria",
+      "owner": "Propietari",
+      "status": "Estat",
+      "actions": "Accions",
+      "edit": "Editar",
+      "suspend": "Suspendre",
+      "approve": "Aprovar",
+      "delete": "Donar de baixa",
+      "editTitle": "Editar dades del comerç",
+      "multilingualFields": "Textos en diferents idiomes",
+      "nameLabel": "Nom del comerç",
+      "descLabel": "Descripció",
+      "phoneLabel": "Telèfon",
+      "categoryLabel": "Categoria",
+      "selectCategory": "Selecciona una categoria",
+      "addressLabel": "Adreça",
+      "mapLabel": "Ubicació del comerç al mapa",
+      "cancel": "Cancel·lar",
+      "save": "Desar",
+      "saving": "Desant...",
+      "close": "Tancar",
+      "reject": "Rebutjar",
+      "submitting": "Processant...",
+      "noImage": "Sense imatge de capçalera",
+      "descriptionTitle": "Descripció del comerç",
+      "phone": "Telèfon de contacte",
+      "address": "Adreça física",
+      "coordinates": "Coordenades de geolocalització",
+      "rejectionReasonLabel": "Motiu del rebuig (s'enviarà per email al comerciant)",
+      "rejectionReasonPlaceholder": "Escriu el motiu detallat del rebuig per informar al comerciant...",
+      "confirmRejectAction": "Confirma el rebuig",
+      "confirmApprove": "Segur que vols aprovar el comerç \"{{name}}\"?",
+      "confirmSuspend": "Segur que vols suspendre el comerç \"{{name}}\"? Això el retornarà a l'estat pendent de revisió.",
+      "confirmDelete": "Segur que vols donar de baixa el comerç \"{{name}}\"? Aquesta acció no es pot desfer.",
+      "errorNameRequired": "El nom en català és obligatori.",
+      "errorSave": "Error al desar els detalls del comerç. Verifica les dades.",
+      "suspendedByAdmin": "Suspès temporalment per l'administració."
+    },
+    "tabs": {
+      "pending": "Bústia de Sol·licituds",
+      "active": "Gestió de Comerços"
+    },
+    "status": {
+      "approved": "Aprovat",
+      "pending": "Pendent",
+      "rejected": "Rebutjat"
     }
   }
 }

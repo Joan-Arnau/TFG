@@ -1,6 +1,5 @@
-import React from 'react';
-import Modal from './Modal';
 import Button from './Button';
+import Modal from './Modal';
 
 const ConfirmDialog = ({ title, message, onConfirm, onCancel, t }) => {
   return (

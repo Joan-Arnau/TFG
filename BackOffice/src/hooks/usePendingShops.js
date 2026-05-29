@@ -19,64 +19,57 @@ const normalizeShops = (data) => {
 
 export const usePendingShops = () => {
   const [pendingShops, setPendingShops] = useState([]);
+  const [allShops, setAllShops] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const loadPendingShops = useCallback(async () => {
+  const loadShops = useCallback(async () => {
     setLoading(true);
     setError(null);
 
     try {
-      const data = await shopService.getPendingShops();
-      setPendingShops(normalizeShops(data));
+      const [pendingData, allData] = await Promise.all([
+        shopService.getPendingShops(),
+        shopService.adminGetAll(),
+      ]);
+
+      setPendingShops(normalizeShops(pendingData));
+      setAllShops(normalizeShops(allData));
     } catch (currentError) {
-      console.error('Error fetching pending shops:', currentError);
+      console.error('Error fetching admin shops:', currentError);
       setError(currentError);
-      setPendingShops([]);
     } finally {
       setLoading(false);
     }
   }, []);
 
+  const approveShop = async (id) => {
+    await shopService.updateStatus(id, 'APPROVED');
+    await loadShops();
+  };
+
+  const rejectShop = async (id, reason) => {
+    await shopService.updateStatus(id, 'REJECTED', reason);
+    await loadShops();
+  };
+
+  const deleteShop = async (id) => {
+    await shopService.adminDelete(id);
+    await loadShops();
+  };
+
   useEffect(() => {
-    let isMounted = true;
-
-    const loadInitialPendingShops = async () => {
-      try {
-        const data = await shopService.getPendingShops();
-
-        if (!isMounted) {
-          return;
-        }
-
-        setPendingShops(normalizeShops(data));
-      } catch (currentError) {
-        console.error('Error fetching pending shops:', currentError);
-
-        if (!isMounted) {
-          return;
-        }
-
-        setError(currentError);
-        setPendingShops([]);
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
-      }
-    };
-
-    loadInitialPendingShops();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+    setTimeout(() => loadShops(), 0);
+  }, [loadShops]);
 
   return {
     pendingShops,
+    allShops,
     loading,
     error,
-    refresh: loadPendingShops,
+    refresh: loadShops,
+    approveShop,
+    rejectShop,
+    deleteShop,
   };
 };
