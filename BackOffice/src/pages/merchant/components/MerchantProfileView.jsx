@@ -2,6 +2,7 @@ import Button from '../../../components/ui/Button';
 import Card from '../../../components/ui/Card';
 import MerchantPageHeader from './MerchantPageHeader';
 import LocalizedFieldSet from './LocalizedFieldSet';
+import LocationSelector from './LocationSelector';
 import { MERCHANT_LANGUAGES } from '../constants';
 import { getLocalizedValue } from '../../../utils/localization';
 
@@ -63,10 +64,13 @@ const MerchantProfileView = ({
             <h4>{t('merchant.categoryLabel', 'Category')}</h4>
             <p>{categoryName || '-'}</p>
           </Card>
-          <Card className="merchant-summary-card">
+          <Card className="merchant-summary-card merchant-summary-card--full">
             <h4>{t('merchant.locationLabel', 'Location')}</h4>
-            <p><strong>{t('merchant.latitudeLabel', 'Latitude')}:</strong> {shop.latitude ?? '-'}</p>
-            <p><strong>{t('merchant.longitudeLabel', 'Longitude')}:</strong> {shop.longitude ?? '-'}</p>
+            <LocationSelector 
+              latitude={shop.latitude} 
+              longitude={shop.longitude} 
+              isEditing={false}
+            />
           </Card>
           <Card className="merchant-summary-card">
             <h4>{t('merchant.contactData', 'Contact data')}</h4>
@@ -101,7 +105,7 @@ const MerchantProfileView = ({
             t={t}
           />
 
-          <label>
+          <label className="merchant-field merchant-field--critical">
             <span>{t('merchant.address', 'Address')}</span>
             <input
               maxLength={255}
@@ -135,29 +139,17 @@ const MerchantProfileView = ({
             </select>
           </label>
 
-          <div className="merchant-coordinates">
-            <label className="merchant-field merchant-field--critical">
-              <span>{t('merchant.latitudeLabel', 'Latitude')}</span>
-              <input
-                type="number"
-                step="0.000001"
-                min={-90}
-                max={90}
-                value={localizedShop.latitude}
-                onChange={(event) => onFieldChange('latitude', event.target.value)}
-              />
-            </label>
-            <label className="merchant-field merchant-field--critical">
-              <span>{t('merchant.longitudeLabel', 'Longitude')}</span>
-              <input
-                type="number"
-                step="0.000001"
-                min={-180}
-                max={180}
-                value={localizedShop.longitude}
-                onChange={(event) => onFieldChange('longitude', event.target.value)}
-              />
-            </label>
+          <div className="merchant-field merchant-field--critical">
+            <span>{t('merchant.locationLabel', 'Location')}</span>
+            <LocationSelector
+              latitude={localizedShop.latitude ? Number(localizedShop.latitude) : null}
+              longitude={localizedShop.longitude ? Number(localizedShop.longitude) : null}
+              onLocationSelect={(lat, lng) => {
+                onFieldChange('latitude', String(lat));
+                onFieldChange('longitude', String(lng));
+              }}
+              isEditing={true}
+            />
           </div>
 
           <div className="merchant-form-actions">

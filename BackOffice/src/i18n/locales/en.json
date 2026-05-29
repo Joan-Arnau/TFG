@@ -1,11 +1,13 @@
 {
   "app": {
-    "title": "PromoRural management panel",
-    "sectionAdmin": "Administration area",
-    "sectionAdminDescription": "Manage municipality configuration, white-label branding and public content.",
-    "sectionMerchant": "Merchant area",
+    "title": "PromoRural Management Panel",
+    "sectionAdmin": "Administration Space",
+    "sectionAdminDescription": "Manage municipality configuration, white label and public content.",
+    "sectionMerchant": "Merchant Space",
     "sectionMerchantDescription": "Manage profile, promotions and commercial publications.",
-    "apiBaseUrl": "API base URL"
+    "apiBaseUrl": "API base URL",
+    "confirmTitle": "Confirmation",
+    "confirmAction": "OK"
   },
   "language": {
     "label": "Language",
@@ -90,7 +92,7 @@
     "uploading": "Uploading...",
     "imagePreviewLabel": "Image",
     "imagePreviewAlt": "Image preview",
-    "requiredFieldsHint": "Required fields: Catalan title, start date and end date.",
+    "requiredFieldsHint": "All fields (title and description in all languages, dates, and image) are mandatory.",
     "newPromotion": "New promotion",
     "editPromotion": "Edit promotion",
     "titleLabel": "Title",
@@ -101,6 +103,7 @@
     "edit": "Edit",
     "confirmDeletePromotion": "Delete this promotion?",
     "confirmDeleteImage": "Delete this image?",
+    "promotionWarning": "Please note that any promotions you create or modify will be visible to all mobile app users during the selected effective period.",
     "imagesTitle": "Images",
     "imagesSubtitle": "Shop gallery",
     "uploadImage": "Upload image",

@@ -5,7 +5,9 @@
     "sectionAdminDescription": "Gestiona la configuración del municipio, marca blanca y contenido público.",
     "sectionMerchant": "Espacio del comerciante",
     "sectionMerchantDescription": "Gestiona perfil, promociones y publicaciones comerciales.",
-    "apiBaseUrl": "API base URL"
+    "apiBaseUrl": "API base URL",
+    "confirmTitle": "Confirmación",
+    "confirmAction": "Aceptar"
   },
   "language": {
     "label": "Idioma",
@@ -90,7 +92,7 @@
     "uploading": "Subiendo...",
     "imagePreviewLabel": "Imagen",
     "imagePreviewAlt": "Vista previa",
-    "requiredFieldsHint": "Campos obligatorios: título en catalán, fecha de inicio y fecha de fin.",
+    "requiredFieldsHint": "Todos los campos (título y descripción en todos los idiomas, fechas e imagen) son obligatorios.",
     "newPromotion": "Nueva promoción",
     "editPromotion": "Editar promoción",
     "titleLabel": "Título",
@@ -101,6 +103,7 @@
     "edit": "Editar",
     "confirmDeletePromotion": "¿Quieres eliminar esta promoción?",
     "confirmDeleteImage": "¿Quieres eliminar esta imagen?",
+    "promotionWarning": "Ten en cuenta que las promociones que crees o modifiques serán visibles para todos los usuarios de la aplicación móvil durante el período de vigencia seleccionado.",
     "imagesTitle": "Imágenes",
     "imagesSubtitle": "Galería de la tienda",
     "uploadImage": "Subir imagen",

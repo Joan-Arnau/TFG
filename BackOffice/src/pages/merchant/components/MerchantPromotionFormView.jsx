@@ -6,7 +6,22 @@ import { resolveBackendStaticUrl } from '../../../utils/backendUrls';
 
 const resolvePreviewSrc = (url) => resolveBackendStaticUrl(url);
 
-const MerchantPromotionFormView = ({ t, title, draft, onLocalizedChange, onFieldChange, onSubmit, canSubmit, saving, error, onFileUpload, uploading, uploadError, validationMessage }) => {
+const MerchantPromotionFormView = ({ 
+  t, 
+  title, 
+  draft, 
+  onLocalizedChange, 
+  onFieldChange, 
+  onSubmit, 
+  canSubmit, 
+  saving, 
+  error, 
+  onFileUpload, 
+  uploading, 
+  uploadError, 
+  validationMessage,
+  isEdit 
+}) => {
   const fileInputRef = useRef(null);
   const [localPreviewUrl, setLocalPreviewUrl] = useState(resolvePreviewSrc(draft.imageUrl || ''));
   const [lastObjectUrl, setLastObjectUrl] = useState(null);
@@ -25,7 +40,6 @@ const MerchantPromotionFormView = ({ t, title, draft, onLocalizedChange, onField
     const f = e.target.files && e.target.files[0];
     if (!f) return;
 
-    // show immediate local preview
     try {
       if (lastObjectUrl) {
         URL.revokeObjectURL(lastObjectUrl);
@@ -48,17 +62,25 @@ const MerchantPromotionFormView = ({ t, title, draft, onLocalizedChange, onField
     e.target.value = '';
   };
 
+  const now = new Date();
+  const minDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+  const maxDateTime = "9999-12-31T23:59";
+
   return (
     <section className="merchant-page">
       <MerchantPageHeader eyebrow={t('merchant.promotionsTitle', 'Promotions')} title={title} />
 
       <form className="merchant-form" onSubmit={onSubmit}>
+        <div className="merchant-warning">
+          {t('merchant.promotionWarning')}
+        </div>
         <LocalizedFieldSet
-          legend={`${t('merchant.titleLabel', 'Title')} *`}
+          legend={t('merchant.titleLabel', 'Title')}
           values={draft.title}
           onChange={(lang, value) => onLocalizedChange('title', lang, value)}
-          requiredLanguage="ca"
+          requiredLanguage={null}
           t={t}
+          className="merchant-fieldset merchant-fieldset--critical"
         />
 
         <LocalizedFieldSet
@@ -69,19 +91,36 @@ const MerchantPromotionFormView = ({ t, title, draft, onLocalizedChange, onField
           rows={3}
           requiredLanguage={null}
           t={t}
+          className="merchant-fieldset merchant-fieldset--critical"
         />
 
-        <label>
-          <span>{t('merchant.startDate', 'Start date')} *</span>
-          <input required type="datetime-local" value={draft.startsAt} onChange={(event) => onFieldChange('startsAt', event.target.value)} />
+        <label className="merchant-field merchant-field--critical">
+          <span>{t('merchant.startDate', 'Start date')}</span>
+          <input 
+            required 
+            type="datetime-local" 
+            value={draft.startsAt} 
+            onChange={(event) => onFieldChange('startsAt', event.target.value)} 
+            disabled={isEdit}
+            min={minDateTime}
+            max={maxDateTime}
+            style={isEdit ? { backgroundColor: '#f5f5f5', cursor: 'not-allowed' } : {}}
+          />
         </label>
 
-        <label>
-          <span>{t('merchant.endDate', 'End date')} *</span>
-          <input required type="datetime-local" value={draft.endsAt} onChange={(event) => onFieldChange('endsAt', event.target.value)} />
+        <label className="merchant-field merchant-field--critical">
+          <span>{t('merchant.endDate', 'End date')}</span>
+          <input 
+            required 
+            type="datetime-local" 
+            value={draft.endsAt} 
+            onChange={(event) => onFieldChange('endsAt', event.target.value)} 
+            min={draft.startsAt || minDateTime}
+            max={maxDateTime}
+          />
         </label>
 
-        <div>
+        <div className="merchant-field merchant-field--critical">
           <span>{t('merchant.imagePreviewLabel', 'Image')}</span>
           <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 8 }}>
             <input
@@ -93,15 +132,15 @@ const MerchantPromotionFormView = ({ t, title, draft, onLocalizedChange, onField
               style={{ display: 'none' }}
             />
             <Button type="button" onClick={handleChoose} disabled={uploading}>{uploading ? t('merchant.uploading', 'Uploading...') : t('merchant.upload', 'Upload')}</Button>
-            {uploadError ? <div className="error" style={{ marginTop: 6 }}>{uploadError}</div> : null}
           </div>
+          {uploadError ? <div className="error" style={{ marginTop: 6 }}>{uploadError}</div> : null}
 
           {(localPreviewUrl || draft?.imageUrl) ? (
             <div style={{ marginTop: 10 }}>
               <img
                 src={localPreviewUrl || resolvePreviewSrc(draft.imageUrl)}
                 alt={t('merchant.imagePreviewAlt', 'Image preview')}
-                style={{ maxWidth: 320, maxHeight: 180, objectFit: 'cover', border: '1px solid #ddd' }}
+                style={{ maxWidth: 320, maxHeight: 180, objectFit: 'cover', border: '1px solid #ddd', borderRadius: '8px' }}
               />
             </div>
           ) : null}
@@ -110,9 +149,9 @@ const MerchantPromotionFormView = ({ t, title, draft, onLocalizedChange, onField
         <div className="merchant-form-actions">
           <Button type="submit" disabled={!canSubmit || saving || uploading}>{saving ? t('merchant.saving', 'Saving...') : t('merchant.save', 'Save')}</Button>
         </div>
-        <p className="merchant-form-hint">{t('merchant.requiredFieldsHint', 'Camps obligatoris: títol en català, data d’inici i data de fi.')}</p>
-        {!canSubmit && validationMessage ? <div className="error">{validationMessage}</div> : null}
-        {error ? <div className="error">{error}</div> : null}
+        <p className="merchant-form-hint">{t('merchant.requiredFieldsHint', 'Camps obligatoris destacats amb vora lateral.')}</p>
+        {!canSubmit && validationMessage ? <div className="error" style={{ marginTop: '1rem' }}>{validationMessage}</div> : null}
+        {error ? <div className="error" style={{ marginTop: '1rem' }}>{error}</div> : null}
       </form>
     </section>
   );

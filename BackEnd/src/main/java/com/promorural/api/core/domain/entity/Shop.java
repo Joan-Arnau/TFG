@@ -171,6 +171,7 @@ public class Shop {
 
         if (address != null && !Objects.equals(address, this.address)) {
             this.address = address;
+            criticalChange = true;
         }
 
         if (phoneNumber != null && !Objects.equals(phoneNumber, this.phoneNumber)) {

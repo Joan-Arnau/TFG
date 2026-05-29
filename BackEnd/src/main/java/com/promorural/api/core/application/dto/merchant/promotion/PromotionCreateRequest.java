@@ -5,6 +5,7 @@ import com.promorural.api.core.application.validation.ValidI18nMap;
 import com.promorural.api.core.domain.entity.Promotion;
 import com.promorural.api.core.domain.entity.Shop;
 import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.OffsetDateTime;
@@ -16,6 +17,7 @@ public record PromotionCreateRequest(
     @ValidI18nMap(max = 2000, groups = {ValidationGroups.Create.class, ValidationGroups.Update.class})
     Map<String, String> description,
     @NotNull(groups = {ValidationGroups.Create.class, ValidationGroups.Update.class})
+    @FutureOrPresent(message = "{validation.date.future}", groups = {ValidationGroups.Create.class, ValidationGroups.Update.class})
     OffsetDateTime startsAt,
     @NotNull(groups = {ValidationGroups.Create.class, ValidationGroups.Update.class})
     OffsetDateTime endsAt,

@@ -69,14 +69,19 @@ export function useMerchantPromotions() {
   }, [confirm]);
 
   const validatePromotion = useCallback((data) => {
-    if (!data) return false;
-    const title = typeof data.title === 'object'
-      ? getLocalizedValue(data.title, 'ca', '').trim() || getLocalizedValue(data.title, 'es', '').trim() || getLocalizedValue(data.title, 'en', '').trim()
-      : (data.title != null ? String(data.title).trim() : '');
-    const startsAt = data.startsAt != null ? String(data.startsAt).trim() : '';
-    const endsAt = data.endsAt != null ? String(data.endsAt).trim() : '';
-    if (!title || !startsAt || !endsAt) return false;
-    return new Date(endsAt).getTime() >= new Date(startsAt).getTime();
+    if (!data || !data.imageUrl || !data.startsAt || !data.endsAt) return false;
+    
+    // Strict check: check keys directly to avoid getLocalizedValue fallback logic
+    const langs = ['ca', 'es', 'en'];
+    const titleObj = data.title || {};
+    const descObj = data.description || {};
+    
+    const hasAllTitles = langs.every(l => titleObj[l] && titleObj[l].trim() !== '');
+    const hasAllDescs = langs.every(l => descObj[l] && descObj[l].trim() !== '');
+
+    if (!hasAllTitles || !hasAllDescs) return false;
+
+    return new Date(data.endsAt).getTime() > new Date(data.startsAt).getTime();
   }, []);
 
   return { promotions, loading, error, load, getPromotion, create, update, remove, validatePromotion };
