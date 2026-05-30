@@ -15,18 +15,20 @@ const ContactFormModal = ({ contact, onClose, onSave, categories, t }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (contact) {
-      setNameDraft(getLocalizedDraft(contact.serviceName));
-      setPhoneNumber(contact.phoneNumber || '');
-      setIconName(contact.iconName || 'call-outline');
-      setCategoryId(contact.category?.id || '');
-    } else {
-      setNameDraft({ ca: '', es: '', en: '' });
-      setPhoneNumber('');
-      setIconName('call-outline');
-      setCategoryId(categories.length > 0 ? categories[0].id : '');
-    }
-    setError(null);
+    setTimeout(() => {
+      if (contact) {
+        setNameDraft(getLocalizedDraft(contact.serviceName));
+        setPhoneNumber(contact.phoneNumber || '');
+        setIconName(contact.iconName || 'call-outline');
+        setCategoryId(contact.category?.id || '');
+      } else {
+        setNameDraft({ ca: '', es: '', en: '' });
+        setPhoneNumber('');
+        setIconName('call-outline');
+        setCategoryId(categories.length > 0 ? categories[0].id : '');
+      }
+      setError(null);
+    }, 0);
   }, [contact, categories]);
 
   const handleNameChange = (lang, val) => {

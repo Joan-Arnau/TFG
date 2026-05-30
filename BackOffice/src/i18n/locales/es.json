@@ -15,7 +15,9 @@
     "cancel": "Cancelar",
     "save": "Guardar",
     "saving": "Guardando...",
-    "loading": "Cargando..."
+    "loading": "Cargando...",
+    "image": "Imagen",
+    "chooseFile": "Seleccionar archivo"
   },
   "language": {
     "label": "Idioma",
@@ -178,13 +180,24 @@
       "pending": "Solicitudes pendientes",
       "active": "Gestión de Comercios",
       "categories": "Gestión de Categorías",
-      "contacts": "Contactos"
+      "contacts": "Contactos",
+      "tourism": "Turismo"
     },
     "status": {
       "approved": "Aprobado",
       "pending": "Pendiente",
       "rejected": "Rechazado",
       "suspended": "Suspendido"
+    },
+    "tourism": {
+      "title": "Gestión de Puntos de Interés",
+      "addNew": "Nuevo Punto de Interés",
+      "confirmDelete": "¿Seguro que quieres eliminar el punto de interés \"{{name}}\"?",
+      "error": "Error cargando Puntos de Interés.",
+      "editTitle": "Editar Punto de Interés",
+      "namePlaceholder": "Nombre del punto de interés en {{lang}}",
+      "descPlaceholder": "Descripción del punto de interés en {{lang}}",
+      "location": "Localización (Lat, Lng)"
     },
     "contacts": {
       "title": "Gestión de Contactos",

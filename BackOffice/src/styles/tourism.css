@@ -1,0 +1,32 @@
+/* Tourism Gallery */
+.admin-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.poi-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.poi-card img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+}
+
+.poi-card h4 {
+  margin: 0 0 0.75rem 0;
+  font-size: 1rem;
+}
+
+.poi-card .actions {
+  margin-top: auto;
+  display: flex;
+  gap: 0.5rem;
+}

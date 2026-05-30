@@ -7,6 +7,7 @@ import AdminActiveShopTable from '../../components/admin/AdminActiveShopTable';
 import AdminCategoryTable from '../../components/admin/AdminCategoryTable';
 import AdminCategoryFormModal from '../../components/admin/AdminCategoryFormModal';
 import ContactManagementPage from './ContactManagementPage';
+import TourismManagementPage from './TourismManagementPage';
 import { usePendingShops } from '../../hooks/usePendingShops';
 import { useCategories } from '../../hooks/useCategories';
 import useConfirm from '../../hooks/useConfirm';
@@ -165,6 +166,13 @@ const AdminDashboard = () => {
         >
           {t('admin.tabs.contacts', 'Contacts')}
         </button>
+        <button
+          type="button"
+          className={`admin-tab-btn ${activeTab === 'tourism' ? 'active' : ''}`}
+          onClick={() => setActiveTab('tourism')}
+        >
+          {t('admin.tabs.tourism', 'Tourism')}
+        </button>
       </div>
 
       {/* Tab Contents */}
@@ -208,6 +216,9 @@ const AdminDashboard = () => {
         )}
         {activeTab === 'contacts' && (
           <ContactManagementPage />
+        )}
+        {activeTab === 'tourism' && (
+          <TourismManagementPage />
         )}
       </div>
 

@@ -15,7 +15,9 @@
     "cancel": "Cancel",
     "save": "Save",
     "saving": "Saving...",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "image": "Image",
+    "chooseFile": "Choose File"
   },
   "language": {
     "label": "Language",
@@ -178,13 +180,24 @@
       "pending": "Requests Inbox",
       "active": "Manage Shops",
       "categories": "Category Management",
-      "contacts": "Contacts"
+      "contacts": "Contacts",
+      "tourism": "Tourism"
     },
     "status": {
       "approved": "Approved",
       "pending": "Pending",
       "rejected": "Rejected",
       "suspended": "Suspended"
+    },
+    "tourism": {
+      "title": "Manage Points of Interest",
+      "addNew": "New Point of Interest",
+      "confirmDelete": "Are you sure you want to delete the Point of Interest \"{{name}}\"?",
+      "error": "Error loading Points of Interest.",
+      "editTitle": "Edit Point of Interest",
+      "namePlaceholder": "Name of point of interest in {{lang}}",
+      "descPlaceholder": "Description of point of interest in {{lang}}",
+      "location": "Location (Lat, Lng)"
     },
     "contacts": {
       "title": "Contact Management",

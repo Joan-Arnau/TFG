@@ -15,7 +15,9 @@
     "cancel": "Cancel·lar",
     "save": "Desar",
     "saving": "Desant...",
-    "loading": "Carregant..."
+    "loading": "Carregant...",
+    "image": "Imatge",
+    "chooseFile": "Seleccionar fitxer"
   },
   "language": {
     "label": "Idioma",
@@ -178,7 +180,8 @@
       "pending": "Bústia de Sol·licituds",
       "active": "Gestió de Comerços",
       "categories": "Gestió de Categories",
-      "contacts": "Contactes"
+      "contacts": "Contactes",
+      "tourism": "Turisme"
     },
     "status": {
       "approved": "Aprovat",
@@ -186,29 +189,15 @@
       "rejected": "Rebutjat",
       "suspended": "Suspès"
     },
-    "contacts": {
-      "title": "Gestió de Contactes",
-      "addNew": "Nou Contacte",
-      "name": "Nom",
-      "phone": "Telèfon",
-      "category": "Categoria",
-      "icon": "Icona",
-      "actions": "Accions",
-      "editTitle": "Editar Contacte",
-      "selectCategory": "Selecciona una categoria",
-      "errorNameRequired": "El nom és obligatori.",
-      "errorPhoneRequired": "El telèfon és obligatori.",
-      "errorCategoryRequired": "La categoria és obligatòria.",
-      "saveError": "Error al desar el contacte.",
-      "confirmDelete": "Segur que vols esborrar el contacte \"{{name}}\"?",
-      "error": "Error carregant contactes.",
-      "iconTypes": {
-        "security": "Seguretat",
-        "administration": "Administració",
-        "health": "Salut",
-        "pharmacy": "Farmàcia",
-        "general": "General"
-      }
+    "tourism": {
+      "title": "Gestió de Punts d'Interès",
+      "addNew": "Nou Punt d'Interès",
+      "confirmDelete": "Segur que vols esborrar el punt d'interès \"{{name}}\"?",
+      "error": "Error carregant Punts d'Interès.",
+      "editTitle": "Editar Punt d'Interès",
+      "namePlaceholder": "Nom del punt d'interès en {{lang}}",
+      "descPlaceholder": "Descripció del punt d'interès en {{lang}}",
+      "location": "Localització (Lat, Lng)"
     },
     "categories": {
       "nameRequired": "Cal almenys un nom en algun idioma.",
