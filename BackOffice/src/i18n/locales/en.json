@@ -185,7 +185,8 @@
       "categories": "Category Management",
       "contacts": "Contacts",
       "tourism": "Tourism",
-      "announcements": "Announcements"
+      "announcements": "Announcements",
+      "events": "Events"
     },
     "status": {
       "approved": "Approved",
@@ -219,6 +220,27 @@
       "errorTitleRequired": "Title is required in all languages.",
       "errorContentRequired": "Content is required in all languages.",
       "errorCategoryRequired": "Category is required."
+    },
+    "events": {
+      "title": "Event Management",
+      "addNew": "New Event",
+      "date": "Date",
+      "titleField": "Title",
+      "isFestival": "Is Festival Event",
+      "locationName": "Location Name",
+      "locationCoordinates": "Location Coordinates",
+      "confirmDelete": "Are you sure you want to delete the event \"{{name}}\"?",
+      "errorLoading": "Error loading events.",
+      "saveError": "Error saving event.",
+      "titlePlaceholder": "Event title in {{lang}}",
+      "descPlaceholder": "Event description in {{lang}}",
+      "locationNamePlaceholder": "Location name in {{lang}}",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "noEvents": "No events found.",
+      "editTitle": "Edit Event",
+      "selectCategory": "Select a category",
+      "noLocationSelected": "No location selected, click on the map to choose one."
     },
     "tourism": {
       "title": "Manage Points of Interest",

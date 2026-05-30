@@ -9,7 +9,7 @@ public record EventAdminResponse(
         Map<String, String> description,
         Map<String, String> locationText,
         CategoryRef category,
-        boolean festival,
+        boolean isFestival,
         OffsetDateTime startsAt,
         OffsetDateTime endsAt,
         String imageUrl,

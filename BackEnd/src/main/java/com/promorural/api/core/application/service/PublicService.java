@@ -174,7 +174,7 @@ public class PublicService {
                         item.getDescription(),
                         item.getLocationText(),
                         mapToCategoryResponse(item.getCategory()),
-                        item.isFestival(),
+                        item.getIsFestival(),
                         item.getStartsAt(),
                         item.getEndsAt(),
                         item.getImageUrl(),

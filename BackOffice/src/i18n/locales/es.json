@@ -185,7 +185,8 @@
       "categories": "Gestión de Categorías",
       "contacts": "Contactos",
       "tourism": "Turismo",
-      "announcements": "Bandos"
+      "announcements": "Bandos",
+      "events": "Eventos"
     },
     "status": {
       "approved": "Aprobado",
@@ -219,6 +220,27 @@
       "errorTitleRequired": "El título es obligatorio en todos los idiomas.",
       "errorContentRequired": "El contenido es obligatorio en todos los idiomas.",
       "errorCategoryRequired": "La categoría es obligatoria."
+    },
+    "events": {
+      "title": "Gestión de Eventos",
+      "addNew": "Nuevo Evento",
+      "date": "Fecha",
+      "titleField": "Título",
+      "isFestival": "Es Evento de Festival",
+      "locationName": "Nombre del Lugar",
+      "locationCoordinates": "Coordenadas de Localización",
+      "confirmDelete": "¿Seguro que quieres eliminar el evento \"{{name}}\"?",
+      "errorLoading": "Error cargando eventos.",
+      "saveError": "Error al guardar el evento.",
+      "titlePlaceholder": "Título del evento en {{lang}}",
+      "descPlaceholder": "Descripción del evento en {{lang}}",
+      "locationNamePlaceholder": "Nombre del lugar en {{lang}}",
+      "startDate": "Fecha de inicio",
+      "endDate": "Fecha de fin",
+      "noEvents": "No se han encontrado eventos.",
+      "editTitle": "Editar Evento",
+      "selectCategory": "Selecciona una categoría",
+      "noLocationSelected": "No se ha seleccionado ninguna ubicación, haz clic en el mapa para elegir una."
     },
     "tourism": {
       "title": "Gestión de Puntos de Interés",

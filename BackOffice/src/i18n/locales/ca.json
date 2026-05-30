@@ -185,7 +185,8 @@
       "categories": "Gestió de Categories",
       "contacts": "Contactes",
       "tourism": "Turisme",
-      "announcements": "Bandos"
+      "announcements": "Bandos",
+      "events": "Esdeveniments"
     },
     "status": {
       "approved": "Aprovat",
@@ -219,6 +220,27 @@
       "errorTitleRequired": "El títol és obligatori en tots els idiomes.",
       "errorContentRequired": "El contingut és obligatori en tots els idiomes.",
       "errorCategoryRequired": "La categoria és obligatòria."
+    },
+    "events": {
+      "title": "Gestió d'Esdeveniments",
+      "addNew": "Nou Esdeveniment",
+      "date": "Data",
+      "titleField": "Títol",
+      "isFestival": "És Esdeveniment de Festival",
+      "locationName": "Nom del Lloc",
+      "locationCoordinates": "Coordenades de Localització",
+      "confirmDelete": "Segur que vols esborrar l'esdeveniment \"{{name}}\"?",
+      "errorLoading": "Error carregant esdeveniments.",
+      "saveError": "Error al desar l'esdeveniment.",
+      "titlePlaceholder": "Títol de l'esdeveniment en {{lang}}",
+      "descPlaceholder": "Descripció de l'esdeveniment en {{lang}}",
+      "locationNamePlaceholder": "Nom del lloc en {{lang}}",
+      "startDate": "Data d'inici",
+      "endDate": "Data de fi",
+      "noEvents": "No s'han trobat esdeveniments.",
+      "editTitle": "Editar Esdeveniment",
+      "selectCategory": "Selecciona una categoria",
+      "noLocationSelected": "No s'ha seleccionat cap ubicació, fes clic al mapa per triar-ne una."
     },
     "tourism": {
       "title": "Gestió de Punts d'Interès",

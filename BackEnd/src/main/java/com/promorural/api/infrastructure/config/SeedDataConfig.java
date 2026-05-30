@@ -491,13 +491,13 @@ public class SeedDataConfig {
         repo.save(announcement);
     }
 
-    private void createEvent(EventRepository repo, Category cat, boolean festival, Map<String, String> title, Map<String, String> description, Map<String, String> locationText, OffsetDateTime startsAt, OffsetDateTime endsAt, String imageUrl, Point locationGeom) {
+    private void createEvent(EventRepository repo, Category cat, boolean isFestival, Map<String, String> title, Map<String, String> description, Map<String, String> locationText, OffsetDateTime startsAt, OffsetDateTime endsAt, String imageUrl, Point locationGeom) {
         Event event = new Event();
         event.setTitle(title);
         event.setDescription(description);
         event.setLocationText(locationText);
         event.setCategory(cat);
-        event.setFestival(festival);
+        event.setIsFestival(isFestival);
         event.setStartsAt(startsAt);
         event.setEndsAt(endsAt);
         event.setImageUrl(imageUrl);

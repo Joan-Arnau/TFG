@@ -32,12 +32,12 @@ public class Event {
     private Category category;
 
     @Column(name = "is_festival", nullable = false)
-    private boolean festival = false;
+    private boolean isFestival = false;
 
-    @Column(nullable = false)
+    @Column(name = "starts_at", nullable = false)
     private OffsetDateTime startsAt;
 
-    @Column(nullable = false)
+    @Column(name = "ends_at")
     private OffsetDateTime endsAt;
 
     @Column(name = "image_url", length = 500)
@@ -48,6 +48,10 @@ public class Event {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Map<String, String> getTitle() {
@@ -82,12 +86,12 @@ public class Event {
         this.category = category;
     }
 
-    public boolean isFestival() {
-        return festival;
+    public boolean getIsFestival() {
+        return isFestival;
     }
 
-    public void setFestival(boolean festival) {
-        this.festival = festival;
+    public void setIsFestival(boolean isFestival) {
+        this.isFestival = isFestival;
     }
 
     public OffsetDateTime getStartsAt() {

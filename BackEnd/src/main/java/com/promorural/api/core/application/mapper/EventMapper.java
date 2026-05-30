@@ -15,7 +15,7 @@ public final class EventMapper {
                 item.getDescription(),
                 item.getLocationText(),
                 CategoryMapper.toRef(item.getCategory()),
-                item.isFestival(),
+                item.getIsFestival(),
                 item.getStartsAt(),
                 item.getEndsAt(),
                 item.getImageUrl(),

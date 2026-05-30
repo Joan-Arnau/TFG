@@ -1,16 +1,15 @@
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import Modal from '../ui/Modal';
 import Button from '../ui/Button';
+import InputI18n from '../forms/InputI18n';
+import CategorySelect from '../forms/CategorySelect';
 import { getLocalizedDraft, buildLocalizedMap } from '../../utils/localization';
 
 const AnnouncementFormModal = ({ announcement, onClose, onSave, categories, t }) => {
-  const { i18n } = useTranslation();
   const [titleDraft, setTitleDraft] = useState({ ca: '', es: '', en: '' });
   const [contentDraft, setContentDraft] = useState({ ca: '', es: '', en: '' });
   const [categoryId, setCategoryId] = useState('');
   const [isUrgent, setIsUrgent] = useState(false);
-  const [activeLangTab, setActiveLangTab] = useState('ca');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
@@ -35,7 +34,6 @@ const AnnouncementFormModal = ({ announcement, onClose, onSave, categories, t })
     e.preventDefault();
     setError(null);
 
-    // Form Validation
     const isTitleFilled = Object.values(titleDraft).every(val => val.trim() !== '');
     const isContentFilled = Object.values(contentDraft).every(val => val.trim() !== '');
 
@@ -68,49 +66,44 @@ const AnnouncementFormModal = ({ announcement, onClose, onSave, categories, t })
     }
   };
 
-  const languages = [{code: 'ca', name: 'Català'}, {code: 'es', name: 'Castellano'}, {code: 'en', name: 'English'}];
-
-  const isFormValid = Object.values(titleDraft).every(val => val.trim() !== '') &&
-                      Object.values(contentDraft).every(val => val.trim() !== '') &&
-                      categoryId !== '';
-
   return (
     <Modal onClose={onClose}>
-      <h3>{announcement ? t('admin.announcements.editTitle', 'Editar Bando') : t('admin.announcements.addNew', 'Nou Bando')}</h3>
-      {error && <div className="alert alert-danger mb-2">{error}</div>}
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label className="form-label">{t('admin.announcements.title', 'Títol')}</label>
-          <div className="lang-tabs mb-2">
-            {languages.map(lang => (
-              <button key={lang.code} type="button" className={`lang-tab-btn ${activeLangTab === lang.code ? 'active' : ''}`} onClick={() => setActiveLangTab(lang.code)}>{lang.name}</button>
-            ))}
-          </div>
-          {languages.map(lang => (
-            <div key={lang.code} style={{ display: activeLangTab === lang.code ? 'block' : 'none' }}>
-              <label className="form-label mt-2">{t('admin.announcements.titleField', 'Títol')}</label>
-              <input type="text" className="form-input mb-2" value={titleDraft[lang.code]} onChange={(e) => setTitleDraft({...titleDraft, [lang.code]: e.target.value})} placeholder={t('admin.announcements.titlePlaceholder', { lang: lang.name })} />
-
-              <label className="form-label mt-2">{t('admin.announcements.content', 'Contingut')}</label>
-              <textarea className="form-input" value={contentDraft[lang.code]} onChange={(e) => setContentDraft({...contentDraft, [lang.code]: e.target.value})} placeholder={t('admin.announcements.contentPlaceholder', { lang: lang.name })} />
-            </div>
-          ))}
-          </div>
+      <div className="admin-category-modal">
+        <h3>{announcement ? t('admin.announcements.editTitle', 'Editar Bando') : t('admin.announcements.addNew', 'Nou Bando')}</h3>
+        {error && <div className="alert alert-danger mb-2">{error}</div>}
+        <form onSubmit={handleSubmit}>
+          <InputI18n
+            label={t('admin.announcements.titleField', 'Títol')}
+            value={titleDraft}
+            onChange={(lang, val) => setTitleDraft({...titleDraft, [lang]: val})}
+            placeholderKey="admin.announcements.titlePlaceholder"
+          />
+          <InputI18n
+            label={t('admin.announcements.content', 'Contingut')}
+            value={contentDraft}
+            onChange={(lang, val) => setContentDraft({...contentDraft, [lang]: val})}
+            placeholderKey="admin.announcements.contentPlaceholder"
+            isTextArea
+          />
           <div className="form-group">
-          <label className="form-label">{t('admin.announcements.category', 'Categoria')}</label>
-          <select className="form-input" value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
-            {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name[i18n.language] || cat.name['ca']}</option>)}
-          </select>
+            <label className="form-label">{t('admin.announcements.category', 'Categoria')}</label>
+            <CategorySelect
+              categories={categories}
+              value={categoryId}
+              onChange={(e) => setCategoryId(e.target.value)}
+              placeholder={t('admin.announcements.selectCategory', 'Selecciona categoria')}
+            />
           </div>
-          <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <input type="checkbox" checked={isUrgent} onChange={(e) => setIsUrgent(e.target.checked)} id="urgent-check" />
-            <label htmlFor="urgent-check" style={{ margin: 0 }}>{t('admin.announcements.urgent', 'És Urgent')}</label>
+          <div className="form-group" style={{ display: 'inline-flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', gap: '0.5rem', marginTop: '1rem', width: 'fit-content' }}>
+            <label htmlFor="urgent" className="form-label" style={{ margin: 0, cursor: 'pointer' }}>{t('admin.announcements.urgent', 'És Urgent')}</label>
+            <input type="checkbox" id="urgent" checked={isUrgent} onChange={(e) => setIsUrgent(e.target.checked)} style={{ width: 'auto', margin: 0 }} />
           </div>
-        <div className="admin-modal-actions mt-4">
-          <Button variant="secondary" onClick={onClose} disabled={isSubmitting} style={{marginRight: '8px'}}>{t('common.cancel', 'Cancel·lar')}</Button>
-          <Button variant="primary" type="submit" disabled={isSubmitting || !isFormValid}>{isSubmitting ? t('common.saving', 'Desant...') : t('common.save', 'Desar')}</Button>
-        </div>
-      </form>
+          <div className="admin-modal-actions mt-4" style={{ display: 'flex', gap: '10px', marginTop: '2rem' }}>
+            <Button variant="secondary" onClick={onClose} disabled={isSubmitting}>{t('common.cancel', 'Cancel·lar')}</Button>
+            <Button variant="primary" type="submit" disabled={isSubmitting}>{isSubmitting ? t('common.saving', 'Desant...') : t('common.save', 'Desar')}</Button>
+          </div>
+        </form>
+      </div>
     </Modal>
   );
 };

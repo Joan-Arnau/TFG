@@ -1,3 +1,4 @@
+import EventManagementPage from './EventManagementPage';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AdminDashboardHeader from '../../components/admin/AdminDashboardHeader';
@@ -182,6 +183,13 @@ const AdminDashboard = () => {
         >
           {t('admin.tabs.announcements', 'Bandos')}
         </button>
+        <button
+          type="button"
+          className={`admin-tab-btn ${activeTab === 'events' ? 'active' : ''}`}
+          onClick={() => setActiveTab('events')}
+        >
+          {t('admin.tabs.events', 'Events')}
+        </button>
         </div>
 
       {/* Tab Contents */}
@@ -231,6 +239,9 @@ const AdminDashboard = () => {
         )}
         {activeTab === 'announcements' && (
           <AnnouncementManagementPage />
+        )}
+        {activeTab === 'events' && (
+          <EventManagementPage />
         )}
       </div>
 

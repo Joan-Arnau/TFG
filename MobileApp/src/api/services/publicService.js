@@ -129,7 +129,7 @@ export const publicService = {
         endsAt: item.endsAt,
         latitude: item.latitude,
         longitude: item.longitude,
-        isFestival: item.festival || false,
+        isFestival: item.isFestival || false,
         imageUrl: formatImageUrl(item.imageUrl),
         categoryName: item.category ? getTranslation(item.category.name) : '',
         categoryId: item.category ? item.category.id : null
