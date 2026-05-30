@@ -53,6 +53,11 @@ export const usePendingShops = () => {
     await loadShops();
   };
 
+  const suspendShop = async (id) => {
+    await shopService.updateStatus(id, 'SUSPENDED');
+    await loadShops();
+  };
+
   const deleteShop = async (id) => {
     await shopService.adminDelete(id);
     await loadShops();
@@ -70,6 +75,7 @@ export const usePendingShops = () => {
     refresh: loadShops,
     approveShop,
     rejectShop,
+    suspendShop,
     deleteShop,
   };
 };

@@ -9,6 +9,14 @@
     "confirmTitle": "Confirmació",
     "confirmAction": "D'acord"
   },
+  "common": {
+    "edit": "Editar",
+    "delete": "Esborrar",
+    "cancel": "Cancel·lar",
+    "save": "Desar",
+    "saving": "Desant...",
+    "loading": "Carregant..."
+  },
   "language": {
     "label": "Idioma",
     "ca": "Català",
@@ -168,12 +176,41 @@
     },
     "tabs": {
       "pending": "Bústia de Sol·licituds",
-      "active": "Gestió de Comerços"
+      "active": "Gestió de Comerços",
+      "categories": "Gestió de Categories"
     },
     "status": {
       "approved": "Aprovat",
       "pending": "Pendent",
       "rejected": "Rebutjat"
+    },
+    "categories": {
+      "nameRequired": "Cal almenys un nom en algun idioma.",
+      "saveError": "No s'ha pogut desar la categoria.",
+      "editTitle": "Editar Categoria",
+      "createTitle": "Crear Nova Categoria",
+      "nameLabel": "Nom de la Categoria",
+      "namePlaceholder": "Nom de la categoria en {{lang}}",
+      "typeLabel": "Tipus",
+      "typeDisabledNote": "El tipus no es pot canviar una vegada creada la categoria.",
+      "confirmDelete": "Segur que vols esborrar la categoria \"{{name}}\"?",
+      "deleteError": "No s'ha pogut esborrar la categoria.",
+      "filterLabel": "Filtrar per:",
+      "filterAll": "Tots els tipus",
+      "addNew": "Nova Categoria",
+      "loading": "Carregant categories...",
+      "error": "Error carregant categories.",
+      "noCategories": "No s'han trobat categories.",
+      "tableName": "Nom",
+      "tableType": "Tipus",
+      "tableActions": "Accions"
+    },
+    "categoryTypes": {
+      "shop": "Comerç",
+      "announcement": "Comunicat",
+      "event": "Esdeveniment",
+      "poi": "Punt d'Interès",
+      "contact": "Telèfon d'Interès"
     }
   }
 }

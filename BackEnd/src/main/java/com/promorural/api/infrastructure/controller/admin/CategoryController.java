@@ -23,20 +23,21 @@ public class CategoryController {
     }
 
     /**
-     * Endpoint per obtenir un llistat complet de totes les categories.
-     * @return ResponseEntity amb una llista de CategoryResponse DTOs.
+     * Endpoint to get a complete list of all categories.
+     * @return ResponseEntity with a list of CategoryResponse DTOs.
      */
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/categories")
-    public ResponseEntity<List<CategoryAdminResponse>> getAllCategories() {
-        List<CategoryAdminResponse> categoriesDto = categoryService.getAllCategories();
+    public ResponseEntity<List<CategoryAdminResponse>> getAllCategories(
+            @RequestParam(required = false) String type) {
+        List<CategoryAdminResponse> categoriesDto = categoryService.getAllCategories(type);
         return ResponseEntity.ok(categoriesDto);
     }
 
     /**
-     * Endpoint per crear una nova categoria.
-     * @param request El CategoryRequestDto amb les dades de la nova categoria.
-     * @return ResponseEntity amb la CategoryResponse creada o un error.
+     * Endpoint to create a new category.
+     * @param request The CategoryRequestDto with the data of the new category.
+     * @return ResponseEntity with the created CategoryResponse or an error.
      */
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/categories")
@@ -47,9 +48,24 @@ public class CategoryController {
     }
 
     /**
-     * Endpoint per esborrar una categoria per ID.
-     * @param id L'ID de la categoria a esborrar.
-     * @return ResponseEntity indicant èxit o error.
+     * Endpoint to update an existing category.
+     * @param id The ID of the category to update.
+     * @param request The CategoryRequest with the updated data.
+     * @return ResponseEntity with the updated CategoryResponse.
+     */
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/categories/{id}")
+    public ResponseEntity<CategoryAdminResponse> updateCategory(
+            @PathVariable Long id,
+            @Validated(ValidationGroups.Update.class) @RequestBody CategoryRequest request) {
+        CategoryAdminResponse updatedCategoryDto = categoryService.updateCategory(id, request);
+        return ResponseEntity.ok(updatedCategoryDto);
+    }
+
+    /**
+     * Endpoint to delete a category by ID.
+     * @param id The ID of the category to delete.
+     * @return ResponseEntity indicating success or error.
      */
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/categories/{id}")

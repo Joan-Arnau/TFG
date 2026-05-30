@@ -10,6 +10,7 @@ const PromotionFormPage = () => {
 
   return (
     <MerchantPromotionFormView
+      key={id || 'new'}
       t={t}
       title={id ? t('merchant.editPromotion', 'Edit Promotion') : t('merchant.newPromotion', 'New Promotion')}
       draft={draft}

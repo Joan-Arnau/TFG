@@ -4,24 +4,54 @@ import AdminDashboardHeader from '../../components/admin/AdminDashboardHeader';
 import AdminStats from '../../components/admin/AdminStats';
 import PendingShopList from '../../components/admin/PendingShopList';
 import AdminActiveShopTable from '../../components/admin/AdminActiveShopTable';
+import AdminCategoryTable from '../../components/admin/AdminCategoryTable';
+import AdminCategoryFormModal from '../../components/admin/AdminCategoryFormModal';
 import { usePendingShops } from '../../hooks/usePendingShops';
-import { useConfirm } from '../../hooks/useConfirm';
+import { useCategories } from '../../hooks/useCategories';
+import useConfirm from '../../hooks/useConfirm';
 import { getLocalizedValue } from '../../utils/localization';
 
 const AdminDashboard = () => {
   const { t, i18n } = useTranslation();
   const confirm = useConfirm();
   const [activeTab, setActiveTab] = useState('pending');
-const {
-  pendingShops,
-  allShops,
-  loading,
-  error,
-  refresh,
-  approveShop,
-  rejectShop,
-  deleteShop
-} = usePendingShops();
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+  const [editingCategory, setEditingCategory] = useState(null);
+
+  const {
+    pendingShops,
+    allShops,
+    loading: shopsLoading,
+    error: shopsError,
+    refresh: refreshShops,
+    approveShop,
+    rejectShop,
+    suspendShop,
+    deleteShop
+  } = usePendingShops();
+
+  const {
+    categories,
+    loading: categoriesLoading,
+    error: categoriesError,
+    filterType,
+    setFilterType,
+    refresh: refreshCategories,
+    createCategory,
+    updateCategory,
+    deleteCategory: apiDeleteCategory
+  } = useCategories();
+
+  const loading = activeTab === 'categories' ? categoriesLoading : shopsLoading;
+  const error = activeTab === 'categories' ? categoriesError : shopsError;
+
+  const handleRefresh = () => {
+    if (activeTab === 'categories') {
+      refreshCategories();
+    } else {
+      refreshShops();
+    }
+  };
 
   const getShopName = (shop) => {
     return getLocalizedValue(shop.name, i18n.language, `#${shop.id}`);
@@ -49,7 +79,7 @@ const {
       `Are you sure you want to suspend "${name}"? This will return it to pending status.`
     );
     if (confirmed) {
-      await rejectShop(shop.id, t('admin.shops.suspendedByAdmin', 'Suspended by administration.'));
+      await suspendShop(shop.id);
     }
   };
 
@@ -64,9 +94,44 @@ const {
     }
   };
 
+  // Category Actions
+  const handleEditCategory = (category) => {
+    setEditingCategory(category);
+    setIsCategoryModalOpen(true);
+  };
+
+  const handleAddNewCategory = () => {
+    setEditingCategory(null);
+    setIsCategoryModalOpen(true);
+  };
+
+  const handleSaveCategory = async (payload) => {
+    if (editingCategory) {
+      await updateCategory(editingCategory.id, payload);
+    } else {
+      await createCategory(payload);
+    }
+  };
+
+  const handleDeleteCategory = async (category) => {
+    const name = getLocalizedValue(category.name, i18n.language, `#${category.id}`);
+    const confirmed = await confirm(
+      t('admin.categories.confirmDelete', { name }),
+      `Are you sure you want to delete the category "${name}"?`
+    );
+    if (confirmed) {
+      try {
+        await apiDeleteCategory(category.id);
+      } catch (err) {
+        const backendMessage = err.response?.data?.message || err.message;
+        alert(backendMessage || t('admin.categories.deleteError', 'Could not delete category.'));
+      }
+    }
+  };
+
   return (
     <main className="dashboard">
-      <AdminDashboardHeader onRefresh={refresh} loading={loading} />
+      <AdminDashboardHeader onRefresh={handleRefresh} loading={loading} />
       <AdminStats pendingShops={pendingShops} />
 
       {/* Tabs Menu */}
@@ -85,11 +150,18 @@ const {
         >
           {t('admin.tabs.active', 'All Shops')} ({allShops.length})
         </button>
+        <button
+          type="button"
+          className={`admin-tab-btn ${activeTab === 'categories' ? 'active' : ''}`}
+          onClick={() => setActiveTab('categories')}
+        >
+          {t('admin.tabs.categories', 'Categories')} ({categories.length})
+        </button>
       </div>
 
       {/* Tab Contents */}
       <div className="admin-tab-content">
-        {activeTab === 'pending' ? (
+        {activeTab === 'pending' && (
           <PendingShopList
             shops={pendingShops}
             loading={loading}
@@ -99,7 +171,8 @@ const {
             t={t}
             i18n={i18n}
           />
-        ) : (
+        )}
+        {activeTab === 'all' && (
           <AdminActiveShopTable
             shops={allShops}
             loading={loading}
@@ -111,7 +184,30 @@ const {
             i18n={i18n}
           />
         )}
+        {activeTab === 'categories' && (
+          <AdminCategoryTable
+            categories={categories}
+            loading={loading}
+            error={error}
+            filterType={filterType}
+            onFilterChange={setFilterType}
+            onEdit={handleEditCategory}
+            onDelete={handleDeleteCategory}
+            onAddNew={handleAddNewCategory}
+            t={t}
+            i18n={i18n}
+          />
+        )}
       </div>
+
+      {isCategoryModalOpen && (
+        <AdminCategoryFormModal
+          category={editingCategory}
+          onClose={() => setIsCategoryModalOpen(false)}
+          onSave={handleSaveCategory}
+          t={t}
+        />
+      )}
     </main>
   );
 };

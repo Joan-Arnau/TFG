@@ -10,4 +10,6 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
     List<Shop> findByStatusOrderByCreatedAtDesc(ShopStatus status);
     
     Optional<Shop> findByOwnerUsername(String username); 
+
+    long countByCategoryId(Long categoryId);
 }

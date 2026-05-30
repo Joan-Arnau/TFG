@@ -9,6 +9,14 @@
     "confirmTitle": "Confirmación",
     "confirmAction": "Aceptar"
   },
+  "common": {
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "saving": "Guardando...",
+    "loading": "Cargando..."
+  },
   "language": {
     "label": "Idioma",
     "ca": "Catalán",
@@ -168,12 +176,41 @@
     },
     "tabs": {
       "pending": "Solicitudes pendientes",
-      "active": "Gestión de Comercios"
+      "active": "Gestión de Comercios",
+      "categories": "Gestión de Categorías"
     },
     "status": {
       "approved": "Aprobado",
       "pending": "Pendiente",
       "rejected": "Rechazado"
+    },
+    "categories": {
+      "nameRequired": "Se requiere al menos un nombre en algún idioma.",
+      "saveError": "No se pudo guardar la categoría.",
+      "editTitle": "Editar Categoría",
+      "createTitle": "Crear Nueva Categoría",
+      "nameLabel": "Nombre de la Categoría",
+      "namePlaceholder": "Nombre de la categoría en {{lang}}",
+      "typeLabel": "Tipo",
+      "typeDisabledNote": "El tipo no se puede cambiar una vez creada la categoría.",
+      "confirmDelete": "¿Seguro que quieres eliminar la categoría \"{{name}}\"?",
+      "deleteError": "No se pudo eliminar la categoría.",
+      "filterLabel": "Filtrar por:",
+      "filterAll": "Todos los tipos",
+      "addNew": "Nueva Categoría",
+      "loading": "Cargando categorías...",
+      "error": "Error cargando categorías.",
+      "noCategories": "No se han encontrado categorías.",
+      "tableName": "Nombre",
+      "tableType": "Tipo",
+      "tableActions": "Acciones"
+    },
+    "categoryTypes": {
+      "shop": "Comercio",
+      "announcement": "Comunicado",
+      "event": "Evento",
+      "poi": "Punto de Interés",
+      "contact": "Teléfono de Interés"
     }
   }
 }

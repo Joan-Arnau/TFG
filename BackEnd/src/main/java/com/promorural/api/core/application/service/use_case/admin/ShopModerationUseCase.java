@@ -165,6 +165,9 @@ public class ShopModerationUseCase {
                     String htmlContent = emailTemplateService.renderShopRejectedTemplate(shopName, reason);
                     emailService.sendHtmlEmail(email, "Sol·licitud de comerç rebutjada", htmlContent);
                     log.info("Rejection email sent to owner of shop id={} (reason: {})", id, reason);
+                } else if (status == ShopStatus.SUSPENDED) {
+                    emailService.sendHtmlEmail(email, "Comerç suspès", "El teu comerç ha estat suspès.");
+                    log.info("Suspension email sent to owner of shop id={}", id);
                 }
             } catch (Exception e) {
                 log.error("Failed to send moderation email for shop id={}: {}", id, e.getMessage());

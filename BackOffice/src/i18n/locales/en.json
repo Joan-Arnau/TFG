@@ -9,6 +9,14 @@
     "confirmTitle": "Confirmation",
     "confirmAction": "OK"
   },
+  "common": {
+    "edit": "Edit",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving...",
+    "loading": "Loading..."
+  },
   "language": {
     "label": "Language",
     "ca": "Catalan",
@@ -168,12 +176,41 @@
     },
     "tabs": {
       "pending": "Requests Inbox",
-      "active": "Manage Shops"
+      "active": "Manage Shops",
+      "categories": "Category Management"
     },
     "status": {
       "approved": "Approved",
       "pending": "Pending",
       "rejected": "Rejected"
+    },
+    "categories": {
+      "nameRequired": "At least one name in any language is required.",
+      "saveError": "Failed to save category.",
+      "editTitle": "Edit Category",
+      "createTitle": "Create New Category",
+      "nameLabel": "Category Name",
+      "namePlaceholder": "Category name in {{lang}}",
+      "typeLabel": "Type",
+      "typeDisabledNote": "The type cannot be modified once a category has been created.",
+      "confirmDelete": "Are you sure you want to delete the category \"{{name}}\"?",
+      "deleteError": "Could not delete category.",
+      "filterLabel": "Filter by:",
+      "filterAll": "All types",
+      "addNew": "New Category",
+      "loading": "Loading categories...",
+      "error": "Error loading categories.",
+      "noCategories": "No categories found.",
+      "tableName": "Name",
+      "tableType": "Type",
+      "tableActions": "Actions"
+    },
+    "categoryTypes": {
+      "shop": "Shop",
+      "announcement": "Announcement",
+      "event": "Event",
+      "poi": "Point of Interest",
+      "contact": "Contact Phone"
     }
   }
 }

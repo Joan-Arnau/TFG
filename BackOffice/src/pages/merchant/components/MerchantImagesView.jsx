@@ -15,7 +15,7 @@ const MerchantImagesView = ({ t, images, onUpload, onSave, onDelete, uploading, 
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             <Button as="label" className="merchant-upload-button">
               {t('merchant.uploadImage', 'Upload image')}
-              <input type="file" onChange={onUpload} />
+              <input type="file" accept="image/png,image/jpeg,image/webp" onChange={onUpload} />
             </Button>
             <Button type="button" onClick={onSave} disabled={uploading || !pendingPreviewUrl}>
               {uploading ? t('merchant.uploading', 'Uploading...') : t('merchant.save', 'Save')}
