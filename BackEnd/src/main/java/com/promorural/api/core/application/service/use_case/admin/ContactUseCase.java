@@ -13,7 +13,9 @@ import com.promorural.api.core.domain.repository.ContactRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -25,6 +27,12 @@ public class ContactUseCase {
     public ContactUseCase(ContactRepository contactRepository, CategoryRepository categoryRepository) {
         this.contactRepository = contactRepository;
         this.categoryRepository = categoryRepository;
+    }
+
+    public List<ContactResponse> getAll() {
+        return contactRepository.findAll().stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
     }
 
     public ContactResponse create(ContactCreateRequest request) {

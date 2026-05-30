@@ -177,13 +177,38 @@
     "tabs": {
       "pending": "Requests Inbox",
       "active": "Manage Shops",
-      "categories": "Category Management"
+      "categories": "Category Management",
+      "contacts": "Contacts"
     },
     "status": {
       "approved": "Approved",
       "pending": "Pending",
       "rejected": "Rejected",
       "suspended": "Suspended"
+    },
+    "contacts": {
+      "title": "Contact Management",
+      "addNew": "New Contact",
+      "name": "Name",
+      "phone": "Phone",
+      "category": "Category",
+      "icon": "Icon",
+      "actions": "Actions",
+      "editTitle": "Edit Contact",
+      "selectCategory": "Select a category",
+      "errorNameRequired": "Name is required.",
+      "errorPhoneRequired": "Phone is required.",
+      "errorCategoryRequired": "Category is required.",
+      "saveError": "Failed to save contact.",
+      "confirmDelete": "Are you sure you want to delete the contact \"{{name}}\"?",
+      "error": "Error loading contacts.",
+      "iconTypes": {
+        "security": "Security",
+        "administration": "Administration",
+        "health": "Health",
+        "pharmacy": "Pharmacy",
+        "general": "General"
+      }
     },
     "categories": {
       "nameRequired": "At least one name in any language is required.",

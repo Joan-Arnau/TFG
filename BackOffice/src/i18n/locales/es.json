@@ -177,13 +177,38 @@
     "tabs": {
       "pending": "Solicitudes pendientes",
       "active": "Gestión de Comercios",
-      "categories": "Gestión de Categorías"
+      "categories": "Gestión de Categorías",
+      "contacts": "Contactos"
     },
     "status": {
       "approved": "Aprobado",
       "pending": "Pendiente",
       "rejected": "Rechazado",
       "suspended": "Suspendido"
+    },
+    "contacts": {
+      "title": "Gestión de Contactos",
+      "addNew": "Nuevo Contacto",
+      "name": "Nombre",
+      "phone": "Teléfono",
+      "category": "Categoría",
+      "icon": "Icono",
+      "actions": "Acciones",
+      "editTitle": "Editar Contacto",
+      "selectCategory": "Selecciona una categoría",
+      "errorNameRequired": "El nombre es obligatorio.",
+      "errorPhoneRequired": "El teléfono es obligatorio.",
+      "errorCategoryRequired": "La categoría es obligatoria.",
+      "saveError": "Error al guardar el contacto.",
+      "confirmDelete": "¿Seguro que quieres eliminar el contacto \"{{name}}\"?",
+      "error": "Error cargando contactos.",
+      "iconTypes": {
+        "security": "Seguridad",
+        "administration": "Administración",
+        "health": "Salud",
+        "pharmacy": "Farmacia",
+        "general": "General"
+      }
     },
     "categories": {
       "nameRequired": "Se requiere al menos un nombre en algún idioma.",

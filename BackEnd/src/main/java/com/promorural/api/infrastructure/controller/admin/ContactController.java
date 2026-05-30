@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import com.promorural.api.core.application.validation.ValidationGroups;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin/contacts")
@@ -27,6 +28,11 @@ public class ContactController {
             @Validated(ValidationGroups.Create.class) @RequestBody ContactCreateRequest request) {
         ContactResponse createdContact = contactUseCase.create(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdContact);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ContactResponse>> getAllContacts() {
+        return ResponseEntity.ok(contactUseCase.getAll());
     }
 
     @PutMapping("/{id}")

@@ -177,13 +177,38 @@
     "tabs": {
       "pending": "Bústia de Sol·licituds",
       "active": "Gestió de Comerços",
-      "categories": "Gestió de Categories"
+      "categories": "Gestió de Categories",
+      "contacts": "Contactes"
     },
     "status": {
       "approved": "Aprovat",
       "pending": "Pendent",
       "rejected": "Rebutjat",
       "suspended": "Suspès"
+    },
+    "contacts": {
+      "title": "Gestió de Contactes",
+      "addNew": "Nou Contacte",
+      "name": "Nom",
+      "phone": "Telèfon",
+      "category": "Categoria",
+      "icon": "Icona",
+      "actions": "Accions",
+      "editTitle": "Editar Contacte",
+      "selectCategory": "Selecciona una categoria",
+      "errorNameRequired": "El nom és obligatori.",
+      "errorPhoneRequired": "El telèfon és obligatori.",
+      "errorCategoryRequired": "La categoria és obligatòria.",
+      "saveError": "Error al desar el contacte.",
+      "confirmDelete": "Segur que vols esborrar el contacte \"{{name}}\"?",
+      "error": "Error carregant contactes.",
+      "iconTypes": {
+        "security": "Seguretat",
+        "administration": "Administració",
+        "health": "Salut",
+        "pharmacy": "Farmàcia",
+        "general": "General"
+      }
     },
     "categories": {
       "nameRequired": "Cal almenys un nom en algun idioma.",
