@@ -182,7 +182,8 @@
     "status": {
       "approved": "Aprobado",
       "pending": "Pendiente",
-      "rejected": "Rechazado"
+      "rejected": "Rechazado",
+      "suspended": "Suspendido"
     },
     "categories": {
       "nameRequired": "Se requiere al menos un nombre en algún idioma.",

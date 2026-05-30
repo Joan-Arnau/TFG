@@ -36,4 +36,10 @@ public class EmailTemplateService {
         context.setVariable("reason", reason);
         return templateEngine.process("mail/shop-rejected", context);
     }
+
+    public String renderShopSuspendedTemplate(String shopName) {
+        Context context = new Context();
+        context.setVariable("shopName", shopName);
+        return templateEngine.process("mail/shop-suspended", context);
+    }
 }

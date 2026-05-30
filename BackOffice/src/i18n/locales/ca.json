@@ -182,7 +182,8 @@
     "status": {
       "approved": "Aprovat",
       "pending": "Pendent",
-      "rejected": "Rebutjat"
+      "rejected": "Rebutjat",
+      "suspended": "Suspès"
     },
     "categories": {
       "nameRequired": "Cal almenys un nom en algun idioma.",

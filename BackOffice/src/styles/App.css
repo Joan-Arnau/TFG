@@ -798,6 +798,11 @@
   color: #b91c1c;
 }
 
+.status-badge--suspended {
+  background-color: #ffedd5;
+  color: #c2410c;
+}
+
 .admin-table-actions {
   display: flex;
   gap: 0.5rem;

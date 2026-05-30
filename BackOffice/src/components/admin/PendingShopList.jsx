@@ -93,6 +93,9 @@ const PendingShopList = ({ shops, loading, error, onApprove, onReject, t, i18n }
               <div className="pending-shop-card-content">
                 <div className="pending-shop-card-main">
                   <strong>{getShopName(shop)}</strong>
+                  <span className={`status-badge status-badge--${(shop.status || 'PENDING').toLowerCase()}`}>
+                    {t(`admin.status.${(shop.status || 'PENDING').toLowerCase()}`, shop.status)}
+                  </span>
                   {getCategoryName(shop) && (
                     <span className="badge-category">{getCategoryName(shop)}</span>
                   )}
@@ -118,6 +121,9 @@ const PendingShopList = ({ shops, loading, error, onApprove, onReject, t, i18n }
           <div className="shop-review-modal">
             <header className="shop-review-header">
               <h3>{getShopName(selectedShop)}</h3>
+              <span className={`status-badge status-badge--${(selectedShop.status || 'PENDING').toLowerCase()}`}>
+                {t(`admin.status.${(selectedShop.status || 'PENDING').toLowerCase()}`, selectedShop.status)}
+              </span>
               {getCategoryName(selectedShop) && (
                 <span className="badge-category">{getCategoryName(selectedShop)}</span>
               )}
@@ -218,9 +224,11 @@ const PendingShopList = ({ shops, loading, error, onApprove, onReject, t, i18n }
                   {t('admin.shops.close', 'Close')}
                 </Button>
                 <div className="moderation-action-buttons">
-                  <Button variant="danger" onClick={() => setShowRejectForm(true)} disabled={submittingAction}>
-                    {t('admin.shops.reject', 'Reject')}
-                  </Button>
+                  {selectedShop.status !== 'SUSPENDED' && (
+                    <Button variant="danger" onClick={() => setShowRejectForm(true)} disabled={submittingAction}>
+                      {t('admin.shops.reject', 'Reject')}
+                    </Button>
+                  )}
                   <Button variant="success" onClick={handleApprove} disabled={submittingAction}>
                     {submittingAction ? t('admin.shops.submitting', 'Approving...') : t('admin.shops.approve', 'Approve')}
                   </Button>

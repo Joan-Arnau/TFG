@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ShopRepository extends JpaRepository<Shop, Long> {
     List<Shop> findByStatusOrderByCreatedAtDesc(ShopStatus status);
+
+    List<Shop> findByStatusInOrderByCreatedAtDesc(List<ShopStatus> statuses);
     
     Optional<Shop> findByOwnerUsername(String username); 
 

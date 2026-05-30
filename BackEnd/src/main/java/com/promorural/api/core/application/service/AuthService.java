@@ -47,6 +47,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final EmailTemplateService emailTemplateService;
+    private final EmailSubjectResolver emailSubjectResolver;
     private final SecureRandom secureRandom = new SecureRandom();
 
     @Value("${app.backoffice-base-url}")
@@ -60,7 +61,8 @@ public class AuthService {
             PasswordResetTokenRepository tokenRepository,
             PasswordEncoder passwordEncoder,
             EmailService emailService,
-            EmailTemplateService emailTemplateService
+            EmailTemplateService emailTemplateService,
+            EmailSubjectResolver emailSubjectResolver
     ) {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
@@ -70,6 +72,7 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
         this.emailTemplateService = emailTemplateService;
+        this.emailSubjectResolver = emailSubjectResolver;
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -97,6 +100,15 @@ public class AuthService {
         user.setEmail(request.email());
         user.setPassword(passwordEncoder.encode(request.password()));
         user.setRole(Role.ROLE_MERCHANT);
+        
+        String lang = org.springframework.context.i18n.LocaleContextHolder.getLocale().getLanguage();
+        if (lang != null) {
+            lang = lang.toLowerCase();
+            if (lang.equals("ca") || lang.equals("es") || lang.equals("en")) {
+                user.setPreferredLanguage(lang);
+            }
+        }
+        
         userRepository.save(user);
 
         Shop shop = new Shop();
@@ -110,7 +122,8 @@ public class AuthService {
         
         try {
             String htmlContent = emailTemplateService.renderRegistrationTemplate();
-            emailService.sendHtmlEmail(request.email(), "Registre completat", htmlContent);
+            String subject = emailSubjectResolver.resolveSubject(user, EmailType.REGISTRATION);
+            emailService.sendHtmlEmail(request.email(), subject, htmlContent);
         } catch (MessagingException e) {
             log.error("Error enviant email de benvinguda: {}", e.getMessage());
             throw new RuntimeException("Failed to send confirmation email", e);
@@ -142,7 +155,8 @@ public class AuthService {
         
         try {
             String htmlContent = emailTemplateService.renderPasswordResetTemplate(resetLink);
-            emailService.sendHtmlEmail(email, "Password Reset", htmlContent);
+            String subject = emailSubjectResolver.resolveSubject(user, EmailType.PASSWORD_RESET);
+            emailService.sendHtmlEmail(email, subject, htmlContent);
             log.info("Email de recuperació enviat correctament.");
         } catch (MessagingException e) {
             log.error("Error enviant email de recuperació: {}", e.getMessage());

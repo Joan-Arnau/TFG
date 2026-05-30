@@ -182,7 +182,8 @@
     "status": {
       "approved": "Approved",
       "pending": "Pending",
-      "rejected": "Rejected"
+      "rejected": "Rejected",
+      "suspended": "Suspended"
     },
     "categories": {
       "nameRequired": "At least one name in any language is required.",

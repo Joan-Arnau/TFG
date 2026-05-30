@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Comerç aprovat / Comercio aprobado / Shop approved</title>
+    <title>Comerç suspès / Comercio suspendido / Shop suspended</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -21,7 +21,7 @@
             border: 1px solid #e1e4e8;
         }
         .header {
-            background: linear-gradient(135deg, #1b4332, #2d6a4f);
+            background: linear-gradient(135deg, #d9480f, #e8590c);
             padding: 30px 20px;
             text-align: center;
             color: #ffffff;
@@ -47,8 +47,8 @@
         }
         .lang-badge {
             display: inline-block;
-            background-color: #e8f5e9;
-            color: #2d6a4f;
+            background-color: #fff4e6;
+            color: #d9480f;
             font-size: 11px;
             font-weight: 700;
             padding: 4px 8px;
@@ -64,7 +64,7 @@
             color: #495057;
         }
         strong {
-            color: #1b4332;
+            color: #d9480f;
         }
         .footer {
             background-color: #fafbfc;
@@ -79,28 +79,28 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Enhorabona! / ¡Enhorabuena! / Congratulations!</h1>
+            <h1>Comerç Suspès / Comercio Suspendido / Shop Suspended</h1>
         </div>
         <div class="content">
             <!-- CATALÀ -->
             <div class="lang-section">
                 <span class="lang-badge">Català</span>
-                <p>Ens plau informar-te que el teu comerç <strong th:text="${shopName}">Nom del comerç</strong> ha estat aprovat per l'administració municipal.</p>
-                <p>El teu comerç ja està visible i actiu a la plataforma, i a partir d'aquest moment pots començar a publicar les teves promocions.</p>
+                <p>T'informem que la visibilitat del teu comerç <strong th:text="${shopName}">Nom del comerç</strong> a la plataforma ha estat suspesa temporalment per decisió de l'administració municipal.</p>
+                <p>Si creus que es tracta d'un error o vols demanar més informació, posa't en contacte amb l'Ajuntament.</p>
             </div>
 
             <!-- ESPAÑOL -->
             <div class="lang-section">
                 <span class="lang-badge">Español</span>
-                <p>Nos complace informarte que tu comercio <strong th:text="${shopName}">Nombre del comercio</strong> ha sido aprobado por la administración municipal.</p>
-                <p>Tu comercio ya se encuentra visible y activo en la plataforma, y a partir de este momento puedes empezar a publicar tus promociones.</p>
+                <p>Te informamos que la visibilidad de tu comercio <strong th:text="${shopName}">Nombre del comercio</strong> en la plataforma ha sido suspendida temporalmente por decisión de la administración municipal.</p>
+                <p>Si crees que se trata de un error o deseas solicitar más información, ponte en contacto con el Ayuntamiento.</p>
             </div>
 
             <!-- ENGLISH -->
             <div class="lang-section">
                 <span class="lang-badge">English</span>
-                <p>We are pleased to inform you that your shop <strong th:text="${shopName}">Shop Name</strong> has been approved by the municipal administration.</p>
-                <p>Your shop is now visible and active on the platform, and you can start publishing your promotions immediately.</p>
+                <p>We inform you that the visibility of your shop <strong th:text="${shopName}">Shop Name</strong> on the platform has been temporarily suspended by decision of the municipal administration.</p>
+                <p>If you believe this is an error or wish to request more information, please contact the Town Hall.</p>
             </div>
         </div>
         <div class="footer">

@@ -18,6 +18,9 @@ import com.promorural.api.core.domain.repository.ShopRepository;
 import com.promorural.api.core.domain.repository.UploadFileRepository;
 import com.promorural.api.core.application.service.EmailService;
 import com.promorural.api.core.application.service.EmailTemplateService;
+import com.promorural.api.core.application.service.EmailSubjectResolver;
+import com.promorural.api.core.application.service.EmailType;
+
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -42,6 +45,7 @@ public class ShopModerationUseCase {
     private final UploadFileRepository uploadFileRepository;
     private final EmailService emailService;
     private final EmailTemplateService emailTemplateService;
+    private final EmailSubjectResolver emailSubjectResolver;
 
     public ShopModerationUseCase(
             ShopRepository shopRepository,
@@ -50,7 +54,8 @@ public class ShopModerationUseCase {
             PromotionRepository promotionRepository,
             UploadFileRepository uploadFileRepository,
             EmailService emailService,
-            EmailTemplateService emailTemplateService
+            EmailTemplateService emailTemplateService,
+            EmailSubjectResolver emailSubjectResolver
     ) {
         this.shopRepository = shopRepository;
         this.categoryRepository = categoryRepository;
@@ -59,10 +64,11 @@ public class ShopModerationUseCase {
         this.uploadFileRepository = uploadFileRepository;
         this.emailService = emailService;
         this.emailTemplateService = emailTemplateService;
+        this.emailSubjectResolver = emailSubjectResolver;
     }
 
     public List<ShopModerationResponse> getPendingShops() {
-        return shopRepository.findByStatusOrderByCreatedAtDesc(ShopStatus.PENDING).stream()
+        return shopRepository.findByStatusInOrderByCreatedAtDesc(List.of(ShopStatus.PENDING, ShopStatus.SUSPENDED)).stream()
                 .map(ShopMapper::toModerationResponse)
                 .collect(Collectors.toList());
     }
@@ -124,7 +130,6 @@ public class ShopModerationUseCase {
         // Finally delete the shop
         shopRepository.delete(shop);
     }
-
     public void updateShopStatus(Long id, ShopStatusUpdateRequest request) {
         if (id == null) {
             throw new BadRequestException("Shop ID cannot be null");
@@ -155,7 +160,8 @@ public class ShopModerationUseCase {
             try {
                 if (status == ShopStatus.APPROVED) {
                     String htmlContent = emailTemplateService.renderShopApprovedTemplate(shopName);
-                    emailService.sendHtmlEmail(email, "Comerç aprovat", htmlContent);
+                    String subject = emailSubjectResolver.resolveSubject(shop.getOwner(), EmailType.SHOP_APPROVED);
+                    emailService.sendHtmlEmail(email, subject, htmlContent);
                     log.info("Approval email sent to owner of shop id={}", id);
                 } else if (status == ShopStatus.REJECTED) {
                     String reason = request.rejectionReason();
@@ -163,10 +169,13 @@ public class ShopModerationUseCase {
                         reason = "";
                     }
                     String htmlContent = emailTemplateService.renderShopRejectedTemplate(shopName, reason);
-                    emailService.sendHtmlEmail(email, "Sol·licitud de comerç rebutjada", htmlContent);
+                    String subject = emailSubjectResolver.resolveSubject(shop.getOwner(), EmailType.SHOP_REJECTED);
+                    emailService.sendHtmlEmail(email, subject, htmlContent);
                     log.info("Rejection email sent to owner of shop id={} (reason: {})", id, reason);
                 } else if (status == ShopStatus.SUSPENDED) {
-                    emailService.sendHtmlEmail(email, "Comerç suspès", "El teu comerç ha estat suspès.");
+                    String htmlContent = emailTemplateService.renderShopSuspendedTemplate(shopName);
+                    String subject = emailSubjectResolver.resolveSubject(shop.getOwner(), EmailType.SHOP_SUSPENDED);
+                    emailService.sendHtmlEmail(email, subject, htmlContent);
                     log.info("Suspension email sent to owner of shop id={}", id);
                 }
             } catch (Exception e) {
