@@ -83,7 +83,7 @@ const AnnouncementManagementPage = () => {
           <thead>
             <tr>
               <th>{t('admin.announcements.date', 'Data')}</th>
-              <th>{t('admin.announcements.title', 'Títol')}</th>
+              <th>{t('admin.announcements.titleField', 'Títol')}</th>
               <th>{t('admin.announcements.status', 'Estat')}</th>
               <th>{t('admin.announcements.actions', 'Accions')}</th>
             </tr>
@@ -94,7 +94,7 @@ const AnnouncementManagementPage = () => {
                 <td>{new Date(announcement.publishedAt).toLocaleDateString()}</td>
                 <td>
                   {getLocalizedValue(announcement.title, i18n.language)}
-                  {announcement.isUrgent && <span className="badge badge-danger ml-2">Urgent</span>}
+                  {(announcement.urgent || announcement.isUrgent) && <span className="badge badge-danger ml-2">Urgent</span>}
                 </td>
                 <td>{t(`admin.status.${announcement.status.toLowerCase()}`, announcement.status)}</td>
                 <td>

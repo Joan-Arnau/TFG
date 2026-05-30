@@ -29,37 +29,31 @@ export const useCategories = (initialType = '') => {
   }, [filterType, loadCategories]);
 
   const createCategory = async (categoryData) => {
-    setError(null);
     try {
       await categoryService.create(categoryData);
       await loadCategories(filterType);
     } catch (currentError) {
       console.error('Error creating category:', currentError);
-      setError(currentError);
       throw currentError;
     }
   };
 
   const updateCategory = async (id, categoryData) => {
-    setError(null);
     try {
       await categoryService.update(id, categoryData);
       await loadCategories(filterType);
     } catch (currentError) {
       console.error('Error updating category:', currentError);
-      setError(currentError);
       throw currentError;
     }
   };
 
   const deleteCategory = async (id) => {
-    setError(null);
     try {
       await categoryService.delete(id);
       await loadCategories(filterType);
     } catch (currentError) {
       console.error('Error deleting category:', currentError);
-      setError(currentError);
       throw currentError;
     }
   };

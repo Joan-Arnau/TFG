@@ -11,6 +11,8 @@ export const DEFAULT_THEME = {
   primaryColor: '#0f172a',
   secondaryColor: '#2563eb',
   primaryContrast: '#ffffff',
+  defaultLanguage: 'ca',
+  supportedLanguages: ['ca', 'es', 'en'],
 }
 
 const pickText = (...values) => values.find((value) => typeof value === 'string' && value.trim())?.trim()
@@ -26,5 +28,7 @@ export const normalizeThemeConfig = (config) => {
     primaryColor: pickColor(branding.primaryColor, DEFAULT_THEME.primaryColor),
     secondaryColor: pickColor(branding.secondaryColor, DEFAULT_THEME.secondaryColor),
     primaryContrast: DEFAULT_THEME.primaryContrast,
+    defaultLanguage: config?.defaultLanguage || DEFAULT_THEME.defaultLanguage,
+    supportedLanguages: config?.supportedLanguages || DEFAULT_THEME.supportedLanguages,
   }
 }

@@ -1,14 +1,44 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Modal from '../ui/Modal';
 import Button from '../ui/Button';
 import { getLocalizedDraft, buildLocalizedMap } from '../../utils/localization';
+import { useTheme } from '../../context/useTheme';
 
 const AdminCategoryFormModal = ({ category, onClose, onSave, t }) => {
+  const { theme } = useTheme();
+  
+  const supportedLanguageCodes = useMemo(() => {
+    return theme?.supportedLanguages || ['ca', 'es', 'en'];
+  }, [theme?.supportedLanguages]);
+  
+  const defaultLanguageCode = theme?.defaultLanguage || 'ca';
+
+  const allLanguages = [
+    { code: 'ca', name: 'Català' },
+    { code: 'es', name: 'Castellano' },
+    { code: 'en', name: 'English' },
+  ];
+
+  const languages = allLanguages.filter(lang => supportedLanguageCodes.includes(lang.code));
+
   const [nameDraft, setNameDraft] = useState({ ca: '', es: '', en: '' });
   const [type, setType] = useState('SHOP');
-  const [activeLangTab, setActiveLangTab] = useState('ca');
+  const [activeLangTab, setActiveLangTab] = useState(defaultLanguageCode);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (defaultLanguageCode && supportedLanguageCodes.includes(defaultLanguageCode)) {
+        setActiveLangTab(defaultLanguageCode);
+      } else if (supportedLanguageCodes.length > 0) {
+        setActiveLangTab(supportedLanguageCodes[0]);
+      }
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [defaultLanguageCode, supportedLanguageCodes]);
+
+
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -56,11 +86,6 @@ const AdminCategoryFormModal = ({ category, onClose, onSave, t }) => {
     }
   };
 
-  const languages = [
-    { code: 'ca', name: 'Català' },
-    { code: 'es', name: 'Castellano' },
-    { code: 'en', name: 'English' },
-  ];
 
   const types = [
     { code: 'SHOP', label: t('admin.categoryTypes.shop', 'Comerç') },

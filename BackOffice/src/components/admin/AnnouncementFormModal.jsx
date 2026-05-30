@@ -14,12 +14,12 @@ const AnnouncementFormModal = ({ announcement, onClose, onSave, categories, t })
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       if (announcement) {
         setTitleDraft(getLocalizedDraft(announcement.title));
         setContentDraft(getLocalizedDraft(announcement.content));
         setCategoryId(announcement.category?.id || '');
-        setIsUrgent(announcement.isUrgent || false);
+        setIsUrgent(announcement.urgent || announcement.isUrgent || false);
       } else {
         setTitleDraft({ ca: '', es: '', en: '' });
         setContentDraft({ ca: '', es: '', en: '' });
@@ -28,21 +28,23 @@ const AnnouncementFormModal = ({ announcement, onClose, onSave, categories, t })
       }
       setError(null);
     }, 0);
+    return () => clearTimeout(timer);
   }, [announcement, categories]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
 
-    const isTitleFilled = Object.values(titleDraft).every(val => val.trim() !== '');
-    const isContentFilled = Object.values(contentDraft).every(val => val.trim() !== '');
+    const defaultLang = localStorage.getItem('defaultLanguage') || 'ca';
+    const isTitleFilled = titleDraft[defaultLang]?.trim() !== '';
+    const isContentFilled = contentDraft[defaultLang]?.trim() !== '';
 
     if (!isTitleFilled) {
-      setError(t('admin.announcements.errorTitleRequired', 'El títol és obligatori en tots els idiomes.'));
+      setError(t('admin.announcements.errorTitleRequired', `El títol és obligatori en l'idioma per defecte (${defaultLang.toUpperCase()}).`));
       return;
     }
     if (!isContentFilled) {
-      setError(t('admin.announcements.errorContentRequired', 'El contingut és obligatori en tots els idiomes.'));
+      setError(t('admin.announcements.errorContentRequired', `El contingut és obligatori en l'idioma per defecte (${defaultLang.toUpperCase()}).`));
       return;
     }
     if (!categoryId) {

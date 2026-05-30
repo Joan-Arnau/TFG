@@ -3,8 +3,8 @@ import Card from '../../../components/ui/Card';
 import MerchantPageHeader from './MerchantPageHeader';
 import LocalizedFieldSet from './LocalizedFieldSet';
 import LocationSelector from './LocationSelector';
-import { MERCHANT_LANGUAGES } from '../constants';
 import { getLocalizedValue } from '../../../utils/localization';
+import { useTheme } from '../../../context/useTheme';
 
 const MerchantProfileView = ({
   t,
@@ -22,7 +22,9 @@ const MerchantProfileView = ({
   onFieldChange,
   error,
   success
-}) => {
+ }) => {
+  const { theme } = useTheme();
+  const supportedLanguageCodes = theme?.supportedLanguages || ['ca', 'es', 'en'];
   const localizedShop = draft || shop;
   const statusKey = shop?.status?.toLowerCase?.() || '';
   const statusLabel = statusKey ? t(`merchant.status.${statusKey}`, shop.status) : '';
@@ -50,13 +52,13 @@ const MerchantProfileView = ({
         <div className="merchant-readonly-grid">
           <Card className="merchant-summary-card">
             <h4>{t('merchant.shopName', 'Shop name')}</h4>
-            {MERCHANT_LANGUAGES.map((lang) => (
+            {supportedLanguageCodes.map((lang) => (
               <p key={lang}><strong>{t(`language.${lang}`, lang.toUpperCase())}:</strong> {shop.name?.[lang] || '-'}</p>
             ))}
           </Card>
           <Card className="merchant-summary-card">
             <h4>{t('merchant.descriptionLabel', 'Description')}</h4>
-            {MERCHANT_LANGUAGES.map((lang) => (
+            {supportedLanguageCodes.map((lang) => (
               <p key={lang}><strong>{t(`language.${lang}`, lang.toUpperCase())}:</strong> {shop.description?.[lang] || '-'}</p>
             ))}
           </Card>

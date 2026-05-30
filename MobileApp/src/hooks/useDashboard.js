@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { publicService, getTranslation } from '../api/services/publicService';
 
@@ -7,42 +8,45 @@ export const useDashboard = () => {
   const [rawFeaturedItem, setRawFeaturedItem] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const loadFeatured = async () => {
-      await Promise.resolve(); // Evita setState síncron en l'effect
-      try {
-        setLoading(true);
-        const [announcements, events] = await Promise.all([
-          publicService.getAnnouncements(),
-          publicService.getEvents()
-        ]);
-        
-        const urgent = announcements.find(a => a.urgent);
-        if (urgent) {
-          setRawFeaturedItem({
-            type: 'announcement',
-            title: urgent.title,
-            subtitle: urgent.categoryName,
-            isUrgent: true
-          });
-        } else if (events.length > 0) {
-          const nextEvent = events[0];
-          setRawFeaturedItem({
-            type: 'event',
-            title: nextEvent.title,
-            subtitle: new Date(nextEvent.startsAt).toLocaleDateString(),
-            isUrgent: false
-          });
-        }
-      } catch {
-        console.error('Error loading dashboard featured item');
-      } finally {
-        setLoading(false);
+  const loadFeatured = useCallback(async () => {
+    try {
+      setLoading(true);
+      const [announcements, events] = await Promise.all([
+        publicService.getAnnouncements(),
+        publicService.getEvents()
+      ]);
+      
+      const urgent = announcements.find(a => a.urgent);
+      if (urgent) {
+        setRawFeaturedItem({
+          type: 'announcement',
+          title: urgent.title,
+          subtitle: urgent.categoryName,
+          isUrgent: true
+        });
+      } else if (events.length > 0) {
+        const nextEvent = events[0];
+        setRawFeaturedItem({
+          type: 'event',
+          title: nextEvent.title,
+          subtitle: new Date(nextEvent.startsAt).toLocaleDateString(),
+          isUrgent: false
+        });
+      } else {
+        setRawFeaturedItem(null);
       }
-    };
-
-    loadFeatured();
+    } catch (err) {
+      console.error('Error loading dashboard featured item:', err);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadFeatured();
+    }, [loadFeatured])
+  );
 
   const translatedFeaturedItem = useMemo(() => {
     if (!rawFeaturedItem) return null;

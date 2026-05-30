@@ -11,11 +11,15 @@ const SettingsScreen = () => {
   const commonStyles = getCommonStyles(theme);
   const styles = getSettingsStyles(theme);
 
-  const languages = [
+  const supportedLanguageCodes = theme?.supportedLanguages || ['ca', 'es', 'en'];
+
+  const allLanguages = [
     { code: 'ca', label: t('language.ca') },
     { code: 'es', label: t('language.es') },
     { code: 'en', label: t('language.en') },
   ];
+
+  const languages = allLanguages.filter(lang => supportedLanguageCodes.includes(lang.code));
 
   const changeLanguage = (code) => {
     i18n.changeLanguage(code);

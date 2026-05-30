@@ -1,6 +1,7 @@
 import EventManagementPage from './EventManagementPage';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import AdminBrandingPage from './AdminBrandingPage';
 import AdminDashboardHeader from '../../components/admin/AdminDashboardHeader';
 import AdminStats from '../../components/admin/AdminStats';
 import PendingShopList from '../../components/admin/PendingShopList';
@@ -190,7 +191,14 @@ const AdminDashboard = () => {
         >
           {t('admin.tabs.events', 'Events')}
         </button>
-        </div>
+        <button
+          type="button"
+          className={`admin-tab-btn ${activeTab === 'branding' ? 'active' : ''}`}
+          onClick={() => setActiveTab('branding')}
+        >
+          {t('admin.tabs.branding', 'Marca Blanca')}
+        </button>
+      </div>
 
       {/* Tab Contents */}
       <div className="admin-tab-content">
@@ -242,6 +250,9 @@ const AdminDashboard = () => {
         )}
         {activeTab === 'events' && (
           <EventManagementPage />
+        )}
+        {activeTab === 'branding' && (
+          <AdminBrandingPage />
         )}
       </div>
 

@@ -6,12 +6,18 @@ const formatImageList = (images) => (
   Array.isArray(images) ? images.map(img => formatImageUrl(img)).filter(Boolean) : []
 );
 
+let defaultLanguage = 'ca';
+
+export const setDefaultLanguage = (lang) => {
+  if (lang) defaultLanguage = lang;
+};
+
 export const getTranslation = (translatedField, language) => {
   if (!translatedField) return '';
   if (typeof translatedField === 'string') return translatedField;
   
   const currentLang = language || i18n.language || 'ca';
-  return translatedField[currentLang] || translatedField['ca'] || Object.values(translatedField)[0] || '';
+  return translatedField[currentLang] || translatedField[defaultLanguage] || Object.values(translatedField)[0] || '';
 };
 
 export const publicService = {

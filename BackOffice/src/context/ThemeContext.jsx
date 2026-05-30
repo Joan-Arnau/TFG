@@ -15,6 +15,12 @@ export function ThemeProvider({ children }) {
       .getPublicConfig()
       .then((config) => {
         if (!mounted) return
+        if (config?.defaultLanguage) {
+          localStorage.setItem('defaultLanguage', config.defaultLanguage);
+        }
+        if (config?.supportedLanguages) {
+          localStorage.setItem('supportedLanguages', JSON.stringify(config.supportedLanguages));
+        }
         setTheme(normalizeThemeConfig(config))
         setError(null)
       })

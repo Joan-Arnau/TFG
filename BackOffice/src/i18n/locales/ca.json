@@ -186,7 +186,8 @@
       "contacts": "Contactes",
       "tourism": "Turisme",
       "announcements": "Bandos",
-      "events": "Esdeveniments"
+      "events": "Esdeveniments",
+      "branding": "Marca Blanca"
     },
     "status": {
       "approved": "Aprovat",
@@ -303,6 +304,25 @@
       "event": "Esdeveniment",
       "poi": "Punt d'Interès",
       "contact": "Telèfon d'Interès"
+    },
+    "branding": {
+      "title": "Configuració de Marca Blanca",
+      "subtitle": "Identitat, geografia i idiomes del municipi",
+      "saveSuccess": "Configuració desada correctament.",
+      "saveError": "Error al desar la configuració.",
+      "sectionIdentity": "Identitat Visual",
+      "sectionGeography": "Localització Geogràfica",
+      "sectionLanguages": "Gestió d'Idiomes",
+      "municipalityName": "Nom del municipi",
+      "logo": "Logotip",
+      "primaryColor": "Color primari",
+      "secondaryColor": "Color secundari",
+      "latitude": "Latitud",
+      "longitude": "Longitud",
+      "defaultLanguage": "Idioma per defecte",
+      "supportedLanguages": "Idiomes suportats",
+      "mapHint": "Fes clic al mapa per marcar el punt central del municipi",
+      "uploading": "Pujant..."
     }
   }
 }

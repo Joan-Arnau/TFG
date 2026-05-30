@@ -62,15 +62,32 @@ const EventFormModal = ({ event, onClose, onSave, onUploadImage }) => {
     return () => clearTimeout(timer);
   }, [event]);
 
+  const formatDateForBackend = (date) => {
+    if (!date) return null;
+    const pad = (n) => String(n).padStart(2, '0');
+    const year = date.getFullYear();
+    const month = pad(date.getMonth() + 1);
+    const day = pad(date.getDate());
+    const hours = pad(date.getHours());
+    const minutes = pad(date.getMinutes());
+    const seconds = pad(date.getSeconds());
+    
+    const offsetMinutes = date.getTimezoneOffset();
+    const offsetSign = offsetMinutes <= 0 ? '+' : '-';
+    const absOffsetMinutes = Math.abs(offsetMinutes);
+    const offsetHours = pad(Math.floor(absOffsetMinutes / 60));
+    const offsetMins = pad(absOffsetMinutes % 60);
+    
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}${offsetSign}${offsetHours}${offsetMins}`;
+  };
+
   const validateForm = () => {
     const errors = {};
-    const now = new Date();
 
     if (!title.ca.trim() && !title.es.trim() && !title.en.trim()) errors.title = t('event.title.notnull');
     if (!description.ca.trim() && !description.es.trim() && !description.en.trim()) errors.description = t('event.description.notnull');
     if (!categoryId) errors.categoryId = t('event.category.notnull');
     if (!startDate) errors.startDate = t('event.startDate.notnull');
-    else if (startDate < now) errors.startDate = t('event.startDate.invalid');
     if (startDate && endDate && endDate.getTime() <= startDate.getTime()) errors.endDate = t('validation.date.range');
     if ((latitude !== null && longitude === null) || (latitude === null && longitude !== null)) errors.location = t('validation.location.pair');
     
@@ -85,14 +102,14 @@ const EventFormModal = ({ event, onClose, onSave, onUploadImage }) => {
     setIsSubmitting(true);
     try {
       let finalImageUrl = imageUrl;
-      if (selectedFile) finalImageUrl = await onUploadImage(event?.id || null, selectedFile);
+      if (selectedFile) finalImageUrl = await onUploadImage(selectedFile);
 
       await onSave({
         title: buildLocalizedMap(title),
         description: buildLocalizedMap(description),
         categoryId: parseInt(categoryId, 10),
-        startsAt: startDate ? startDate.toISOString() : null,
-        endsAt: endDate ? endDate.toISOString() : null,
+        startsAt: formatDateForBackend(startDate),
+        endsAt: formatDateForBackend(endDate),
         isFestival,
         locationText: buildLocalizedMap(locationText),
         latitude,

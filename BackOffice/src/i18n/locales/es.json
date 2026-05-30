@@ -186,7 +186,8 @@
       "contacts": "Contactos",
       "tourism": "Turismo",
       "announcements": "Bandos",
-      "events": "Eventos"
+      "events": "Eventos",
+      "branding": "Marca Blanca"
     },
     "status": {
       "approved": "Aprobado",
@@ -303,6 +304,25 @@
       "event": "Evento",
       "poi": "Punto de Interés",
       "contact": "Teléfono de Interés"
+    },
+    "branding": {
+      "title": "Configuración de Marca Blanca",
+      "subtitle": "Identidad, geografía e idiomas del municipio",
+      "saveSuccess": "Configuración guardada correctamente.",
+      "saveError": "Error al guardar la configuración.",
+      "sectionIdentity": "Identidad Visual",
+      "sectionGeography": "Localización Geográfica",
+      "sectionLanguages": "Gestión de Idiomas",
+      "municipalityName": "Nombre del municipio",
+      "logo": "Logotipo",
+      "primaryColor": "Color primario",
+      "secondaryColor": "Color secundario",
+      "latitude": "Latitud",
+      "longitude": "Longitud",
+      "defaultLanguage": "Idioma por defecto",
+      "supportedLanguages": "Idiomas soportados",
+      "mapHint": "Haz clic en el mapa para marcar el punto central del municipio",
+      "uploading": "Subiendo..."
     }
   }
 }

@@ -24,53 +24,41 @@ export const useEvents = () => {
     setTimeout(() => loadEvents(), 0);
   }, [loadEvents]);
 
-  const refresh = () => {
-    loadEvents();
-  };
-
   const createEvent = async (eventData) => {
-    setError(null);
     try {
       await eventService.create(eventData);
       await loadEvents();
     } catch (err) {
       console.error("Error creating event:", err);
-      setError(err);
       throw err;
     }
   };
 
   const updateEvent = async (id, eventData) => {
-    setError(null);
     try {
       await eventService.update(id, eventData);
       await loadEvents();
     } catch (err) {
       console.error("Error updating event:", err);
-      setError(err);
       throw err;
     }
   };
 
   const deleteEvent = async (id) => {
-    setError(null);
     try {
       await eventService.delete(id);
       await loadEvents();
     } catch (err) {
       console.error("Error deleting event:", err);
-      setError(err);
       throw err;
     }
   };
 
   const uploadImage = async (file) => {
-    setError(null);
     try {
       return await eventService.uploadImage(file);
     } catch (err) {
       console.error("Error uploading image:", err);
-      setError(err);
       throw err;
     }
   };
@@ -79,7 +67,7 @@ export const useEvents = () => {
     events,
     loading,
     error,
-    refresh,
+    refresh: loadEvents,
     createEvent,
     updateEvent,
     deleteEvent,
