@@ -32,6 +32,10 @@ public class Announcement {
     @Column(nullable = false)
     private OffsetDateTime publishedAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AnnouncementStatus status = AnnouncementStatus.PUBLISHED;
+
     @PrePersist
     void prePersist() {
         if (publishedAt == null) {
@@ -81,5 +85,13 @@ public class Announcement {
 
     public void setPublishedAt(OffsetDateTime publishedAt) {
         this.publishedAt = publishedAt;
+    }
+
+    public AnnouncementStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AnnouncementStatus status) {
+        this.status = status;
     }
 }

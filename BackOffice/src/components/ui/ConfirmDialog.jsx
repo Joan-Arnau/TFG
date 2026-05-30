@@ -6,7 +6,7 @@ const ConfirmDialog = ({ title, message, onConfirm, onCancel, t }) => {
     <Modal onClose={onCancel}>
       <div className="confirm-dialog">
         <h3>{title}</h3>
-        <p>{message}</p>
+        <p style={{ whiteSpace: 'pre-line' }}>{message}</p>
         <div className="confirm-dialog-actions">
           <Button variant="secondary" onClick={onCancel}>
             {t('merchant.cancel', 'Cancel')}

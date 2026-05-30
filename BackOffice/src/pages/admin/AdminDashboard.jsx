@@ -8,6 +8,7 @@ import AdminCategoryTable from '../../components/admin/AdminCategoryTable';
 import AdminCategoryFormModal from '../../components/admin/AdminCategoryFormModal';
 import ContactManagementPage from './ContactManagementPage';
 import TourismManagementPage from './TourismManagementPage';
+import AnnouncementManagementPage from './AnnouncementManagementPage';
 import { usePendingShops } from '../../hooks/usePendingShops';
 import { useCategories } from '../../hooks/useCategories';
 import useConfirm from '../../hooks/useConfirm';
@@ -62,8 +63,8 @@ const AdminDashboard = () => {
   const handleApprove = async (shop) => {
     const name = getShopName(shop);
     const confirmed = await confirm(
-      t('admin.shops.confirmApprove', { name }),
-      `Are you sure you want to approve "${name}"?`
+      t('app.confirmTitle', 'Confirmació'),
+      `${t('admin.shops.confirmApprove', { name })}\n\n${t('admin.shops.confirmApproveMessage', { name: name })}`
     );
     if (confirmed) {
       await approveShop(shop.id);
@@ -77,8 +78,8 @@ const AdminDashboard = () => {
   const handleSuspend = async (shop) => {
     const name = getShopName(shop);
     const confirmed = await confirm(
-      t('admin.shops.confirmSuspend', { name }),
-      `Are you sure you want to suspend "${name}"? This will return it to pending status.`
+      t('app.confirmTitle', 'Confirmació'),
+      `${t('admin.shops.confirmSuspend', { name })}\n\n${t('admin.shops.confirmSuspendMessage', { name: name })}`
     );
     if (confirmed) {
       await suspendShop(shop.id);
@@ -88,8 +89,8 @@ const AdminDashboard = () => {
   const handleDelete = async (shop) => {
     const name = getShopName(shop);
     const confirmed = await confirm(
-      t('admin.shops.confirmDelete', { name }),
-      `Are you sure you want to delete "${name}"? This action cannot be undone.`
+      t('app.confirmTitle', 'Confirmació'),
+      `${t('admin.shops.confirmDelete', { name })}\n\n${t('admin.shops.confirmDeleteMessage', { name: name })}`
     );
     if (confirmed) {
       await deleteShop(shop.id);
@@ -118,12 +119,13 @@ const AdminDashboard = () => {
   const handleDeleteCategory = async (category) => {
     const name = getLocalizedValue(category.name, i18n.language, `#${category.id}`);
     const confirmed = await confirm(
-      t('admin.categories.confirmDelete', { name }),
-      `Are you sure you want to delete the category "${name}"?`
+      t('app.confirmTitle', 'Confirmació'),
+      t('admin.categories.confirmDelete', { name })
     );
     if (confirmed) {
       try {
         await apiDeleteCategory(category.id);
+        refreshCategories();
       } catch (err) {
         const backendMessage = err.response?.data?.message || err.message;
         alert(backendMessage || t('admin.categories.deleteError', 'Could not delete category.'));
@@ -171,9 +173,16 @@ const AdminDashboard = () => {
           className={`admin-tab-btn ${activeTab === 'tourism' ? 'active' : ''}`}
           onClick={() => setActiveTab('tourism')}
         >
-          {t('admin.tabs.tourism', 'Tourism')}
+          {t('admin.tabs.tourism', 'Turisme')}
         </button>
-      </div>
+        <button
+          type="button"
+          className={`admin-tab-btn ${activeTab === 'announcements' ? 'active' : ''}`}
+          onClick={() => setActiveTab('announcements')}
+        >
+          {t('admin.tabs.announcements', 'Bandos')}
+        </button>
+        </div>
 
       {/* Tab Contents */}
       <div className="admin-tab-content">
@@ -219,6 +228,9 @@ const AdminDashboard = () => {
         )}
         {activeTab === 'tourism' && (
           <TourismManagementPage />
+        )}
+        {activeTab === 'announcements' && (
+          <AnnouncementManagementPage />
         )}
       </div>
 

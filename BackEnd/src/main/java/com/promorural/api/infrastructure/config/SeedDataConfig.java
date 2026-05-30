@@ -1,6 +1,7 @@
 package com.promorural.api.infrastructure.config;
 
 import com.promorural.api.core.domain.entity.Announcement;
+import com.promorural.api.core.domain.entity.AnnouncementStatus;
 import com.promorural.api.core.domain.entity.Category;
 import com.promorural.api.core.domain.entity.CategoryType;
 import com.promorural.api.core.domain.entity.Contact;
@@ -296,20 +297,25 @@ public class SeedDataConfig {
                 Category generalCat = annCats.isEmpty() ? null : annCats.get(0);
 
                 if (generalCat != null) {
-                    createAnnouncement(announcementRepository, generalCat, true,
+                    createAnnouncement(announcementRepository, generalCat, true, AnnouncementStatus.PUBLISHED,
                         Map.of("ca", "Obres de millora al Carrer Major", "es", "Obras de mejora en la Calle Mayor", "en", "Construction works on Carrer Major"),
-                        Map.of("ca", "Informem que a partir del dilluns 3 de juny s'iniciaran les obres de millora de la xarxa d'aigües al Carrer Major. Es preveu una durada d'aproximadament 3 setmanes. Disculpeu les molèsties.", "es", "Informamos que a partir del lunes 3 de junio se iniciarán las obras de mejora de la red de aguas en la Calle Mayor. Se prevé una duración de aproximadamente 3 semanas. Disculpen las molestias.", "en", "We inform that starting Monday June 3, improvement works on the water supply network will begin on Carrer Major. Expected duration is approximately 3 weeks. We apologize for the inconvenience."),
+                        Map.of("ca", "Informem...", "es", "Informamos...", "en", "We inform..."),
                         OffsetDateTime.now().minusDays(1));
 
-                    createAnnouncement(announcementRepository, generalCat, false,
+                    createAnnouncement(announcementRepository, generalCat, false, AnnouncementStatus.PUBLISHED,
                         Map.of("ca", "Nova edició de la Fira de l'Art", "es", "Nueva edición de la Feria del Arte", "en", "New edition of the Art Fair"),
-                        Map.of("ca", "El proper cap de setmana tindrà lloc la tradicional Fira de l'Art al Centre Cultural. Hi haurà exposicions, tallers i activitats per a tota la família.", "es", "El próximo fin de semana tendrá lugar la tradicional Feria del Arte en el Centro Cultural. Habrá exposiciones, talleres y actividades para toda la familia.", "en", "Next weekend the traditional Art Fair will take place at the Cultural Center. There will be exhibitions, workshops and activities for the whole family."),
+                        Map.of("ca", "El proper cap de setmana...", "es", "El próximo fin de semana...", "en", "Next weekend..."),
                         OffsetDateTime.now().minusDays(7));
 
-                    createAnnouncement(announcementRepository, generalCat, false,
+                    createAnnouncement(announcementRepository, generalCat, false, AnnouncementStatus.ARCHIVED,
                         Map.of("ca", "Horari d'estiu de la Biblioteca Municipal", "es", "Horario de verano de la Biblioteca Municipal", "en", "Summer opening hours of the Municipal Library"),
-                        Map.of("ca", "La Biblioteca Municipal amplia l'horari d'estiu a partir del 15 de juny. Obrirà de dilluns a divendres de 9:00 a 20:00h.", "es", "La Biblioteca Municipal amplía el horario de verano a partir del 15 de junio. Abrirá de lunes a viernes de 9:00 a 20:00h.", "en", "The Municipal Library extends its summer opening hours from June 15. It will be open Monday to Friday from 9:00 AM to 8:00 PM."),
+                        Map.of("ca", "La Biblioteca Municipal...", "es", "La Biblioteca Municipal...", "en", "The Municipal Library..."),
                         OffsetDateTime.now().minusDays(14));
+                        
+                    createAnnouncement(announcementRepository, generalCat, false, AnnouncementStatus.DRAFT,
+                        Map.of("ca", "Bando d'esborrany", "es", "Bando borrador", "en", "Draft announcement"),
+                        Map.of("ca", "...", "es", "...", "en", "..."),
+                        OffsetDateTime.now());
                 }
                 log.info("Announcements seeded.");
             }
@@ -474,12 +480,13 @@ public class SeedDataConfig {
         repo.save(poi);
     }
 
-    private void createAnnouncement(AnnouncementRepository repo, Category cat, boolean urgent, Map<String, String> title, Map<String, String> content, OffsetDateTime publishedAt) {
+    private void createAnnouncement(AnnouncementRepository repo, Category cat, boolean urgent, AnnouncementStatus status, Map<String, String> title, Map<String, String> content, OffsetDateTime publishedAt) {
         Announcement announcement = new Announcement();
         announcement.setTitle(title);
         announcement.setContent(content);
         announcement.setCategory(cat);
         announcement.setUrgent(urgent);
+        announcement.setStatus(status);
         announcement.setPublishedAt(publishedAt);
         repo.save(announcement);
     }

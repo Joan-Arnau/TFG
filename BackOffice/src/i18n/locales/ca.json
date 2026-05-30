@@ -170,8 +170,11 @@
       "rejectionReasonPlaceholder": "Escriu el motiu detallat del rebuig per informar al comerciant...",
       "confirmRejectAction": "Confirma el rebuig",
       "confirmApprove": "Segur que vols aprovar el comerç \"{{name}}\"?",
-      "confirmSuspend": "Segur que vols suspendre el comerç \"{{name}}\"? Això el retornarà a l'estat pendent de revisió.",
-      "confirmDelete": "Segur que vols donar de baixa el comerç \"{{name}}\"? Aquesta acció no es pot desfer.",
+      "confirmApproveMessage": "Aquest comerç passarà a estar actiu a l'aplicació.",
+      "confirmDelete": "Segur que vols donar de baixa el comerç \"{{name}}\"?",
+      "confirmDeleteMessage": "Aquesta acció no es pot desfer.",
+      "confirmSuspend": "Segur que vols suspendre el comerç \"{{name}}\"?",
+      "confirmSuspendMessage": "Això el retornarà a l'estat pendent de revisió.",
       "errorNameRequired": "El nom en català és obligatori.",
       "errorSave": "Error al desar els detalls del comerç. Verifica les dades.",
       "suspendedByAdmin": "Suspès temporalment per l'administració."
@@ -181,13 +184,41 @@
       "active": "Gestió de Comerços",
       "categories": "Gestió de Categories",
       "contacts": "Contactes",
-      "tourism": "Turisme"
+      "tourism": "Turisme",
+      "announcements": "Bandos"
     },
     "status": {
       "approved": "Aprovat",
       "pending": "Pendent",
       "rejected": "Rebutjat",
-      "suspended": "Suspès"
+      "suspended": "Suspès",
+      "published": "Publicat",
+      "archived": "Arxivat",
+      "draft": "Esborrany"
+    },
+    "announcements": {
+      "title": "Gestió de Bandos",
+      "addNew": "Nou Bando",
+      "date": "Data",
+      "titleField": "Títol",
+      "status": "Estat",
+      "actions": "Accions",
+      "urgent": "És Urgent",
+      "editTitle": "Editar Bando",
+      "titlePlaceholder": "Títol del bando en {{lang}}",
+      "contentPlaceholder": "Contingut del bando en {{lang}}",
+      "category": "Categoria",
+      "confirmDelete": "Segur que vols esborrar el bando \"{{title}}\"?",
+      "confirmDeleteMessage": "Segur que vols continuar?",
+      "confirmPublish": "Segur que vols publicar el bando \"{{title}}\"?",
+      "confirmPublishMessage": "Aquest comunicat serà visible a l'aplicació.",
+      "confirmArchive": "Segur que vols arxivar el bando \"{{title}}\"?",
+      "confirmArchiveMessage": "Aquest comunicat deixarà de ser visible a l'aplicació.",
+      "error": "Error carregant bandos.",
+      "saveError": "Error al desar el bando.",
+      "errorTitleRequired": "El títol és obligatori en tots els idiomes.",
+      "errorContentRequired": "El contingut és obligatori en tots els idiomes.",
+      "errorCategoryRequired": "La categoria és obligatòria."
     },
     "tourism": {
       "title": "Gestió de Punts d'Interès",
@@ -198,6 +229,30 @@
       "namePlaceholder": "Nom del punt d'interès en {{lang}}",
       "descPlaceholder": "Descripció del punt d'interès en {{lang}}",
       "location": "Localització (Lat, Lng)"
+    },
+    "contacts": {
+      "title": "Gestió de Contactes",
+      "addNew": "Nou Contacte",
+      "name": "Nom",
+      "phone": "Telèfon",
+      "category": "Categoria",
+      "icon": "Icona",
+      "actions": "Accions",
+      "editTitle": "Editar Contacte",
+      "selectCategory": "Selecciona una categoria",
+      "errorNameRequired": "El nom és obligatori.",
+      "errorPhoneRequired": "El telèfon és obligatori.",
+      "errorCategoryRequired": "La categoria és obligatòria.",
+      "saveError": "Error al desar el contacte.",
+      "confirmDelete": "Segur que vols esborrar el contacte \"{{name}}\"?",
+      "error": "Error carregant contactes.",
+      "iconTypes": {
+        "security": "Seguretat",
+        "administration": "Administració",
+        "health": "Salut",
+        "pharmacy": "Farmàcia",
+        "general": "General"
+      }
     },
     "categories": {
       "nameRequired": "Cal almenys un nom en algun idioma.",

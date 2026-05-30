@@ -15,6 +15,7 @@ public final class AnnouncementMapper {
                 item.getContent(),
                 CategoryMapper.toRef(item.getCategory()),
                 item.isUrgent(),
+                item.getStatus(),
                 item.getPublishedAt()
         );
     }

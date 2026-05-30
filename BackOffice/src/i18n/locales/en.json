@@ -170,8 +170,11 @@
       "rejectionReasonPlaceholder": "Type the detailed rejection reason to notify the merchant...",
       "confirmRejectAction": "Confirm Rejection",
       "confirmApprove": "Are you sure you want to approve the shop \"{{name}}\"?",
-      "confirmSuspend": "Are you sure you want to suspend the shop \"{{name}}\"? This will return it to pending status.",
-      "confirmDelete": "Are you sure you want to deregister the shop \"{{name}}\"? This action cannot be undone.",
+      "confirmApproveMessage": "This shop will become active in the application.",
+      "confirmDelete": "Are you sure you want to deregister the shop \"{{name}}\"?",
+      "confirmDeleteMessage": "This action cannot be undone.",
+      "confirmSuspend": "Are you sure you want to suspend the shop \"{{name}}\"?",
+      "confirmSuspendMessage": "This will return it to pending status.",
       "errorNameRequired": "Catalan name is required.",
       "errorSave": "Failed to save shop details. Please check input values.",
       "suspendedByAdmin": "Suspended by administration."
@@ -181,13 +184,41 @@
       "active": "Manage Shops",
       "categories": "Category Management",
       "contacts": "Contacts",
-      "tourism": "Tourism"
+      "tourism": "Tourism",
+      "announcements": "Announcements"
     },
     "status": {
       "approved": "Approved",
       "pending": "Pending",
       "rejected": "Rejected",
-      "suspended": "Suspended"
+      "suspended": "Suspended",
+      "published": "Published",
+      "archived": "Archived",
+      "draft": "Draft"
+    },
+    "announcements": {
+      "title": "Announcement Management",
+      "addNew": "New Announcement",
+      "date": "Date",
+      "titleField": "Title",
+      "status": "Status",
+      "actions": "Actions",
+      "urgent": "Is Urgent",
+      "editTitle": "Edit Announcement",
+      "titlePlaceholder": "Title of the announcement in {{lang}}",
+      "contentPlaceholder": "Content of the announcement in {{lang}}",
+      "category": "Category",
+      "confirmDelete": "Are you sure you want to delete the announcement \"{{title}}\"?",
+      "confirmDeleteMessage": "Are you sure you want to continue?",
+      "confirmPublish": "Are you sure you want to publish the announcement \"{{title}}\"?",
+      "confirmPublishMessage": "This announcement will be visible in the application.",
+      "confirmArchive": "Are you sure you want to archive the announcement \"{{title}}\"?",
+      "confirmArchiveMessage": "This announcement will no longer be visible in the application.",
+      "error": "Error loading announcements.",
+      "saveError": "Failed to save announcement.",
+      "errorTitleRequired": "Title is required in all languages.",
+      "errorContentRequired": "Content is required in all languages.",
+      "errorCategoryRequired": "Category is required."
     },
     "tourism": {
       "title": "Manage Points of Interest",

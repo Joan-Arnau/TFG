@@ -39,8 +39,8 @@ const ContactManagementPage = () => {
   const handleDelete = async (contact) => {
     const name = getLocalizedValue(contact.serviceName, i18n.language, `#${contact.id}`);
     const confirmed = await confirm(
-      t('admin.contacts.confirmDelete', { name }),
-      `Are you sure you want to delete the contact "${name}"?`
+      t('app.confirmTitle', 'Confirmació'),
+      t('admin.contacts.confirmDelete', { name })
     );
     if (confirmed) {
       await deleteContact(contact.id);

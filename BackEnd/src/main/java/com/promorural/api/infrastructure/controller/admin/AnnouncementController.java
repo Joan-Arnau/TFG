@@ -34,4 +34,26 @@ public class AnnouncementController {
         announcementUseCase.create(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateAnnouncement(
+            @PathVariable Long id,
+            @Validated(ValidationGroups.Update.class) @RequestBody CreateAnnouncementRequest request) {
+        announcementUseCase.update(id, request);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<Void> updateAnnouncementStatus(
+            @PathVariable Long id,
+            @RequestParam String status) {
+        announcementUseCase.updateStatus(id, status);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAnnouncement(@PathVariable Long id) {
+        announcementUseCase.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }

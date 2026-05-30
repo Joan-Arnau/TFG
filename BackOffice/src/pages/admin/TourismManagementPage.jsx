@@ -41,8 +41,8 @@ const TourismManagementPage = () => {
   const handleDelete = async (poi) => {
     const name = getLocalizedValue(poi.name, i18n.language, `#${poi.id}`);
     const confirmed = await confirm(
-      t('admin.tourism.confirmDelete', { name }),
-      `Are you sure you want to delete the POI "${name}"?`
+      t('app.confirmTitle', 'Confirmació'),
+      t('admin.tourism.confirmDelete', { name })
     );
     if (confirmed) {
       await deletePOI(poi.id);

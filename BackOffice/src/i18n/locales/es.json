@@ -170,8 +170,11 @@
       "rejectionReasonPlaceholder": "Escribe el motivo detallado del rechazo para informar al comerciante...",
       "confirmRejectAction": "Confirmar el rechazo",
       "confirmApprove": "¿Seguro que quieres aprobar el comercio \"{{name}}\"?",
-      "confirmSuspend": "¿Seguro que quieres suspender el comercio \"{{name}}\"? Esto lo devolverá al estado pendiente de revisión.",
-      "confirmDelete": "¿Seguro que quieres dar de baja el comercio \"{{name}}\"? Esta acción no se puede deshacer.",
+      "confirmApproveMessage": "Este comercio pasará a estar activo en la aplicación.",
+      "confirmDelete": "¿Seguro que quieres dar de baja el comercio \"{{name}}\"?",
+      "confirmDeleteMessage": "Esta acción no se puede deshacer.",
+      "confirmSuspend": "¿Seguro que quieres suspender el comercio \"{{name}}\"?",
+      "confirmSuspendMessage": "Esto lo devolverá al estado pendiente de revisión.",
       "errorNameRequired": "El nombre en catalán es obligatorio.",
       "errorSave": "Error al guardar los detalles del comercio. Verifica los datos.",
       "suspendedByAdmin": "Suspendido temporalmente por la administración."
@@ -181,13 +184,41 @@
       "active": "Gestión de Comercios",
       "categories": "Gestión de Categorías",
       "contacts": "Contactos",
-      "tourism": "Turismo"
+      "tourism": "Turismo",
+      "announcements": "Bandos"
     },
     "status": {
       "approved": "Aprobado",
       "pending": "Pendiente",
       "rejected": "Rechazado",
-      "suspended": "Suspendido"
+      "suspended": "Suspendido",
+      "published": "Publicado",
+      "archived": "Archivado",
+      "draft": "Borrador"
+    },
+    "announcements": {
+      "title": "Gestión de Bandos",
+      "addNew": "Nuevo Bando",
+      "date": "Fecha",
+      "titleField": "Título",
+      "status": "Estado",
+      "actions": "Acciones",
+      "urgent": "Es Urgente",
+      "editTitle": "Editar Bando",
+      "titlePlaceholder": "Título del bando en {{lang}}",
+      "contentPlaceholder": "Contenido del bando en {{lang}}",
+      "category": "Categoría",
+      "confirmDelete": "¿Seguro que quieres eliminar el bando \"{{title}}\"?",
+      "confirmDeleteMessage": "¿Seguro que quieres continuar?",
+      "confirmPublish": "¿Seguro que quieres publicar el bando \"{{title}}\"?",
+      "confirmPublishMessage": "Este comunicado será visible en la aplicación.",
+      "confirmArchive": "¿Seguro que quieres archivar el bando \"{{title}}\"?",
+      "confirmArchiveMessage": "Este comunicado dejará de ser visible en la aplicación.",
+      "error": "Error cargando bandos.",
+      "saveError": "Error al guardar el bando.",
+      "errorTitleRequired": "El título es obligatorio en todos los idiomas.",
+      "errorContentRequired": "El contenido es obligatorio en todos los idiomas.",
+      "errorCategoryRequired": "La categoría es obligatoria."
     },
     "tourism": {
       "title": "Gestión de Puntos de Interés",
