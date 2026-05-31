@@ -98,15 +98,17 @@ const AnnouncementManagementPage = () => {
                 </td>
                 <td>{t(`admin.status.${announcement.status.toLowerCase()}`, announcement.status)}</td>
                 <td>
-                  <Button variant="secondary" onClick={() => handleStatusToggle(announcement)} style={{marginRight: '8px'}}>
-                    {announcement.status === 'PUBLISHED' ? 'Arxivar' : 'Publicar'}
-                  </Button>
-                  <Button variant="primary" onClick={() => handleEdit(announcement)} style={{marginRight: '8px'}}>
-                    {t('common.edit', 'Editar')}
-                  </Button>
-                  <Button variant="danger" onClick={() => handleDelete(announcement)}>
-                    {t('common.delete', 'Esborrar')}
-                  </Button>
+                  <div className="admin-table-actions">
+                    <Button variant="secondary" onClick={() => handleStatusToggle(announcement)}>
+                      {announcement.status === 'PUBLISHED' ? 'Arxivar' : 'Publicar'}
+                    </Button>
+                    <Button variant="primary" onClick={() => handleEdit(announcement)}>
+                      {t('common.edit', 'Editar')}
+                    </Button>
+                    <Button variant="danger" onClick={() => handleDelete(announcement)}>
+                      {t('common.delete', 'Esborrar')}
+                    </Button>
+                  </div>
                 </td>
               </tr>
             ))}

@@ -74,12 +74,14 @@ const ContactManagementPage = () => {
                 <td>{getLocalizedValue(contact.serviceName, i18n.language)}</td>
                 <td>{contact.phoneNumber}</td>
                 <td>
-                  <Button variant="secondary" onClick={() => handleEdit(contact)} className="mr-2" style={{marginRight: '8px'}}>
-                    {t('common.edit', 'Editar')}
-                  </Button>
-                  <Button variant="danger" onClick={() => handleDelete(contact)}>
-                    {t('common.delete', 'Esborrar')}
-                  </Button>
+                  <div className="admin-table-actions">
+                    <Button variant="secondary" onClick={() => handleEdit(contact)}>
+                      {t('common.edit', 'Editar')}
+                    </Button>
+                    <Button variant="danger" onClick={() => handleDelete(contact)}>
+                      {t('common.delete', 'Esborrar')}
+                    </Button>
+                  </div>
                 </td>
               </tr>
             ))}

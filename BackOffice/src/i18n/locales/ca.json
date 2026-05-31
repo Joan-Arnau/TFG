@@ -17,7 +17,9 @@
     "saving": "Desant...",
     "loading": "Carregant...",
     "image": "Imatge",
-    "chooseFile": "Seleccionar fitxer"
+    "chooseFile": "Seleccionar fitxer",
+    "default": "defecte",
+    "logout": "Tancar sessió"
   },
   "language": {
     "label": "Idioma",

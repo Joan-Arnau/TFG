@@ -17,7 +17,9 @@
     "saving": "Saving...",
     "loading": "Loading...",
     "image": "Image",
-    "chooseFile": "Choose File"
+    "chooseFile": "Choose File",
+    "default": "default",
+    "logout": "Log Out"
   },
   "language": {
     "label": "Language",

@@ -82,8 +82,14 @@ const TourismManagementPage = () => {
                 <td>{getLocalizedValue(poi.name, i18n.language)}</td>
                 <td>{getLocalizedValue(poi.category?.name, i18n.language)}</td>
                 <td>
-                  <Button variant="secondary" onClick={() => handleEdit(poi)} style={{marginRight: '8px'}}>{t('common.edit', 'Editar')}</Button>
-                  <Button variant="danger" onClick={() => handleDelete(poi)}>{t('common.delete', 'Esborrar')}</Button>
+                  <div className="admin-table-actions">
+                    <Button variant="secondary" onClick={() => handleEdit(poi)}>
+                      {t('common.edit', 'Editar')}
+                    </Button>
+                    <Button variant="danger" onClick={() => handleDelete(poi)}>
+                      {t('common.delete', 'Esborrar')}
+                    </Button>
+                  </div>
                 </td>
               </tr>
             ))}

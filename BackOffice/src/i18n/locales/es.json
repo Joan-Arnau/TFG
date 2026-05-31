@@ -17,7 +17,9 @@
     "saving": "Guardando...",
     "loading": "Cargando...",
     "image": "Imagen",
-    "chooseFile": "Seleccionar archivo"
+    "chooseFile": "Seleccionar archivo",
+    "default": "por defecto",
+    "logout": "Cerrar sesión"
   },
   "language": {
     "label": "Idioma",

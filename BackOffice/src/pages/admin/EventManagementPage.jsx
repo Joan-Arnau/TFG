@@ -107,12 +107,14 @@ const EventManagementPage = () => {
                   <td>{event.isFestival ? t('common.yes', 'Yes') : t('common.no', 'No')}</td>
                   <td>{getLocalizedValue(event.category?.name, i18n.language)}</td>
                   <td>
-                    <Button variant="secondary" onClick={() => handleEdit(event)} style={{ marginRight: '8px' }}>
-                      {t('common.edit', 'Edit')}
-                    </Button>
-                    <Button variant="danger" onClick={() => handleDelete(event)}>
-                      {t('common.delete', 'Delete')}
-                    </Button>
+                    <div className="admin-table-actions">
+                      <Button variant="secondary" onClick={() => handleEdit(event)}>
+                        {t('common.edit', 'Edit')}
+                      </Button>
+                      <Button variant="danger" onClick={() => handleDelete(event)}>
+                        {t('common.delete', 'Delete')}
+                      </Button>
+                    </div>
                   </td>
                 </tr>
               ))

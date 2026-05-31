@@ -68,7 +68,7 @@ const MerchantPromotionsListView = ({ t, promotions, onCreate, onEditPath, onDel
               </div>
               <div className="merchant-list-actions">
                 <Button as={Link} to={onEditPath(promo.id)} variant="ghost">{t('merchant.edit', 'Edit')}</Button>
-                <Button variant="secondary" onClick={() => onDelete(promo.id)}>{t('merchant.delete', 'Delete')}</Button>
+                <Button variant="danger" onClick={() => onDelete(promo.id)}>{t('merchant.delete', 'Delete')}</Button>
               </div>
             </Card>
           </li>

@@ -66,7 +66,7 @@ const AdminCategoryTable = ({
           </select>
         </div>
         <Button variant="primary" onClick={onAddNew}>
-          + {t('admin.categories.addNew', 'Nova Categoria')}
+          {t('admin.categories.addNew', 'Nova Categoria')}
         </Button>
       </div>
 

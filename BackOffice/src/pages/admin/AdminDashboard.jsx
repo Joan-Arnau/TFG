@@ -13,6 +13,9 @@ import TourismManagementPage from './TourismManagementPage';
 import AnnouncementManagementPage from './AnnouncementManagementPage';
 import { usePendingShops } from '../../hooks/usePendingShops';
 import { useCategories } from '../../hooks/useCategories';
+import { useAnnouncements } from '../../hooks/useAnnouncements';
+import { useEvents } from '../../hooks/useEvents';
+import { usePOIs } from '../../hooks/usePOIs';
 import useConfirm from '../../hooks/useConfirm';
 import { getLocalizedValue } from '../../utils/localization';
 
@@ -46,6 +49,10 @@ const AdminDashboard = () => {
     updateCategory,
     deleteCategory: apiDeleteCategory
   } = useCategories();
+
+  const { announcements } = useAnnouncements();
+  const { events } = useEvents();
+  const { pois } = usePOIs();
 
   const loading = activeTab === 'categories' ? categoriesLoading : shopsLoading;
   const error = activeTab === 'categories' ? categoriesError : shopsError;
@@ -138,122 +145,134 @@ const AdminDashboard = () => {
   return (
     <main className="dashboard">
       <AdminDashboardHeader onRefresh={handleRefresh} loading={loading} />
-      <AdminStats pendingShops={pendingShops} />
+      <AdminStats 
+        pendingShopsCount={pendingShops.length} 
+        allShopsCount={allShops.filter(s => s.status === 'APPROVED').length} 
+        categoriesCount={categories.length} 
+        announcementsCount={announcements.length} 
+        eventsCount={events.length} 
+        poisCount={pois.length} 
+      />
 
-      {/* Tabs Menu */}
-      <div className="admin-tabs-nav">
-        <button
-          type="button"
-          className={`admin-tab-btn ${activeTab === 'pending' ? 'active' : ''}`}
-          onClick={() => setActiveTab('pending')}
-        >
-          {t('admin.tabs.pending', 'Pending Requests')} ({pendingShops.length})
-        </button>
-        <button
-          type="button"
-          className={`admin-tab-btn ${activeTab === 'all' ? 'active' : ''}`}
-          onClick={() => setActiveTab('all')}
-        >
-          {t('admin.tabs.active', 'All Shops')} ({allShops.length})
-        </button>
-        <button
-          type="button"
-          className={`admin-tab-btn ${activeTab === 'categories' ? 'active' : ''}`}
-          onClick={() => setActiveTab('categories')}
-        >
-          {t('admin.tabs.categories', 'Categories')} ({categories.length})
-        </button>
-        <button
-          type="button"
-          className={`admin-tab-btn ${activeTab === 'contacts' ? 'active' : ''}`}
-          onClick={() => setActiveTab('contacts')}
-        >
-          {t('admin.tabs.contacts', 'Contacts')}
-        </button>
-        <button
-          type="button"
-          className={`admin-tab-btn ${activeTab === 'tourism' ? 'active' : ''}`}
-          onClick={() => setActiveTab('tourism')}
-        >
-          {t('admin.tabs.tourism', 'Turisme')}
-        </button>
-        <button
-          type="button"
-          className={`admin-tab-btn ${activeTab === 'announcements' ? 'active' : ''}`}
-          onClick={() => setActiveTab('announcements')}
-        >
-          {t('admin.tabs.announcements', 'Bandos')}
-        </button>
-        <button
-          type="button"
-          className={`admin-tab-btn ${activeTab === 'events' ? 'active' : ''}`}
-          onClick={() => setActiveTab('events')}
-        >
-          {t('admin.tabs.events', 'Events')}
-        </button>
-        <button
-          type="button"
-          className={`admin-tab-btn ${activeTab === 'branding' ? 'active' : ''}`}
-          onClick={() => setActiveTab('branding')}
-        >
-          {t('admin.tabs.branding', 'Marca Blanca')}
-        </button>
-      </div>
+      <div className="admin-dashboard-layout">
+        {/* Tabs Menu */}
+        <aside className="admin-tabs-nav">
+          <button
+            type="button"
+            className={`admin-tab-btn ${activeTab === 'pending' ? 'active' : ''}`}
+            onClick={() => setActiveTab('pending')}
+          >
+            <span>{t('admin.tabs.pending', 'Pending Requests')}</span>
+            <span className="tab-badge">{pendingShops.length}</span>
+          </button>
+          <button
+            type="button"
+            className={`admin-tab-btn ${activeTab === 'all' ? 'active' : ''}`}
+            onClick={() => setActiveTab('all')}
+          >
+            <span>{t('admin.tabs.active', 'All Shops')}</span>
+            <span className="tab-badge">{allShops.length}</span>
+          </button>
+          <button
+            type="button"
+            className={`admin-tab-btn ${activeTab === 'categories' ? 'active' : ''}`}
+            onClick={() => setActiveTab('categories')}
+          >
+            <span>{t('admin.tabs.categories', 'Categories')}</span>
+            <span className="tab-badge">{categories.length}</span>
+          </button>
+          <button
+            type="button"
+            className={`admin-tab-btn ${activeTab === 'contacts' ? 'active' : ''}`}
+            onClick={() => setActiveTab('contacts')}
+          >
+            <span>{t('admin.tabs.contacts', 'Contacts')}</span>
+          </button>
+          <button
+            type="button"
+            className={`admin-tab-btn ${activeTab === 'tourism' ? 'active' : ''}`}
+            onClick={() => setActiveTab('tourism')}
+          >
+            <span>{t('admin.tabs.tourism', 'Turisme')}</span>
+          </button>
+          <button
+            type="button"
+            className={`admin-tab-btn ${activeTab === 'announcements' ? 'active' : ''}`}
+            onClick={() => setActiveTab('announcements')}
+          >
+            <span>{t('admin.tabs.announcements', 'Bandos')}</span>
+          </button>
+          <button
+            type="button"
+            className={`admin-tab-btn ${activeTab === 'events' ? 'active' : ''}`}
+            onClick={() => setActiveTab('events')}
+          >
+            <span>{t('admin.tabs.events', 'Events')}</span>
+          </button>
+          <button
+            type="button"
+            className={`admin-tab-btn ${activeTab === 'branding' ? 'active' : ''}`}
+            onClick={() => setActiveTab('branding')}
+          >
+            <span>{t('admin.tabs.branding', 'Marca Blanca')}</span>
+          </button>
+        </aside>
 
-      {/* Tab Contents */}
-      <div className="admin-tab-content">
-        {activeTab === 'pending' && (
-          <PendingShopList
-            shops={pendingShops}
-            loading={loading}
-            error={error}
-            onApprove={handleApprove}
-            onReject={handleReject}
-            t={t}
-            i18n={i18n}
-          />
-        )}
-        {activeTab === 'all' && (
-          <AdminActiveShopTable
-            shops={allShops}
-            loading={loading}
-            error={error}
-            onSuspend={handleSuspend}
-            onApprove={handleApprove}
-            onDelete={handleDelete}
-            t={t}
-            i18n={i18n}
-          />
-        )}
-        {activeTab === 'categories' && (
-          <AdminCategoryTable
-            categories={categories}
-            loading={loading}
-            error={error}
-            filterType={filterType}
-            onFilterChange={setFilterType}
-            onEdit={handleEditCategory}
-            onDelete={handleDeleteCategory}
-            onAddNew={handleAddNewCategory}
-            t={t}
-            i18n={i18n}
-          />
-        )}
-        {activeTab === 'contacts' && (
-          <ContactManagementPage />
-        )}
-        {activeTab === 'tourism' && (
-          <TourismManagementPage />
-        )}
-        {activeTab === 'announcements' && (
-          <AnnouncementManagementPage />
-        )}
-        {activeTab === 'events' && (
-          <EventManagementPage />
-        )}
-        {activeTab === 'branding' && (
-          <AdminBrandingPage />
-        )}
+        {/* Tab Contents */}
+        <div className="admin-tab-content">
+          {activeTab === 'pending' && (
+            <PendingShopList
+              shops={pendingShops}
+              loading={loading}
+              error={error}
+              onApprove={handleApprove}
+              onReject={handleReject}
+              t={t}
+              i18n={i18n}
+            />
+          )}
+          {activeTab === 'all' && (
+            <AdminActiveShopTable
+              shops={allShops}
+              loading={loading}
+              error={error}
+              onSuspend={handleSuspend}
+              onApprove={handleApprove}
+              onDelete={handleDelete}
+              t={t}
+              i18n={i18n}
+            />
+          )}
+          {activeTab === 'categories' && (
+            <AdminCategoryTable
+              categories={categories}
+              loading={loading}
+              error={error}
+              filterType={filterType}
+              onFilterChange={setFilterType}
+              onEdit={handleEditCategory}
+              onDelete={handleDeleteCategory}
+              onAddNew={handleAddNewCategory}
+              t={t}
+              i18n={i18n}
+            />
+          )}
+          {activeTab === 'contacts' && (
+            <ContactManagementPage />
+          )}
+          {activeTab === 'tourism' && (
+            <TourismManagementPage />
+          )}
+          {activeTab === 'announcements' && (
+            <AnnouncementManagementPage />
+          )}
+          {activeTab === 'events' && (
+            <EventManagementPage />
+          )}
+          {activeTab === 'branding' && (
+            <AdminBrandingPage />
+          )}
+        </div>
       </div>
 
       {isCategoryModalOpen && (

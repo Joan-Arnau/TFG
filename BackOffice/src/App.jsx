@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { ConfirmProvider } from './context/ConfirmProvider';
 import { APP_NAME, DEFAULT_THEME } from './context/themeConfig';
@@ -18,32 +18,35 @@ import './styles/App.css';
 
 function AppShell() {
   const { theme } = useTheme();
+  const { user } = useAuth();
 
   return (
     <BrowserRouter>
       <div className="app">
-        <header className="app-header">
-          <div className="app-brand">
-            {theme.logoUrl ? (
-              <img
-                className="app-brand-logo"
-                src={theme.logoUrl}
-                alt=""
-                aria-hidden="true"
-                onError={(event) => {
-                  if (event.currentTarget.src !== DEFAULT_THEME.logoUrl) {
-                    event.currentTarget.src = DEFAULT_THEME.logoUrl;
-                  }
-                }}
-              />
-            ) : null}
-            <div className="app-brand-text">
-              <span>{APP_NAME}</span>
-              <h1>{theme.name}</h1>
+        {!user && (
+          <header className="app-header">
+            <div className="app-brand">
+              {theme.logoUrl ? (
+                <img
+                  className="app-brand-logo"
+                  src={theme.logoUrl}
+                  alt=""
+                  aria-hidden="true"
+                  onError={(event) => {
+                    if (event.currentTarget.src !== DEFAULT_THEME.logoUrl) {
+                      event.currentTarget.src = DEFAULT_THEME.logoUrl;
+                    }
+                  }}
+                />
+              ) : null}
+              <div className="app-brand-text">
+                <span>{APP_NAME}</span>
+                <h1>{theme.name}</h1>
+              </div>
             </div>
-          </div>
-          <LanguageSwitcher />
-        </header>
+            <LanguageSwitcher />
+          </header>
+        )}
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
