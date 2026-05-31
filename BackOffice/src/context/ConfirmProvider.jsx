@@ -7,12 +7,12 @@ export const ConfirmProvider = ({ children }) => {
   const { t } = useTranslation();
   const [config, setConfig] = useState(null);
 
-  const confirm = useCallback((keyOrMessage, defaultMessage = 'Are you sure?') => {
+  const confirm = useCallback((keyOrMessage, defaultMessage = 'Are you sure?', customTitle = null) => {
     return new Promise((resolve) => {
-      const message = typeof keyOrMessage === 'string' ? t(keyOrMessage, defaultMessage) : defaultMessage;
+      const message = typeof keyOrMessage === 'string' && keyOrMessage ? t(keyOrMessage, defaultMessage) : defaultMessage;
       
       setConfig({
-        title: t('app.confirmTitle', 'Confirmation'),
+        title: customTitle || t('app.confirmTitle', 'Confirmation'),
         message,
         onConfirm: () => {
           setConfig(null);

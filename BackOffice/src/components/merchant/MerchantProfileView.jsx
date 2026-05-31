@@ -5,6 +5,8 @@ import LocalizedFieldSet from './LocalizedFieldSet';
 import LocationSelector from './LocationSelector';
 import { getLocalizedValue } from '../../utils/localization';
 import { useTheme } from '../../context/useTheme';
+import ImageUpload from '../forms/ImageUpload';
+
 
 const MerchantProfileView = ({
   t,
@@ -50,6 +52,17 @@ const MerchantProfileView = ({
 
       {!isEditing ? (
         <div className="merchant-readonly-grid">
+          {shop.headerImageUrl && (
+            <Card className="merchant-summary-card merchant-summary-card--full" style={{ padding: 0, overflow: 'hidden' }}>
+              <div className="merchant-profile-banner" style={{ width: '100%', height: '240px', overflow: 'hidden', position: 'relative' }}>
+                <img 
+                  src={shop.headerImageUrl} 
+                  alt={shop.name?.[language] || "Banner"} 
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                />
+              </div>
+            </Card>
+          )}
           <Card className="merchant-summary-card">
             <h4>{t('merchant.shopName', 'Shop name')}</h4>
             {supportedLanguageCodes.map((lang) => (
@@ -87,6 +100,14 @@ const MerchantProfileView = ({
         }}>
           <div className="merchant-warning">
             {t('merchant.revalidationWarning', 'Changing the shop name, category or location will send the shop to municipal review and temporarily hide it from the public catalogue.')}
+          </div>
+
+          <div className="merchant-field mb-4">
+            <span style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>{t('merchant.headerImage', 'Imatge de capçalera o perfil (banner)')}</span>
+            <ImageUpload 
+              currentImageUrl={localizedShop.headerImageUrl} 
+              onFileSelect={(file) => onFieldChange('headerImageFile', file)} 
+            />
           </div>
           <LocalizedFieldSet
             legend={t('merchant.shopName', 'Shop name')}

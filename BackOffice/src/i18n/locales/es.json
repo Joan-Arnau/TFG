@@ -88,6 +88,7 @@
       "pending": "En revisión"
     },
     "saveChanges": "Guardar cambios",
+    "headerImage": "Imagen de cabecera o perfil (banner)",
     "updated": "Actualizado",
     "promotions": "Promociones",
     "images": "Imágenes",
@@ -290,6 +291,7 @@
       "typeDisabledNote": "El tipo no se puede cambiar una vez creada la categoría.",
       "confirmDelete": "¿Seguro que quieres eliminar la categoría \"{{name}}\"?",
       "deleteError": "No se pudo eliminar la categoría.",
+      "errorInUse": "Esta categoría está en uso y no se puede eliminar.",
       "filterLabel": "Filtrar por:",
       "filterAll": "Todos los tipos",
       "addNew": "Nueva Categoría",

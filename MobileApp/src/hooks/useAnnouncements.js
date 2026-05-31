@@ -18,7 +18,16 @@ export const useAnnouncements = () => {
         publicService.getCategories('ANNOUNCEMENT')
       ]);
 
-      setAnnouncements(annData);
+      const sortedAnnouncements = annData.sort((a, b) => {
+        // Urgent first (true before false)
+        if (a.urgent !== b.urgent) {
+          return a.urgent ? -1 : 1;
+        }
+        // Then by date descending
+        return new Date(b.publishedAt) - new Date(a.publishedAt);
+      });
+
+      setAnnouncements(sortedAnnouncements);
       setCategories(catData);
     } catch (err) {
       console.error('Error fetching announcements data:', err);

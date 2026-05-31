@@ -136,8 +136,17 @@ const AdminDashboard = () => {
         await apiDeleteCategory(category.id);
         refreshCategories();
       } catch (err) {
-        const backendMessage = err.response?.data?.message || err.message;
-        alert(backendMessage || t('admin.categories.deleteError', 'Could not delete category.'));
+        const status = err.response?.status;
+        const message = err.response?.data?.message || err.message;
+        
+        let localizedError = t('admin.categories.deleteError', 'No s\'ha pogut esborrar la categoria.');
+        
+        if (status === 400 || status === 409 || (message && (message.includes('error.category.in_use') || message.includes('Cannot delete category because it is in use')))) {
+          localizedError = t('admin.categories.errorInUse', 'Aquesta categoria està en ús i no es pot esborrar.');
+          await confirm('', localizedError, t('app.errorTitle', 'Error'));
+        } else {
+          await confirm('', localizedError, t('app.errorTitle', 'Error'));
+        }
       }
     }
   };

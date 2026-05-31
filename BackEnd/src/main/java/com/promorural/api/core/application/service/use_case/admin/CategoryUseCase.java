@@ -7,6 +7,7 @@ import com.promorural.api.core.domain.entity.Category;
 import com.promorural.api.core.domain.entity.CategoryType;
 import com.promorural.api.core.domain.exception.BadRequestException;
 import com.promorural.api.core.domain.exception.ResourceNotFoundException;
+import com.promorural.api.core.domain.exception.ConflictException;
 import com.promorural.api.core.domain.repository.CategoryRepository;
 import com.promorural.api.core.domain.repository.ShopRepository;
 import com.promorural.api.core.domain.repository.AnnouncementRepository;
@@ -97,14 +98,14 @@ public class CategoryUseCase {
         long eventCount = eventRepository.countByCategoryId(id);
         long poiCount = pointOfInterestRepository.countByCategoryId(id);
         if (shopCount > 0 || announcementCount > 0 || contactCount > 0 || eventCount > 0 || poiCount > 0) {
-            StringBuilder message = new StringBuilder("Cannot delete category because it is in use by: ");
+            StringBuilder message = new StringBuilder("error.category.in_use: ");
             boolean first = true;
             if (shopCount > 0) { message.append(shopCount).append(" shops"); first = false; }
             if (announcementCount > 0) { if (!first) message.append(", "); message.append(announcementCount).append(" announcements"); first = false; }
             if (contactCount > 0) { if (!first) message.append(", "); message.append(contactCount).append(" contacts"); first = false; }
             if (eventCount > 0) { if (!first) message.append(", "); message.append(eventCount).append(" events"); first = false; }
             if (poiCount > 0) { if (!first) message.append(", "); message.append(poiCount).append(" points of interest"); }
-            throw new BadRequestException(message.toString());
+            throw new ConflictException(message.toString());
         }
         categoryRepository.deleteById(id);
     }

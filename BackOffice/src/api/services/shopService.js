@@ -61,4 +61,10 @@ export const shopService = {
   deleteImage: async (id) => {
     await httpClient.delete(MERCHANT_API.IMAGE(id));
   },
+  uploadHeaderImage: async (file) => {
+    const fd = new FormData();
+    fd.append('file', file);
+    const r = await httpClient.post(MERCHANT_API.HEADER_IMAGE, fd);
+    return r.data;
+  },
 };

@@ -88,6 +88,7 @@
       "pending": "En revisió"
     },
     "saveChanges": "Desa els canvis",
+    "headerImage": "Imatge de capçalera o perfil (banner)",
     "updated": "Actualitzat",
     "promotions": "Promocions",
     "images": "Imatges",
@@ -290,6 +291,7 @@
       "typeDisabledNote": "El tipus no es pot canviar una vegada creada la categoria.",
       "confirmDelete": "Segur que vols esborrar la categoria \"{{name}}\"?",
       "deleteError": "No s'ha pogut esborrar la categoria.",
+      "errorInUse": "Aquesta categoria està en ús i no es pot esborrar.",
       "filterLabel": "Filtrar per:",
       "filterAll": "Tots els tipus",
       "addNew": "Nova Categoria",

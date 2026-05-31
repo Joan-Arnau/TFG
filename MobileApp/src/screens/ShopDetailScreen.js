@@ -97,6 +97,17 @@ const ShopDetailScreen = ({ navigation, route }) => {
         
         <Text style={styles.description}>{shop.description}</Text>
 
+        {shop.images && shop.images.length > 0 && (
+          <View style={styles.section}>
+            <Text style={commonStyles.sectionTitle}>{t('shop.gallery')}</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.gallery}>
+              {shop.images.map((image, index) => (
+                <Image key={index} source={{ uri: image }} style={styles.galleryImage} />
+              ))}
+            </ScrollView>
+          </View>
+        )}
+
         <View style={styles.actionRow}>
           <IconButton icon="call" onPress={handleCall} disabled={!shop.phoneNumber} />
           <IconButton icon="logo-whatsapp" color="#25D366" onPress={handleWhatsApp} disabled={!shop.phoneNumber} />

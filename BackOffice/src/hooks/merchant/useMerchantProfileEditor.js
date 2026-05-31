@@ -4,6 +4,8 @@ import { buildLocalizedMap, getLocalizedDraft } from '../../utils/localization';
 import { categoryService } from '../../api/services/categoryService';
 import useConfirm from '../common/useConfirm';
 import { useMerchantProfile } from './useMerchantProfile';
+import { shopService } from '../../api/services/shopService';
+
 
 const emptyLocalized = { ca: '', es: '', en: '' };
 
@@ -15,6 +17,8 @@ const createDraft = (shop) => ({
   categoryId: shop?.category?.id ? String(shop.category.id) : '',
   latitude: shop?.latitude != null ? String(shop.latitude) : '',
   longitude: shop?.longitude != null ? String(shop.longitude) : '',
+  headerImageUrl: shop?.headerImageUrl || '',
+  headerImageFile: null,
 });
 
 const normalizeCoordinate = (value) => {
@@ -91,6 +95,10 @@ export function useMerchantProfileEditor() {
           'These changes will send your shop back to municipal review. Continue?'
         );
         if (!confirmed) return;
+      }
+
+      if (draft.headerImageFile) {
+        await shopService.uploadHeaderImage(draft.headerImageFile);
       }
 
       await save({

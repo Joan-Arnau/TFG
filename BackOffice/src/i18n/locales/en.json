@@ -88,6 +88,7 @@
       "pending": "Pending review"
     },
     "saveChanges": "Save changes",
+    "headerImage": "Header or profile image (banner)",
     "updated": "Updated",
     "promotions": "Promotions",
     "images": "Images",
@@ -290,6 +291,7 @@
       "typeDisabledNote": "Type cannot be changed once the category is created.",
       "confirmDelete": "Are you sure you want to delete category \"{{name}}\"?",
       "deleteError": "Could not delete category.",
+      "errorInUse": "This category is in use and cannot be deleted.",
       "filterLabel": "Filter by:",
       "filterAll": "All types",
       "addNew": "New Category",

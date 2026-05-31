@@ -29,7 +29,8 @@ public class LocalFileStorage implements FileStoragePort {
     private static final Set<String> ALLOWED_CONTENT_TYPES = Set.of(
             "image/png",
             "image/jpeg",
-            "image/webp"
+            "image/webp",
+            "image/svg+xml"
     );
 
     @Override
@@ -40,7 +41,7 @@ public class LocalFileStorage implements FileStoragePort {
 
         String contentType = file.getContentType();
         if (contentType == null || !ALLOWED_CONTENT_TYPES.contains(contentType.toLowerCase(Locale.ROOT))) {
-            throw new BadRequestException("Unsupported file type. Only PNG, JPEG and WEBP are allowed.");
+            throw new BadRequestException("Unsupported file type. Only PNG, JPEG, WEBP and SVG are allowed.");
         }
 
         if (file.getSize() > DEFAULT_MAX_BYTES) {
@@ -118,6 +119,7 @@ public class LocalFileStorage implements FileStoragePort {
             case "image/png" -> "png";
             case "image/jpeg" -> "jpg";
             case "image/webp" -> "webp";
+            case "image/svg+xml" -> "svg";
             default -> null;
         };
     }

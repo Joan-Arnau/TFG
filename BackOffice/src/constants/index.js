@@ -64,6 +64,7 @@ export const MERCHANT_API = {
   IMAGES: `${MERCHANT_API_BASE}/my-shop/images`,
   IMAGE: (id) => `${MERCHANT_API_BASE}/my-shop/images/${id}`,
   CATEGORIES: `${MERCHANT_API_BASE}/categories`,
+  HEADER_IMAGE: `${MERCHANT_API_BASE}/my-shop/header-image`,
 };
 
 export const buildPromotionEditPath = (id) => `${MERCHANT_ROUTES.PROMOTIONS}/${id}/edit`;

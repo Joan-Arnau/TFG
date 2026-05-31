@@ -8,17 +8,22 @@ export const useAsyncSubmit = (submitFn, onSuccess) => {
   const handleSubmit = async (data) => {
     setError('');
     setLoading(true);
+    let result;
+    let isOk = false;
     try {
-      const result = await submitFn(data);
+      result = await submitFn(data);
       setSuccess(true);
-      if (onSuccess) onSuccess(result);
-      return result;
+      isOk = true;
     } catch (err) {
       setError(err.message || 'Error occurred');
-      throw err;
-    } finally {
       setLoading(false);
+      throw err;
     }
+    setLoading(false);
+    if (isOk && onSuccess) {
+      onSuccess(result);
+    }
+    return result;
   };
 
   return { loading, error, success, handleSubmit, setError };

@@ -58,8 +58,9 @@ export const getShopDetailStyles = (theme) => StyleSheet.create({
     marginLeft: -20,
     paddingLeft: 20,
   },
-  galleryScroll: {
+  gallery: {
     marginTop: 10,
+    marginBottom: 10,
   },
   galleryImage: {
     width: 150,
