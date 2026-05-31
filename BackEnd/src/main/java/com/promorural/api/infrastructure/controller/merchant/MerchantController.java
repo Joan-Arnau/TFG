@@ -13,6 +13,7 @@ import com.promorural.api.core.application.service.use_case.merchant.ShopProfile
 import com.promorural.api.core.application.service.use_case.publicapi.PublicUseCase;
 import com.promorural.api.core.application.validation.ValidationGroups;
 import com.promorural.api.core.domain.entity.CategoryType;
+import com.promorural.api.core.domain.exception.FileStorageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import com.promorural.api.core.application.dto.FileData;
 
 import java.util.List;
 
@@ -76,15 +78,15 @@ public class MerchantController {
     }
 
     @PostMapping("/my-shop/images")
-    public ResponseEntity<ProductImageResponse> uploadImage(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file) {
         log.info("POST /api/merchant/my-shop/images called - filename={}, size={}, contentType={}", file.getOriginalFilename(), file.getSize(), file.getContentType());
         try {
-            ProductImageResponse imageResponse = productImageUseCase.upload(file);
+            FileData fd = new FileData(file.getBytes(), file.getOriginalFilename(), file.getContentType(), file.getSize());
+            ProductImageResponse imageResponse = productImageUseCase.upload(fd);
             log.info("Image uploaded: id={}, imageUrl={}", imageResponse.id(), imageResponse.imageUrl());
             return ResponseEntity.status(HttpStatus.CREATED).body(imageResponse);
-        } catch (Exception e) {
-            log.error("Error uploading image to /api/merchant/my-shop/images - filename={}", file.getOriginalFilename(), e);
-            throw e;
+        } catch (java.io.IOException e) {
+            throw new FileStorageException("Failed to process uploaded image", e);
         }
     }
 
@@ -94,15 +96,15 @@ public class MerchantController {
     }
 
     @PostMapping("/promotions/images")
-    public ResponseEntity<UploadFileResponse> uploadPromotionImage(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<?> uploadPromotionImage(@RequestParam("file") MultipartFile file) {
         log.info("POST /api/merchant/promotions/images called - filename={}, size={}, contentType={}", file.getOriginalFilename(), file.getSize(), file.getContentType());
         try {
-            UploadFileResponse resp = productImageUseCase.uploadPromotionImage(file);
+            FileData fd = new FileData(file.getBytes(), file.getOriginalFilename(), file.getContentType(), file.getSize());
+            UploadFileResponse resp = productImageUseCase.uploadPromotionImage(fd);
             log.info("Promotion image uploaded: id={}, url={}", resp.id(), resp.url());
             return ResponseEntity.status(HttpStatus.CREATED).body(resp);
-        } catch (Exception e) {
-            log.error("Error uploading promotion image - filename={}", file.getOriginalFilename(), e);
-            throw e;
+        } catch (java.io.IOException e) {
+            throw new FileStorageException("Failed to process promotion image", e);
         }
     }
 
@@ -124,15 +126,15 @@ public class MerchantController {
     }
 
     @PostMapping("/my-shop/header-image")
-    public ResponseEntity<UploadFileResponse> uploadShopHeaderImage(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<?> uploadShopHeaderImage(@RequestParam("file") MultipartFile file) {
         log.info("POST /api/merchant/my-shop/header-image called - filename={}, size={}, contentType={}", file.getOriginalFilename(), file.getSize(), file.getContentType());
         try {
-            UploadFileResponse resp = productImageUseCase.uploadShopHeaderImage(file);
+            FileData fd = new FileData(file.getBytes(), file.getOriginalFilename(), file.getContentType(), file.getSize());
+            UploadFileResponse resp = productImageUseCase.uploadShopHeaderImage(fd);
             log.info("Shop header image uploaded: id={}, url={}", resp.id(), resp.url());
             return ResponseEntity.status(HttpStatus.CREATED).body(resp);
-        } catch (Exception e) {
-            log.error("Error uploading shop header image - filename={}", file.getOriginalFilename(), e);
-            throw e;
+        } catch (java.io.IOException e) {
+            throw new FileStorageException("Failed to process shop header image", e);
         }
     }
 

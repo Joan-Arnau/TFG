@@ -4,7 +4,7 @@ import com.promorural.api.core.application.dto.guest.CategoryResponse;
 import com.promorural.api.core.application.dto.merchant.shop.ShopMerchantResponse;
 import com.promorural.api.core.application.dto.merchant.shop.ShopUpdateRequest;
 import com.promorural.api.core.application.mapper.ShopMapper;
-import com.promorural.api.core.application.service.FileStorageService;
+import com.promorural.api.core.application.port.FileStoragePort;
 import com.promorural.api.core.domain.entity.Category;
 import com.promorural.api.core.domain.entity.CategoryType;
 import com.promorural.api.core.domain.entity.Shop;
@@ -34,7 +34,7 @@ public class ShopProfileUseCase {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final UploadFileRepository uploadFileRepository;
-    private final FileStorageService fileStorageService;
+    private final FileStoragePort fileStorageService;
     private final GeometryFactory geometryFactory;
 
     public ShopProfileUseCase(
@@ -42,7 +42,7 @@ public class ShopProfileUseCase {
             UserRepository userRepository,
             CategoryRepository categoryRepository,
             UploadFileRepository uploadFileRepository,
-            FileStorageService fileStorageService,
+            FileStoragePort fileStorageService,
             GeometryFactory geometryFactory
     ) {
         this.shopRepository = shopRepository;

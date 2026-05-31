@@ -1,4 +1,4 @@
-package com.promorural.api.core.application.service;
+package com.promorural.api.core.domain.model;
 
 public enum EmailType {
     REGISTRATION,

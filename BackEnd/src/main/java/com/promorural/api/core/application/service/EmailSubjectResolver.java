@@ -6,6 +6,7 @@ import com.promorural.api.core.domain.repository.MunicipalityConfigRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import com.promorural.api.core.domain.model.EmailType;
 import java.util.Set;
 
 @Service

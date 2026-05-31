@@ -13,6 +13,7 @@ import com.promorural.api.core.domain.entity.CategoryType;
 import com.promorural.api.core.domain.exception.BadRequestException;
 import com.promorural.api.core.domain.exception.ResourceNotFoundException;
 import com.promorural.api.core.domain.repository.CategoryRepository;
+import com.promorural.api.core.application.service.use_case.admin.CategoryUseCase;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,7 +31,7 @@ class CategoryServiceTest {
     private CategoryRepository categoryRepository;
 
     @InjectMocks
-    private CategoryService categoryService;
+    private CategoryUseCase categoryService;
 
     @Test
     @SuppressWarnings("null")

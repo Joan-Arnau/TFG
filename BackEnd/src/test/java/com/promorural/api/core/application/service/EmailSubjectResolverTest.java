@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import com.promorural.api.core.domain.entity.MunicipalityConfig;
 import com.promorural.api.core.domain.entity.User;
 import com.promorural.api.core.domain.repository.MunicipalityConfigRepository;
+import com.promorural.api.core.domain.model.EmailType;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

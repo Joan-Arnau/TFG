@@ -6,6 +6,7 @@ import com.promorural.api.core.domain.exception.FileStorageException;
 import com.promorural.api.core.domain.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
@@ -55,6 +56,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(FileStorageException.class)
     public ResponseEntity<ApiError> handleFileStorageException(FileStorageException ex, HttpServletRequest request) {
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "FILE_STORAGE_ERROR", ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<ApiError> handleIOException(IOException ex, HttpServletRequest request) {
+        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "IO_ERROR", "Failed to process uploaded file", request);
     }
     
     @ExceptionHandler(ResourceNotFoundException.class)

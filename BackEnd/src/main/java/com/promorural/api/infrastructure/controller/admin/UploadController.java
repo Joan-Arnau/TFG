@@ -1,6 +1,8 @@
 package com.promorural.api.infrastructure.controller.admin;
 
 import com.promorural.api.core.application.service.use_case.admin.FileUploadUseCase;
+import com.promorural.api.core.application.dto.FileData;
+import com.promorural.api.core.domain.exception.FileStorageException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,11 @@ public class UploadController {
 
     @PostMapping
     public ResponseEntity<Map<String, String>> uploadFile(@RequestParam("file") MultipartFile file) {
-        return ResponseEntity.ok(fileUploadUseCase.uploadFile(file));
+        try {
+            FileData fd = new FileData(file.getBytes(), file.getOriginalFilename(), file.getContentType(), file.getSize());
+            return ResponseEntity.ok(fileUploadUseCase.uploadFile(fd));
+        } catch (java.io.IOException e) {
+            throw new FileStorageException("Failed to process uploaded file", e);
+        }
     }
 }

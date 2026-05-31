@@ -2,7 +2,6 @@ package com.promorural.api.core.application.service;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
@@ -14,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class FileStorageServiceTest {
 
-    private final FileStorageService service = new FileStorageService();
+    private final com.promorural.api.infrastructure.filestorage.LocalFileStorage service = new com.promorural.api.infrastructure.filestorage.LocalFileStorage();
     private final Path testDir = Path.of("target/test-uploads");
 
     public FileStorageServiceTest() {
@@ -33,11 +32,8 @@ class FileStorageServiceTest {
 
     @Test
     void storeFile_createsFileAndReturnsUrl_withSubdir() throws Exception {
-        MockMultipartFile file = new MockMultipartFile(
-                "file",
-                "photo.png",
-                "image/png",
-                "PNGDATA".getBytes()
+        com.promorural.api.core.application.dto.FileData file = new com.promorural.api.core.application.dto.FileData(
+            "PNGDATA".getBytes(), "photo.png", "image/png", "PNGDATA".getBytes().length
         );
 
         String url = service.storeFile(file, "gallery");
@@ -53,11 +49,8 @@ class FileStorageServiceTest {
 
     @Test
     void storeFile_rejectsUnsupportedMimeType() {
-        MockMultipartFile file = new MockMultipartFile(
-                "file",
-                "doc.pdf",
-                "application/pdf",
-                "PDFDATA".getBytes()
+        com.promorural.api.core.application.dto.FileData file = new com.promorural.api.core.application.dto.FileData(
+            "PDFDATA".getBytes(), "doc.pdf", "application/pdf", "PDFDATA".getBytes().length
         );
 
         assertThatThrownBy(() -> service.storeFile(file, "gallery"))
@@ -67,11 +60,8 @@ class FileStorageServiceTest {
     @Test
     void storeFile_rejectsTooLargeFile() {
         byte[] big = new byte[(2 * 1024 * 1024) + 10];
-        MockMultipartFile file = new MockMultipartFile(
-                "file",
-                "big.jpg",
-                "image/jpeg",
-                big
+        com.promorural.api.core.application.dto.FileData file = new com.promorural.api.core.application.dto.FileData(
+            big, "big.jpg", "image/jpeg", big.length
         );
 
         assertThatThrownBy(() -> service.storeFile(file, "gallery"))
@@ -80,11 +70,8 @@ class FileStorageServiceTest {
 
     @Test
     void storeFile_rejectsEmptyFile() {
-        MockMultipartFile file = new MockMultipartFile(
-                "file",
-                "empty.png",
-                "image/png",
-                new byte[0]
+        com.promorural.api.core.application.dto.FileData file = new com.promorural.api.core.application.dto.FileData(
+            new byte[0], "empty.png", "image/png", 0
         );
 
         assertThatThrownBy(() -> service.storeFile(file, "gallery"))

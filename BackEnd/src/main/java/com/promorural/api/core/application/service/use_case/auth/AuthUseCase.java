@@ -3,33 +3,195 @@ package com.promorural.api.core.application.service.use_case.auth;
 import com.promorural.api.core.application.dto.auth.AuthResponse;
 import com.promorural.api.core.application.dto.auth.LoginRequest;
 import com.promorural.api.core.application.dto.auth.RegisterRequest;
-import com.promorural.api.core.application.service.AuthService;
+import com.promorural.api.core.domain.entity.PasswordResetToken;
+import com.promorural.api.core.domain.entity.Role;
+import com.promorural.api.core.domain.entity.Shop;
+import com.promorural.api.core.domain.entity.ShopStatus;
+import com.promorural.api.core.domain.entity.User;
+import com.promorural.api.core.domain.exception.ConflictException;
+import com.promorural.api.core.domain.repository.PasswordResetTokenRepository;
+import com.promorural.api.core.domain.repository.ShopRepository;
+import com.promorural.api.core.domain.repository.UserRepository;
+import com.promorural.api.core.application.port.TokenService;
+import com.promorural.api.core.application.port.EmailSender;
+import jakarta.mail.MessagingException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.time.ZonedDateTime;
+import java.util.Base64;
+import java.util.HexFormat;
+import java.util.Map;
+import java.util.Optional;
+
 @Service
 @Transactional
+@Slf4j
 public class AuthUseCase {
 
-    private final AuthService authService;
+    private final AuthenticationManager authenticationManager;
+    private final TokenService jwtService;
+    private final UserRepository userRepository;
+    private final ShopRepository shopRepository;
+    private final PasswordResetTokenRepository tokenRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final EmailSender emailSender;
+    private final com.promorural.api.core.application.port.EmailTemplateRenderer emailTemplateService;
+    private final com.promorural.api.core.application.service.EmailSubjectResolver emailSubjectResolver;
+    private final SecureRandom secureRandom = new SecureRandom();
 
-    public AuthUseCase(AuthService authService) {
-        this.authService = authService;
+    @Value("${app.backoffice-base-url}")
+    private String backofficeBaseUrl;
+
+    public AuthUseCase(
+            AuthenticationManager authenticationManager,
+            TokenService jwtService,
+            UserRepository userRepository,
+            ShopRepository shopRepository,
+            PasswordResetTokenRepository tokenRepository,
+            PasswordEncoder passwordEncoder,
+            EmailSender emailSender,
+            com.promorural.api.core.application.port.EmailTemplateRenderer emailTemplateService,
+            com.promorural.api.core.application.service.EmailSubjectResolver emailSubjectResolver
+    ) {
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
+        this.userRepository = userRepository;
+        this.shopRepository = shopRepository;
+        this.tokenRepository = tokenRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.emailSender = emailSender;
+        this.emailTemplateService = emailTemplateService;
+        this.emailSubjectResolver = emailSubjectResolver;
     }
 
     public AuthResponse login(LoginRequest request) {
-        return authService.login(request);
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.username(), request.password())
+            );
+
+            User user = (User) authentication.getPrincipal();
+            String token = jwtService.generateToken(user);
+            return new AuthResponse(token, user.getRole().name());
+        } catch (AuthenticationException e) {
+            throw new BadCredentialsException("Invalid username or password", e);
+        }
     }
 
+    @Transactional
     public void register(RegisterRequest request) {
-        authService.register(request);
+        if (userRepository.findByUsername(request.username()).isPresent()) {
+            throw new ConflictException("Username already exists");
+        }
+
+        User user = new User();
+        user.setUsername(request.username());
+        user.setEmail(request.email());
+        user.setPassword(passwordEncoder.encode(request.password()));
+        user.setRole(Role.ROLE_MERCHANT);
+
+        String lang = org.springframework.context.i18n.LocaleContextHolder.getLocale().getLanguage();
+        if (lang != null) {
+            lang = lang.toLowerCase();
+            if (lang.equals("ca") || lang.equals("es") || lang.equals("en")) {
+                user.setPreferredLanguage(lang);
+            }
+        }
+
+        userRepository.save(user);
+
+        Shop shop = new Shop();
+        shop.setName(Map.of("ca", request.shopName(), "es", request.shopName(), "en", request.shopName()));
+        shop.setDescription(Map.of("ca", request.shopDescription(), "es", request.shopDescription(), "en", request.shopDescription()));
+        shop.setAddress(request.address());
+        shop.setPhoneNumber(request.phoneNumber());
+        shop.setStatus(ShopStatus.PENDING);
+        shop.setOwner(user);
+        shopRepository.save(shop);
+
+        try {
+            String htmlContent = emailTemplateService.renderRegistrationTemplate();
+            String subject = emailSubjectResolver.resolveSubject(user, com.promorural.api.core.domain.model.EmailType.REGISTRATION);
+            emailSender.sendHtmlEmail(request.email(), subject, htmlContent);
+        } catch (MessagingException e) {
+            log.error("Error enviant email de benvinguda: {}", e.getMessage());
+            throw new RuntimeException("Failed to send confirmation email", e);
+        }
     }
 
+    @Transactional
     public void forgotPassword(String email) {
-        authService.forgotPassword(email);
+        Optional<User> userOpt = userRepository.findByEmail(email);
+
+        if (userOpt.isEmpty()) {
+            log.warn("Intent de recuperació de contrasenya per a correu no existent.");
+            return;
+        }
+
+        User user = userOpt.get();
+
+        tokenRepository.deleteByUser(user);
+
+        byte[] randomBytes = new byte[32];
+        secureRandom.nextBytes(randomBytes);
+        String token = Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes);
+        String tokenHash = hashToken(token);
+
+        PasswordResetToken resetToken = new PasswordResetToken(user, tokenHash, ZonedDateTime.now().plusHours(1));
+        tokenRepository.save(resetToken);
+
+        String resetLink = backofficeBaseUrl + "/reset-password?token=" + token;
+
+        try {
+            String htmlContent = emailTemplateService.renderPasswordResetTemplate(resetLink);
+            String subject = emailSubjectResolver.resolveSubject(user, com.promorural.api.core.domain.model.EmailType.PASSWORD_RESET);
+            emailSender.sendHtmlEmail(email, subject, htmlContent);
+            log.info("Email de recuperació enviat correctament.");
+        } catch (MessagingException e) {
+            log.error("Error enviant email de recuperació: {}", e.getMessage());
+            throw new RuntimeException("Failed to send email", e);
+        }
     }
 
+    @Transactional
     public void resetPassword(String token, String newPassword) {
-        authService.resetPassword(token, newPassword);
+        String tokenHash = hashToken(token);
+        PasswordResetToken resetToken = tokenRepository.findByTokenHash(tokenHash)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid token"));
+
+        if (resetToken.isExpired() || resetToken.isUsed()) {
+            throw new IllegalArgumentException("Token invalid or expired");
+        }
+
+        User user = resetToken.getUser();
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        resetToken.setUsedAt(ZonedDateTime.now());
+        tokenRepository.save(resetToken);
+        log.info("Contrasenya restablerta per a l'usuari ID: {}", user.getId());
+    }
+
+    private String hashToken(String token) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(token.getBytes(StandardCharsets.UTF_8));
+            return HexFormat.of().formatHex(hash);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Failed to hash token", e);
+        }
     }
 }

@@ -2,7 +2,7 @@ package com.promorural.api.core.application.service.use_case.merchant;
 
 import com.promorural.api.core.application.dto.merchant.shop.ProductImageResponse;
 import com.promorural.api.core.application.dto.merchant.shop.UploadFileResponse;
-import com.promorural.api.core.application.service.FileStorageService;
+import com.promorural.api.core.application.port.FileStoragePort;
 import com.promorural.api.core.domain.entity.ProductImage;
 import com.promorural.api.core.domain.entity.Shop;
 import com.promorural.api.core.domain.entity.UploadFile;
@@ -18,7 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
+import com.promorural.api.core.application.dto.FileData;
 
 @Service
 @Transactional
@@ -26,13 +26,13 @@ public class ProductImageUseCase {
 
     private final ShopRepository shopRepository;
     private final ProductImageRepository productImageRepository;
-    private final FileStorageService fileStorageService;
+    private final FileStoragePort fileStorageService;
     private final UserRepository userRepository;
     private final UploadFileRepository uploadFileRepository;
 
     public ProductImageUseCase(ShopRepository shopRepository,
                                ProductImageRepository productImageRepository,
-                               FileStorageService fileStorageService,
+                               FileStoragePort fileStorageService,
                                UserRepository userRepository,
                                UploadFileRepository uploadFileRepository) {
         this.shopRepository = shopRepository;
@@ -42,7 +42,7 @@ public class ProductImageUseCase {
         this.uploadFileRepository = uploadFileRepository;
     }
 
-    public ProductImageResponse upload(MultipartFile file) {
+    public ProductImageResponse upload(FileData file) {
         Shop shop = getCurrentUserShop();
         String imageUrl = fileStorageService.storeFile(file, "gallery");
 
@@ -54,7 +54,7 @@ public class ProductImageUseCase {
         return mapToResponse(savedImage);
     }
 
-    public UploadFileResponse uploadPromotionImage(MultipartFile file) {
+    public UploadFileResponse uploadPromotionImage(FileData file) {
         Shop shop = getCurrentUserShop();
         String url = fileStorageService.storeFile(file, "promotions");
         UploadFile uf = new UploadFile();
@@ -64,7 +64,7 @@ public class ProductImageUseCase {
         return new UploadFileResponse(saved.getId(), saved.getUrl(), saved.getUploadedAt());
     }
 
-    public UploadFileResponse uploadShopHeaderImage(MultipartFile file) {
+    public UploadFileResponse uploadShopHeaderImage(FileData file) {
         Shop shop = getCurrentUserShop();
         String url = fileStorageService.storeFile(file, "shops");
         shop.setHeaderImageUrl(url);

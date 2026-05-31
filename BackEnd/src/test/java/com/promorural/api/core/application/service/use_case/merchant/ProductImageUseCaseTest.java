@@ -1,7 +1,7 @@
 package com.promorural.api.core.application.service.use_case.merchant;
 
 import com.promorural.api.core.application.dto.merchant.shop.ProductImageResponse;
-import com.promorural.api.core.application.service.FileStorageService;
+import com.promorural.api.core.application.port.FileStoragePort;
 import com.promorural.api.core.domain.entity.ProductImage;
 import com.promorural.api.core.domain.entity.Shop;
 import com.promorural.api.core.domain.entity.User;
@@ -12,7 +12,6 @@ import com.promorural.api.core.domain.repository.UploadFileRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -28,7 +27,7 @@ class ProductImageUseCaseTest {
 
     private ShopRepository shopRepository;
     private ProductImageRepository productImageRepository;
-    private FileStorageService fileStorageService;
+    private FileStoragePort fileStorageService;
     private UserRepository userRepository;
     private UploadFileRepository uploadFileRepository;
 
@@ -38,7 +37,7 @@ class ProductImageUseCaseTest {
     void setUp() {
         shopRepository = Mockito.mock(ShopRepository.class);
         productImageRepository = Mockito.mock(ProductImageRepository.class);
-        fileStorageService = Mockito.mock(FileStorageService.class);
+        fileStorageService = Mockito.mock(FileStoragePort.class);
         userRepository = Mockito.mock(UserRepository.class);
         uploadFileRepository = Mockito.mock(UploadFileRepository.class);
 
@@ -58,7 +57,7 @@ class ProductImageUseCaseTest {
         try { java.lang.reflect.Field idField = Shop.class.getDeclaredField("id"); idField.setAccessible(true); idField.set(shop, 10L); } catch (Exception ignored) {}
         when(shopRepository.findByOwnerUsername(username)).thenReturn(Optional.of(shop));
 
-        MockMultipartFile file = new MockMultipartFile("file", "photo.jpg", "image/jpeg", "data".getBytes());
+        com.promorural.api.core.application.dto.FileData file = new com.promorural.api.core.application.dto.FileData("data".getBytes(), "photo.jpg", "image/jpeg", "data".getBytes().length);
         when(fileStorageService.storeFile(any(), eq("gallery"))).thenReturn("/uploads/gallery/uuid.jpg");
 
         ProductImage saved = new ProductImage();

@@ -1,10 +1,11 @@
-package com.promorural.api.core.application.service;
+package com.promorural.api.infrastructure.filestorage;
 
 import com.promorural.api.core.domain.exception.BadRequestException;
 import com.promorural.api.core.domain.exception.FileStorageException;
+import com.promorural.api.core.application.port.FileStoragePort;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import com.promorural.api.core.application.dto.FileData;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,7 +16,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Service
-public class FileStorageService {
+public class LocalFileStorage implements FileStoragePort {
 
     @Value("${app.file-upload.upload-dir}")
     private String uploadDir;
@@ -31,16 +32,9 @@ public class FileStorageService {
             "image/webp"
     );
 
-    public String storeFile(MultipartFile file) {
-        return storeFile(file, null);
-    }
-
-    /**
-     * Stores file under an optional subdirectory (e.g. "promotions", "gallery", "shops").
-     * Validates content type and size before saving.
-     */
-    public String storeFile(MultipartFile file, String subdir) {
-        if (file == null || file.isEmpty()) {
+    @Override
+    public String storeFile(FileData file, String subdir) {
+        if (file == null || file.getSize() == 0) {
             throw new BadRequestException("Uploaded file is empty");
         }
 
@@ -64,7 +58,7 @@ public class FileStorageService {
 
         try {
             Files.createDirectories(uploadPath);
-            Files.copy(file.getInputStream(), filePath);
+            Files.write(filePath, file.getContent());
         } catch (IOException e) {
             throw new FileStorageException("Could not store uploaded file", e);
         }
@@ -73,6 +67,12 @@ public class FileStorageService {
         return normalizeBaseUrl() + "/" + relative;
     }
 
+    @Override
+    public String storeFile(FileData file) {
+        return storeFile(file, null);
+    }
+
+    @Override
     public void deleteFile(String fileUrl) {
         String normalizedBaseUrl = normalizeBaseUrl();
         if (fileUrl == null || !fileUrl.startsWith(normalizedBaseUrl)) {

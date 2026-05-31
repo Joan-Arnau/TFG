@@ -16,10 +16,9 @@ import com.promorural.api.core.domain.repository.CategoryRepository;
 import com.promorural.api.core.domain.repository.PromotionRepository;
 import com.promorural.api.core.domain.repository.ShopRepository;
 import com.promorural.api.core.domain.repository.UploadFileRepository;
-import com.promorural.api.core.application.service.EmailService;
-import com.promorural.api.core.application.service.EmailTemplateService;
+import com.promorural.api.core.application.port.EmailSender;
+import com.promorural.api.core.application.port.EmailTemplateRenderer;
 import com.promorural.api.core.application.service.EmailSubjectResolver;
-import com.promorural.api.core.application.service.EmailType;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -43,8 +42,8 @@ public class ShopModerationUseCase {
     private final GeometryFactory geometryFactory;
     private final PromotionRepository promotionRepository;
     private final UploadFileRepository uploadFileRepository;
-    private final EmailService emailService;
-    private final EmailTemplateService emailTemplateService;
+    private final EmailSender emailService;
+    private final EmailTemplateRenderer emailTemplateService;
     private final EmailSubjectResolver emailSubjectResolver;
 
     public ShopModerationUseCase(
@@ -52,9 +51,9 @@ public class ShopModerationUseCase {
             CategoryRepository categoryRepository,
             GeometryFactory geometryFactory,
             PromotionRepository promotionRepository,
-            UploadFileRepository uploadFileRepository,
-            EmailService emailService,
-            EmailTemplateService emailTemplateService,
+                UploadFileRepository uploadFileRepository,
+                EmailSender emailService,
+            EmailTemplateRenderer emailTemplateService,
             EmailSubjectResolver emailSubjectResolver
     ) {
         this.shopRepository = shopRepository;
@@ -160,7 +159,7 @@ public class ShopModerationUseCase {
             try {
                 if (status == ShopStatus.APPROVED) {
                     String htmlContent = emailTemplateService.renderShopApprovedTemplate(shopName);
-                    String subject = emailSubjectResolver.resolveSubject(shop.getOwner(), EmailType.SHOP_APPROVED);
+                    String subject = emailSubjectResolver.resolveSubject(shop.getOwner(), com.promorural.api.core.domain.model.EmailType.SHOP_APPROVED);
                     emailService.sendHtmlEmail(email, subject, htmlContent);
                     log.info("Approval email sent to owner of shop id={}", id);
                 } else if (status == ShopStatus.REJECTED) {
@@ -169,12 +168,12 @@ public class ShopModerationUseCase {
                         reason = "";
                     }
                     String htmlContent = emailTemplateService.renderShopRejectedTemplate(shopName, reason);
-                    String subject = emailSubjectResolver.resolveSubject(shop.getOwner(), EmailType.SHOP_REJECTED);
+                    String subject = emailSubjectResolver.resolveSubject(shop.getOwner(), com.promorural.api.core.domain.model.EmailType.SHOP_REJECTED);
                     emailService.sendHtmlEmail(email, subject, htmlContent);
                     log.info("Rejection email sent to owner of shop id={} (reason: {})", id, reason);
                 } else if (status == ShopStatus.SUSPENDED) {
                     String htmlContent = emailTemplateService.renderShopSuspendedTemplate(shopName);
-                    String subject = emailSubjectResolver.resolveSubject(shop.getOwner(), EmailType.SHOP_SUSPENDED);
+                    String subject = emailSubjectResolver.resolveSubject(shop.getOwner(), com.promorural.api.core.domain.model.EmailType.SHOP_SUSPENDED);
                     emailService.sendHtmlEmail(email, subject, htmlContent);
                     log.info("Suspension email sent to owner of shop id={}", id);
                 }

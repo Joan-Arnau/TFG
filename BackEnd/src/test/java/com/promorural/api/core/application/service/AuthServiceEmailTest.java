@@ -13,6 +13,8 @@ import com.promorural.api.core.domain.repository.PasswordResetTokenRepository;
 import com.promorural.api.core.domain.repository.ShopRepository;
 import com.promorural.api.core.domain.repository.UserRepository;
 import com.promorural.api.core.application.port.TokenService;
+import com.promorural.api.core.application.port.EmailSender;
+import com.promorural.api.core.domain.model.EmailType;
 import jakarta.mail.MessagingException;
 import java.util.Locale;
 import java.util.Optional;
@@ -37,12 +39,12 @@ class AuthServiceEmailTest {
     @Mock private ShopRepository shopRepository;
     @Mock private PasswordResetTokenRepository tokenRepository;
     @Mock private PasswordEncoder passwordEncoder;
-    @Mock private EmailService emailService;
-    @Mock private EmailTemplateService emailTemplateService;
+    @Mock private EmailSender emailSender;
+    @Mock private com.promorural.api.core.application.port.EmailTemplateRenderer emailTemplateService;
     @Mock private EmailSubjectResolver emailSubjectResolver;
 
     @InjectMocks
-    private AuthService authService;
+    private com.promorural.api.core.application.service.use_case.auth.AuthUseCase authService;
 
     private Locale originalLocale;
 
@@ -84,7 +86,7 @@ class AuthServiceEmailTest {
 
         // Verify email subject resolved and sent
         verify(emailSubjectResolver).resolveSubject(savedUser, EmailType.REGISTRATION);
-        verify(emailService).sendHtmlEmail("test@example.com", "Registro completado", "html_content");
+        verify(emailSender).sendHtmlEmail("test@example.com", "Registro completado", "html_content");
     }
 
     @Test
@@ -107,6 +109,6 @@ class AuthServiceEmailTest {
 
         // Verify email subject resolved and sent
         verify(emailSubjectResolver).resolveSubject(user, EmailType.PASSWORD_RESET);
-        verify(emailService).sendHtmlEmail(email, "Reset password", "reset_html");
+        verify(emailSender).sendHtmlEmail(email, "Reset password", "reset_html");
     }
 }
