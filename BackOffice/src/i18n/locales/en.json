@@ -326,5 +326,16 @@
       "mapHint": "Click on the map to mark the center point of the municipality",
       "uploading": "Uploading..."
     }
+  },
+  "unauthorized": {
+    "title": "Access Denied",
+    "message": "You do not have permission to access this page or section.",
+    "backToDashboard": "Back to Dashboard",
+    "goToLogin": "Go to main Login",
+    "backToLogin": "Go to Login"
+  },
+  "notfound": {
+    "title": "Page Not Found",
+    "message": "The page you are looking for does not exist or has been moved."
   }
 }

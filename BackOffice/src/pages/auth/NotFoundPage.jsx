@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { MERCHANT_ROUTES } from '../../constants';
 
-const UnauthorizedPage = () => {
+const NotFoundPage = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
 
@@ -18,14 +18,14 @@ const UnauthorizedPage = () => {
   return (
     <div className="auth-page">
       <div className="auth-card" style={{ textAlign: 'center', padding: '2.5rem 2rem' }}>
-        <div style={{ fontSize: '3rem', marginBottom: '1rem', color: '#ef4444' }}>
-          ⚠️
+        <div style={{ fontSize: '3rem', marginBottom: '1rem', color: '#3b82f6' }}>
+          🔍
         </div>
         <h2 style={{ fontSize: '1.75rem', fontWeight: 'bold', color: '#1e293b', margin: '0 0 0.5rem' }}>
-          {t('unauthorized.title', 'Accés Denegat')}
+          {t('notfound.title', 'Pàgina No Trobada')}
         </h2>
         <p className="auth-description" style={{ marginBottom: '2rem', fontSize: '1.05rem', lineHeight: '1.5' }}>
-          {t('unauthorized.message', 'No tens permís per accedir a aquesta pàgina o secció.')}
+          {t('notfound.message', 'La pàgina que estàs buscant no existeix o s\'ha mogut.')}
         </p>
         
         {user ? (
@@ -35,9 +35,6 @@ const UnauthorizedPage = () => {
                 {t('unauthorized.backToDashboard', 'Tornar al Tauler de Control')}
               </button>
             </Link>
-            <div className="auth-links" style={{ justifyContent: 'center', marginTop: '0.5rem' }}>
-              <Link to="/login">{t('unauthorized.goToLogin', 'Anar a l\'Accés principal')}</Link>
-            </div>
           </div>
         ) : (
           <Link to="/login" className="auth-form" style={{ textDecoration: 'none' }}>
@@ -51,4 +48,4 @@ const UnauthorizedPage = () => {
   );
 };
 
-export default UnauthorizedPage;
+export default NotFoundPage;

@@ -326,5 +326,16 @@
       "mapHint": "Haz clic en el mapa para marcar el punto central del municipio",
       "uploading": "Subiendo..."
     }
+  },
+  "unauthorized": {
+    "title": "Acceso Denegado",
+    "message": "No tienes permiso para acceder a esta página o sección.",
+    "backToDashboard": "Volver al Panel de Control",
+    "goToLogin": "Ir al Acceso principal",
+    "backToLogin": "Ir al Acceso"
+  },
+  "notfound": {
+    "title": "Página No Encontrada",
+    "message": "La página que estás buscando no existe o se ha movido."
   }
 }

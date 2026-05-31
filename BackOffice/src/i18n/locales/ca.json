@@ -326,5 +326,16 @@
       "mapHint": "Fes clic al mapa per marcar el punt central del municipi",
       "uploading": "Pujant..."
     }
+  },
+  "unauthorized": {
+    "title": "Accés Denegat",
+    "message": "No tens permís per accedir a aquesta pàgina o secció.",
+    "backToDashboard": "Tornar al Tauler de Control",
+    "goToLogin": "Anar a l'Accés principal",
+    "backToLogin": "Anar a l'Accés"
+  },
+  "notfound": {
+    "title": "Pàgina No Trobada",
+    "message": "La pàgina que estàs buscant no existeix o s'ha mogut."
   }
 }

@@ -10,6 +10,7 @@ import RegisterPage from './pages/auth/RegisterPage';
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
 import ResetPasswordPage from './pages/auth/ResetPasswordPage';
 import UnauthorizedPage from './pages/auth/UnauthorizedPage';
+import NotFoundPage from './pages/auth/NotFoundPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import MerchantDashboard from './pages/merchant/MerchantDashboard';
 import { MERCHANT_ROUTES } from './constants';
@@ -79,7 +80,7 @@ function AppShell() {
           <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
           <Route path="/" element={<Navigate to="/login" replace />} />
-          <Route path="*" element={<div>404 Not Found</div>} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>
     </BrowserRouter>
