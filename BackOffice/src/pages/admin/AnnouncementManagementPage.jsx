@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAnnouncements } from '../../hooks/useAnnouncements';
-import { useCategories } from '../../hooks/useCategories';
+import { useAnnouncements } from '../../hooks/admin/useAnnouncements';
+import { useCategories } from '../../hooks/common/useCategories';
 import { getLocalizedValue } from '../../utils/localization';
 import Button from '../../components/ui/Button';
 import Card from '../../components/ui/Card';
-import useConfirm from '../../hooks/useConfirm';
+import useConfirm from '../../hooks/common/useConfirm';
 import AnnouncementFormModal from '../../components/admin/AnnouncementFormModal';
 
 const AnnouncementManagementPage = () => {

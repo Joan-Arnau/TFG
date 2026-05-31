@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import useMerchantPromotionForm from './hooks/useMerchantPromotionForm';
-import MerchantPromotionFormView from './components/MerchantPromotionFormView';
+import useMerchantPromotionForm from '../../hooks/merchant/useMerchantPromotionForm';
+import MerchantPromotionFormView from '../../components/merchant/MerchantPromotionFormView';
 
 const PromotionFormPage = () => {
   const { id } = useParams();

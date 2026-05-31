@@ -2,10 +2,10 @@ import { useState } from 'react';
 import Button from '../ui/Button';
 import Card from '../ui/Card';
 import Modal from '../ui/Modal';
-import LocationSelector from '../../pages/merchant/components/LocationSelector';
+import LocationSelector from '../merchant/LocationSelector';
 import { getLocalizedValue } from '../../utils/localization';
 import { resolveBackendStaticUrl } from '../../utils/backendUrls';
-import { MERCHANT_LANGUAGES } from '../../pages/merchant/constants';
+import { SUPPORTED_LANGUAGES } from '../../constants';
 
 const PendingShopList = ({ shops, loading, error, onApprove, onReject, t, i18n }) => {
   const [selectedShop, setSelectedShop] = useState(null);
@@ -147,7 +147,7 @@ const PendingShopList = ({ shops, loading, error, onApprove, onReject, t, i18n }
               {/* Multilingual Name & Description */}
               <div className="review-section">
                 <h4>{t('admin.shops.nameLabel', 'Name')}</h4>
-                {MERCHANT_LANGUAGES.map(lang => (
+                {SUPPORTED_LANGUAGES.map(lang => (
                   <p key={lang} className="review-text">
                     <strong>{t(`language.${lang}`, lang.toUpperCase())}:</strong> {selectedShop.name?.[lang] || '-'}
                   </p>
@@ -156,7 +156,7 @@ const PendingShopList = ({ shops, loading, error, onApprove, onReject, t, i18n }
 
               <div className="review-section">
                 <h4>{t('admin.shops.descriptionTitle', 'Description')}</h4>
-                {MERCHANT_LANGUAGES.map(lang => (
+                {SUPPORTED_LANGUAGES.map(lang => (
                   <p key={lang} className="review-description">
                     <strong>{t(`language.${lang}`, lang.toUpperCase())}:</strong> {selectedShop.description?.[lang] || '-'}
                   </p>

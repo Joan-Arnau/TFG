@@ -8,7 +8,7 @@ import ImageUpload from '../forms/ImageUpload';
 import DateTimePicker from '../forms/DateTimePicker';
 import { useTranslation } from 'react-i18next';
 import { getLocalizedDraft, buildLocalizedMap } from '../../utils/localization';
-import { useCategories } from '../../hooks/useCategories';
+import { useCategories } from '../../hooks/common/useCategories';
 
 const EventFormModal = ({ event, onClose, onSave, onUploadImage }) => {
   const { t } = useTranslation();

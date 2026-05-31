@@ -11,12 +11,12 @@ import AdminCategoryFormModal from '../../components/admin/AdminCategoryFormModa
 import ContactManagementPage from './ContactManagementPage';
 import TourismManagementPage from './TourismManagementPage';
 import AnnouncementManagementPage from './AnnouncementManagementPage';
-import { usePendingShops } from '../../hooks/usePendingShops';
-import { useCategories } from '../../hooks/useCategories';
-import { useAnnouncements } from '../../hooks/useAnnouncements';
-import { useEvents } from '../../hooks/useEvents';
-import { usePOIs } from '../../hooks/usePOIs';
-import useConfirm from '../../hooks/useConfirm';
+import { usePendingShops } from '../../hooks/admin/usePendingShops';
+import { useCategories } from '../../hooks/common/useCategories';
+import { useAnnouncements } from '../../hooks/admin/useAnnouncements';
+import { useEvents } from '../../hooks/admin/useEvents';
+import { usePOIs } from '../../hooks/admin/usePOIs';
+import useConfirm from '../../hooks/common/useConfirm';
 import { getLocalizedValue } from '../../utils/localization';
 
 const AdminDashboard = () => {

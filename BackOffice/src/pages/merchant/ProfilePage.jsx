@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import useMerchantProfileEditor from './hooks/useMerchantProfileEditor';
-import MerchantProfileView from './components/MerchantProfileView';
+import useMerchantProfileEditor from '../../hooks/merchant/useMerchantProfileEditor';
+import MerchantProfileView from '../../components/merchant/MerchantProfileView';
 
 const ProfilePage = () => {
   const { t, i18n } = useTranslation();

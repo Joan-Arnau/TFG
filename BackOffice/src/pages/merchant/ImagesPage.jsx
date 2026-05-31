@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { useMerchantImages } from './hooks/useMerchantImages';
-import MerchantImagesView from './components/MerchantImagesView';
+import { useMerchantImages } from '../../hooks/merchant/useMerchantImages';
+import MerchantImagesView from '../../components/merchant/MerchantImagesView';
 
 const ImagesPage = () => {
   const { t } = useTranslation();

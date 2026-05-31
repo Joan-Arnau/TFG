@@ -4,8 +4,8 @@ import Button from '../../components/ui/Button';
 import Card from '../../components/ui/Card';
 import { getLocalizedValue } from '../../utils/localization';
 import EventFormModal from '../../components/admin/EventFormModal';
-import useConfirm from '../../hooks/useConfirm';
-import { useEvents } from '../../hooks/useEvents';
+import useConfirm from '../../hooks/common/useConfirm';
+import { useEvents } from '../../hooks/admin/useEvents';
 
 const EventManagementPage = () => {
   const { t, i18n } = useTranslation();

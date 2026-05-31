@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { useAdminBranding } from '../../hooks/useAdminBranding';
-import { MERCHANT_LANGUAGES } from '../merchant/constants';
+import { useAdminBranding } from '../../hooks/admin/useAdminBranding';
+import { SUPPORTED_LANGUAGES } from '../../constants';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import MapPicker from '../../components/ui/MapPicker';
@@ -178,7 +178,7 @@ const AdminBrandingPage = () => {
                   }}
                   style={{ border: '1px solid #cbd5e1', borderRadius: '6px', padding: '0.5rem 0.75rem', fontSize: '0.95rem', width: '100%', outline: 'none', background: '#fff' }}
                 >
-                  {MERCHANT_LANGUAGES.map((lang) => (
+                  {SUPPORTED_LANGUAGES.map((lang) => (
                     <option key={lang} value={lang}>
                       {t(`language.${lang}`, lang.toUpperCase())}
                     </option>
@@ -191,7 +191,7 @@ const AdminBrandingPage = () => {
                   {t('admin.branding.supportedLanguages', 'Idiomes suportats')}
                 </label>
                 <div style={{ display: 'flex', gap: '24px', marginTop: '8px' }}>
-                  {MERCHANT_LANGUAGES.map((lang) => {
+                  {SUPPORTED_LANGUAGES.map((lang) => {
                     const isDefault = config.defaultLanguage === lang;
                     const isChecked = config.supportedLanguages.includes(lang);
                     return (

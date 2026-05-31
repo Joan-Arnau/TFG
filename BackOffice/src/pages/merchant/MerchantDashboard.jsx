@@ -8,8 +8,8 @@ import ProfilePage from './ProfilePage';
 import PromotionsListPage from './PromotionsListPage';
 import PromotionFormPage from './PromotionFormPage';
 import ImagesPage from './ImagesPage';
-import useMerchantDashboard from './hooks/useMerchantDashboard';
-import { MERCHANT_ROUTES } from './constants';
+import useMerchantDashboard from '../../hooks/merchant/useMerchantDashboard';
+import { MERCHANT_ROUTES } from '../../constants';
 
 const MerchantDashboard = () => {
   const { hero, navItems } = useMerchantDashboard();

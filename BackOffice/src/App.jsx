@@ -5,16 +5,21 @@ import { ConfirmProvider } from './context/ConfirmProvider';
 import { APP_NAME, DEFAULT_THEME } from './context/themeConfig';
 import { useTheme } from './context/useTheme';
 import ProtectedRoute from './components/auth/ProtectedRoute';
-import LoginPage from './features/auth/pages/LoginPage';
-import RegisterPage from './features/auth/pages/RegisterPage';
-import ForgotPasswordPage from './features/auth/pages/ForgotPasswordPage';
-import ResetPasswordPage from './features/auth/pages/ResetPasswordPage';
-import UnauthorizedPage from './features/auth/pages/UnauthorizedPage';
+import LoginPage from './pages/auth/LoginPage';
+import RegisterPage from './pages/auth/RegisterPage';
+import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
+import ResetPasswordPage from './pages/auth/ResetPasswordPage';
+import UnauthorizedPage from './pages/auth/UnauthorizedPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import MerchantDashboard from './pages/merchant/MerchantDashboard';
-import { MERCHANT_ROUTES } from './pages/merchant/constants';
+import { MERCHANT_ROUTES } from './constants';
 import LanguageSwitcher from './components/common/LanguageSwitcher';
 import './styles/App.css';
+import './styles/auth.css';
+import './styles/merchant.css';
+import './styles/adminDashboard.css';
+import './styles/adminTables.css';
+import './styles/adminModals.css';
 
 function AppShell() {
   const { theme } = useTheme();

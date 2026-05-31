@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useContacts } from '../../hooks/useContacts';
-import { useCategories } from '../../hooks/useCategories';
+import { useContacts } from '../../hooks/admin/useContacts';
+import { useCategories } from '../../hooks/common/useCategories';
 import { getLocalizedValue } from '../../utils/localization';
 import Button from '../../components/ui/Button';
 import Card from '../../components/ui/Card';
-import useConfirm from '../../hooks/useConfirm';
+import useConfirm from '../../hooks/common/useConfirm';
 import ContactFormModal from '../../components/admin/ContactFormModal';
 
 const ContactManagementPage = () => {

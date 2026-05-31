@@ -1,13 +1,9 @@
 import axios from 'axios'
 import i18n from '../i18n'
+import { AUTH_API } from '../constants'
 
 const tokenStorageKey = 'authToken'
-const publicAuthPaths = [
-  '/auth/login',
-  '/auth/register',
-  '/auth/forgot-password',
-  '/auth/reset-password',
-]
+const publicAuthPaths = Object.values(AUTH_API)
 
 const shouldSkipAuthHeader = (url = '') => publicAuthPaths.some((path) => url.includes(path))
 

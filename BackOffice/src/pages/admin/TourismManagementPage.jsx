@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { usePOIs } from '../../hooks/usePOIs';
-import { useCategories } from '../../hooks/useCategories';
+import { usePOIs } from '../../hooks/admin/usePOIs';
+import { useCategories } from '../../hooks/common/useCategories';
 import { getLocalizedValue } from '../../utils/localization';
 import Button from '../../components/ui/Button';
 import Card from '../../components/ui/Card';
-import useConfirm from '../../hooks/useConfirm';
+import useConfirm from '../../hooks/common/useConfirm';
 import POIFormModal from '../../components/admin/POIFormModal';
 
 const TourismManagementPage = () => {

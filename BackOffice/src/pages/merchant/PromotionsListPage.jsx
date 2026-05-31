@@ -1,10 +1,10 @@
 
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { MERCHANT_ROUTES, buildPromotionEditPath } from './constants';
-import { useMerchantPromotions } from './hooks/useMerchantPromotions';
+import { MERCHANT_ROUTES, buildPromotionEditPath } from '../../constants';
+import { useMerchantPromotions } from '../../hooks/merchant/useMerchantPromotions';
 import { getLocalizedValue } from '../../utils/localization';
-import MerchantPromotionsListView from './components/MerchantPromotionsListView';
+import MerchantPromotionsListView from '../../components/merchant/MerchantPromotionsListView';
 
 const PromotionsListPage = () => {
   const { t, i18n } = useTranslation();
