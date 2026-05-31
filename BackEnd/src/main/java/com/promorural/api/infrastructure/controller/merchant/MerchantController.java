@@ -1,28 +1,28 @@
 package com.promorural.api.infrastructure.controller.merchant;
 
+import com.promorural.api.core.application.dto.guest.CategoryResponse;
 import com.promorural.api.core.application.dto.merchant.promotion.PromotionCreateRequest;
 import com.promorural.api.core.application.dto.merchant.promotion.PromotionMerchantResponse;
 import com.promorural.api.core.application.dto.merchant.shop.ProductImageResponse;
 import com.promorural.api.core.application.dto.merchant.shop.ShopMerchantResponse;
 import com.promorural.api.core.application.dto.merchant.shop.ShopUpdateRequest;
+import com.promorural.api.core.application.dto.merchant.shop.UploadFileResponse;
 import com.promorural.api.core.application.service.use_case.merchant.ProductImageUseCase;
 import com.promorural.api.core.application.service.use_case.merchant.PromotionUseCase;
 import com.promorural.api.core.application.service.use_case.merchant.ShopProfileUseCase;
-import com.promorural.api.core.application.service.MerchantService;
-import com.promorural.api.core.application.dto.merchant.shop.UploadFileResponse;
-import com.promorural.api.core.application.service.PublicService;
+import com.promorural.api.core.application.service.use_case.publicapi.PublicUseCase;
+import com.promorural.api.core.application.validation.ValidationGroups;
 import com.promorural.api.core.domain.entity.CategoryType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import com.promorural.api.core.application.validation.ValidationGroups;
 
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/merchant")
@@ -34,19 +34,16 @@ public class MerchantController {
     private final ShopProfileUseCase shopProfileUseCase;
     private final PromotionUseCase promotionUseCase;
     private final ProductImageUseCase productImageUseCase;
-    private final MerchantService merchantService;
-    private final PublicService publicService;
+    private final PublicUseCase publicUseCase;
 
     public MerchantController(ShopProfileUseCase shopProfileUseCase,
                                PromotionUseCase promotionUseCase,
                                ProductImageUseCase productImageUseCase,
-                               MerchantService merchantService,
-                               PublicService publicService) {
+                               PublicUseCase publicUseCase) {
         this.shopProfileUseCase = shopProfileUseCase;
         this.promotionUseCase = promotionUseCase;
         this.productImageUseCase = productImageUseCase;
-        this.merchantService = merchantService;
-        this.publicService = publicService;
+        this.publicUseCase = publicUseCase;
     }
 
     @GetMapping("/my-shop")
@@ -92,7 +89,7 @@ public class MerchantController {
     }
 
     @GetMapping("/my-shop/images")
-    public ResponseEntity<java.util.List<ProductImageResponse>> getMyShopImages() {
+    public ResponseEntity<List<ProductImageResponse>> getMyShopImages() {
         return ResponseEntity.ok(productImageUseCase.getMyImages());
     }
 
@@ -100,7 +97,7 @@ public class MerchantController {
     public ResponseEntity<UploadFileResponse> uploadPromotionImage(@RequestParam("file") MultipartFile file) {
         log.info("POST /api/merchant/promotions/images called - filename={}, size={}, contentType={}", file.getOriginalFilename(), file.getSize(), file.getContentType());
         try {
-            UploadFileResponse resp = merchantService.uploadPromotionImage(file);
+            UploadFileResponse resp = productImageUseCase.uploadPromotionImage(file);
             log.info("Promotion image uploaded: id={}, url={}", resp.id(), resp.url());
             return ResponseEntity.status(HttpStatus.CREATED).body(resp);
         } catch (Exception e) {
@@ -121,16 +118,16 @@ public class MerchantController {
     }
 
     @GetMapping("/categories")
-    public ResponseEntity<java.util.List<com.promorural.api.core.application.dto.guest.CategoryResponse>> getCategories(
+    public ResponseEntity<List<CategoryResponse>> getCategories(
             @RequestParam(required = false, defaultValue = "SHOP") CategoryType type) {
-        return ResponseEntity.ok(publicService.getCategories(type));
+        return ResponseEntity.ok(publicUseCase.getCategories(type));
     }
 
     @PostMapping("/my-shop/header-image")
     public ResponseEntity<UploadFileResponse> uploadShopHeaderImage(@RequestParam("file") MultipartFile file) {
         log.info("POST /api/merchant/my-shop/header-image called - filename={}, size={}, contentType={}", file.getOriginalFilename(), file.getSize(), file.getContentType());
         try {
-            UploadFileResponse resp = merchantService.uploadShopHeaderImage(file);
+            UploadFileResponse resp = productImageUseCase.uploadShopHeaderImage(file);
             log.info("Shop header image uploaded: id={}, url={}", resp.id(), resp.url());
             return ResponseEntity.status(HttpStatus.CREATED).body(resp);
         } catch (Exception e) {
@@ -145,3 +142,4 @@ public class MerchantController {
         return ResponseEntity.noContent().build();
     }
 }
+

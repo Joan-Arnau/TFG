@@ -8,7 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
-@Table(name = "web_user")
+@Table(schema = "auth", name = "web_user")
 public class User implements UserDetails {
 
     @Id

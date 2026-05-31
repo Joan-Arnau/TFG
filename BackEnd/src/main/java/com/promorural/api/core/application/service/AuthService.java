@@ -12,7 +12,7 @@ import com.promorural.api.core.domain.exception.ConflictException;
 import com.promorural.api.core.domain.repository.PasswordResetTokenRepository;
 import com.promorural.api.core.domain.repository.ShopRepository;
 import com.promorural.api.core.domain.repository.UserRepository;
-import com.promorural.api.infrastructure.security.JwtService;
+import com.promorural.api.core.application.port.TokenService;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,7 +40,7 @@ import java.util.Optional;
 public class AuthService {
 
     private final AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
+    private final TokenService jwtService;
     private final UserRepository userRepository;
     private final ShopRepository shopRepository;
     private final PasswordResetTokenRepository tokenRepository;
@@ -55,7 +55,7 @@ public class AuthService {
 
     public AuthService(
             AuthenticationManager authenticationManager,
-            JwtService jwtService,
+            TokenService jwtService,
             UserRepository userRepository,
             ShopRepository shopRepository,
             PasswordResetTokenRepository tokenRepository,

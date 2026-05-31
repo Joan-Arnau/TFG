@@ -2,7 +2,7 @@ package com.promorural.api.infrastructure.controller.admin;
 
 import com.promorural.api.core.application.dto.admin.CategoryAdminResponse;
 import com.promorural.api.core.application.dto.admin.CategoryRequest;
-import com.promorural.api.core.application.service.CategoryService;
+import com.promorural.api.core.application.service.use_case.admin.CategoryUseCase;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,10 +16,10 @@ import java.util.List;
 @RequestMapping("/api/admin")
 public class CategoryController {
 
-    private final CategoryService categoryService;
+    private final CategoryUseCase categoryUseCase;
 
-    public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
+    public CategoryController(CategoryUseCase categoryUseCase) {
+        this.categoryUseCase = categoryUseCase;
     }
 
     /**
@@ -30,7 +30,7 @@ public class CategoryController {
     @GetMapping("/categories")
     public ResponseEntity<List<CategoryAdminResponse>> getAllCategories(
             @RequestParam(required = false) String type) {
-        List<CategoryAdminResponse> categoriesDto = categoryService.getAllCategories(type);
+        List<CategoryAdminResponse> categoriesDto = categoryUseCase.getAllCategories(type);
         return ResponseEntity.ok(categoriesDto);
     }
 
@@ -43,7 +43,7 @@ public class CategoryController {
     @PostMapping("/categories")
     public ResponseEntity<CategoryAdminResponse> createCategory(
             @Validated(ValidationGroups.Create.class) @RequestBody CategoryRequest request) {
-        CategoryAdminResponse createdCategoryDto = categoryService.createCategory(request);
+        CategoryAdminResponse createdCategoryDto = categoryUseCase.createCategory(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCategoryDto);
     }
 
@@ -58,7 +58,7 @@ public class CategoryController {
     public ResponseEntity<CategoryAdminResponse> updateCategory(
             @PathVariable Long id,
             @Validated(ValidationGroups.Update.class) @RequestBody CategoryRequest request) {
-        CategoryAdminResponse updatedCategoryDto = categoryService.updateCategory(id, request);
+        CategoryAdminResponse updatedCategoryDto = categoryUseCase.updateCategory(id, request);
         return ResponseEntity.ok(updatedCategoryDto);
     }
 
@@ -70,7 +70,7 @@ public class CategoryController {
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/categories/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
-        categoryService.deleteCategory(id);
+        categoryUseCase.deleteCategory(id);
         return ResponseEntity.noContent().build();
     }
 }

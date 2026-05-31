@@ -1,14 +1,17 @@
 package com.promorural.api.core.application.service.use_case.merchant;
 
 import com.promorural.api.core.application.dto.merchant.shop.ProductImageResponse;
+import com.promorural.api.core.application.dto.merchant.shop.UploadFileResponse;
 import com.promorural.api.core.application.service.FileStorageService;
 import com.promorural.api.core.domain.entity.ProductImage;
 import com.promorural.api.core.domain.entity.Shop;
+import com.promorural.api.core.domain.entity.UploadFile;
 import com.promorural.api.core.domain.entity.User;
 import com.promorural.api.core.domain.exception.BadRequestException;
 import com.promorural.api.core.domain.exception.ResourceNotFoundException;
 import com.promorural.api.core.domain.repository.ProductImageRepository;
 import com.promorural.api.core.domain.repository.ShopRepository;
+import com.promorural.api.core.domain.repository.UploadFileRepository;
 import com.promorural.api.core.domain.repository.UserRepository;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,15 +28,18 @@ public class ProductImageUseCase {
     private final ProductImageRepository productImageRepository;
     private final FileStorageService fileStorageService;
     private final UserRepository userRepository;
+    private final UploadFileRepository uploadFileRepository;
 
     public ProductImageUseCase(ShopRepository shopRepository,
                                ProductImageRepository productImageRepository,
                                FileStorageService fileStorageService,
-                               UserRepository userRepository) {
+                               UserRepository userRepository,
+                               UploadFileRepository uploadFileRepository) {
         this.shopRepository = shopRepository;
         this.productImageRepository = productImageRepository;
         this.fileStorageService = fileStorageService;
         this.userRepository = userRepository;
+        this.uploadFileRepository = uploadFileRepository;
     }
 
     public ProductImageResponse upload(MultipartFile file) {
@@ -46,6 +52,28 @@ public class ProductImageUseCase {
 
         ProductImage savedImage = productImageRepository.save(image);
         return mapToResponse(savedImage);
+    }
+
+    public UploadFileResponse uploadPromotionImage(MultipartFile file) {
+        Shop shop = getCurrentUserShop();
+        String url = fileStorageService.storeFile(file, "promotions");
+        UploadFile uf = new UploadFile();
+        uf.setUrl(url);
+        uf.setShop(shop);
+        UploadFile saved = uploadFileRepository.save(uf);
+        return new UploadFileResponse(saved.getId(), saved.getUrl(), saved.getUploadedAt());
+    }
+
+    public UploadFileResponse uploadShopHeaderImage(MultipartFile file) {
+        Shop shop = getCurrentUserShop();
+        String url = fileStorageService.storeFile(file, "shops");
+        shop.setHeaderImageUrl(url);
+        shopRepository.save(shop);
+        UploadFile uf = new UploadFile();
+        uf.setUrl(url);
+        uf.setShop(shop);
+        UploadFile saved = uploadFileRepository.save(uf);
+        return new UploadFileResponse(saved.getId(), saved.getUrl(), saved.getUploadedAt());
     }
 
     public void delete(Long imageId) {

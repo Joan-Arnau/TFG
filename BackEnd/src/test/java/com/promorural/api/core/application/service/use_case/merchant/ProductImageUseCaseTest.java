@@ -8,6 +8,7 @@ import com.promorural.api.core.domain.entity.User;
 import com.promorural.api.core.domain.repository.ProductImageRepository;
 import com.promorural.api.core.domain.repository.ShopRepository;
 import com.promorural.api.core.domain.repository.UserRepository;
+import com.promorural.api.core.domain.repository.UploadFileRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -29,6 +30,7 @@ class ProductImageUseCaseTest {
     private ProductImageRepository productImageRepository;
     private FileStorageService fileStorageService;
     private UserRepository userRepository;
+    private UploadFileRepository uploadFileRepository;
 
     private ProductImageUseCase useCase;
 
@@ -38,8 +40,9 @@ class ProductImageUseCaseTest {
         productImageRepository = Mockito.mock(ProductImageRepository.class);
         fileStorageService = Mockito.mock(FileStorageService.class);
         userRepository = Mockito.mock(UserRepository.class);
+        uploadFileRepository = Mockito.mock(UploadFileRepository.class);
 
-        useCase = new ProductImageUseCase(shopRepository, productImageRepository, fileStorageService, userRepository);
+        useCase = new ProductImageUseCase(shopRepository, productImageRepository, fileStorageService, userRepository, uploadFileRepository);
     }
 
     @Test

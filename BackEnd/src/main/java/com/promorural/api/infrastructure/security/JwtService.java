@@ -2,6 +2,7 @@ package com.promorural.api.infrastructure.security;
 
 import com.promorural.api.infrastructure.config.AppProperties;
 import com.promorural.api.core.domain.entity.User;
+import com.promorural.api.core.application.port.TokenService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -12,7 +13,7 @@ import javax.crypto.SecretKey;
 import org.springframework.stereotype.Service;
 
 @Service
-public class JwtService {
+public class JwtService implements TokenService {
 
     private final AppProperties properties;
 

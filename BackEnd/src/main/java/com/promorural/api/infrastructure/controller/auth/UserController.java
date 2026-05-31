@@ -2,7 +2,7 @@ package com.promorural.api.infrastructure.controller.auth;
 
 import com.promorural.api.core.application.dto.auth.ChangePasswordRequest;
 import com.promorural.api.core.application.dto.auth.UserProfileResponse;
-import com.promorural.api.core.application.service.UserService;
+import com.promorural.api.core.application.service.use_case.auth.UserUseCase;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -12,10 +12,10 @@ import com.promorural.api.core.application.validation.ValidationGroups;
 @RequestMapping("/api/user")
 public class UserController {
 
-    private final UserService userService;
+    private final UserUseCase userUseCase;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserController(UserUseCase userUseCase) {
+        this.userUseCase = userUseCase;
     }
 
     /**
@@ -23,7 +23,7 @@ public class UserController {
      */
     @GetMapping("/profile")
     public ResponseEntity<UserProfileResponse> getProfile() {
-        return ResponseEntity.ok(userService.getCurrentUserProfile());
+        return ResponseEntity.ok(userUseCase.getCurrentUserProfile());
     }
 
     /**
@@ -32,7 +32,7 @@ public class UserController {
     @PutMapping("/change-password")
     public ResponseEntity<Void> changePassword(
             @Validated(ValidationGroups.Update.class) @RequestBody ChangePasswordRequest request) {
-        userService.changePassword(request);
+        userUseCase.changePassword(request);
         return ResponseEntity.ok().build();
     }
 }

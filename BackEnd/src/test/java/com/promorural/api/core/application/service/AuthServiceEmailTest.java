@@ -12,7 +12,7 @@ import com.promorural.api.core.domain.entity.User;
 import com.promorural.api.core.domain.repository.PasswordResetTokenRepository;
 import com.promorural.api.core.domain.repository.ShopRepository;
 import com.promorural.api.core.domain.repository.UserRepository;
-import com.promorural.api.infrastructure.security.JwtService;
+import com.promorural.api.core.application.port.TokenService;
 import jakarta.mail.MessagingException;
 import java.util.Locale;
 import java.util.Optional;
@@ -32,7 +32,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 class AuthServiceEmailTest {
 
     @Mock private AuthenticationManager authenticationManager;
-    @Mock private JwtService jwtService;
+    @Mock private TokenService jwtService;
     @Mock private UserRepository userRepository;
     @Mock private ShopRepository shopRepository;
     @Mock private PasswordResetTokenRepository tokenRepository;
