@@ -1,6 +1,6 @@
 import { TouchableOpacity, View } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
-import { getCardStyles } from '../../styles/components/Card.styles';
+import { getCardStyles } from './Card.styles';
 
 export const Card = ({ children, style, onPress, ...props }) => {
   const theme = useTheme();

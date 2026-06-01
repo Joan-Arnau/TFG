@@ -147,7 +147,15 @@ public class PublicUseCase {
     }
 
     public List<EventResponse> getEvents() {
+        OffsetDateTime now = OffsetDateTime.now();
         return eventRepository.findAllByOrderByStartsAtAsc().stream()
+                .filter(item -> {
+                    if (item.getEndsAt() != null) {
+                        return item.getEndsAt().isAfter(now);
+                    } else {
+                        return item.getStartsAt().isAfter(now);
+                    }
+                })
                 .map(item -> new EventResponse(
                         item.getId(), item.getTitle(), item.getDescription(),
                         item.getLocationText(), mapToCategoryResponse(item.getCategory()),

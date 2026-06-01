@@ -1,7 +1,7 @@
 import { TouchableOpacity, Text } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
-import { getButtonStyles } from '../../styles/components/Button.styles';
+import { getButtonStyles } from './Button.styles';
 
 export const IconButton = ({ icon, color, onPress, style, size = 24, disabled }) => {
   const theme = useTheme();

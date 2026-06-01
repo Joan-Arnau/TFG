@@ -260,6 +260,7 @@
       "title": "Gestión de Contactos",
       "addNew": "Nuevo Contacto",
       "name": "Nombre",
+      "namePlaceholder": "Nombre del contacto en {{lang}}",
       "phone": "Teléfono",
       "category": "Categoría",
       "icon": "Icono",

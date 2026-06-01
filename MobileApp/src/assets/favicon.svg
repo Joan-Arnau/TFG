@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <clipPath id="circleClip">
+      <circle cx="256" cy="256" r="230" />
+    </clipPath>
+  </defs>
+
+  <!-- Background Circle (Dark Green) -->
+  <circle cx="256" cy="256" r="230" fill="#134731" />
+
+  <!-- Clipped content inside the circle -->
+  <g clip-path="url(#circleClip)">
+    
+    <!-- The Sun (Top Right Background) -->
+    <g transform="translate(290, 80)">
+      <!-- Sun Rays -->
+      <path d="M0,-45 L5,-20 L-5,-20 Z M31,-31 L15,-10 L7,-17 Z M45,0 L20,5 L20,-5 Z M31,31 L7,17 L15,10 Z M0,45 L-5,20 L5,20 Z M-31,31 L-15,10 L-7,17 Z M-45,0 L-20,-5 L-20,5 Z M-31,-31 L-7,-17 L-15,-10 Z" fill="#f4c430" />
+      <!-- Sun Core -->
+      <circle cx="0" cy="0" r="28" fill="#f4c430" />
+    </g>
+
+    <!-- Typography Group: P and R (Perfectly aligned, clean, flat, no awkward mashup) -->
+    <g transform="translate(0, -10)">
+      <!-- Letter 'P' (White, Left Side, Serif Style matching original image) -->
+      <path d="M 130,140 H 230 C 270,140 295,160 295,200 C 295,240 270,260 230,260 H 175 V 360 H 130 Z M 175,178 V 222 H 225 C 245,222 252,215 252,200 C 252,185 245,178 225,178 Z" fill="#ffffff" />
+      
+      <!-- Letter 'R' (Light Green, Right Side, Recta, Proportional, Independent) -->
+      <path d="M 265,140 H 350 C 390,140 410,160 410,200 C 410,235 390,255 355,258 L 415,360 H 365 L 312,260 H 310 V 360 H 265 Z M 310,178 V 222 H 345 C 365,222 370,215 370,200 C 370,185 365,178 345,178 Z" fill="#7fae4a" />
+    </g>
+
+    <!-- Bottom Landscape (Rolling Fields) -->
+    <!-- Right Layer (Medium Green with clean structural rows) -->
+    <path d="M 120,370 C 230,330 360,300 490,310 L 490,490 L 120,490 Z" fill="#2d6e3f" />
+    
+    <!-- Flat Clean Stripe Lines for the Right Field -->
+    <path d="M 280,350 C 340,370 410,385 490,390" fill="none" stroke="#134731" stroke-width="8" stroke-linecap="round" />
+    <path d="M 340,390 C 390,415 440,435 490,445" fill="none" stroke="#134731" stroke-width="8" stroke-linecap="round" />
+    
+    <!-- Left Layer (Light Green Hill, overlapping nicely) -->
+    <path d="M 10,340 C 110,325 210,355 275,395 C 320,425 310,490 250,490 L 10,490 Z" fill="#7fae4a" />
+
+  </g>
+</svg>

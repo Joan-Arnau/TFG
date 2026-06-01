@@ -9,12 +9,27 @@ vi.mock('react-i18next', () => ({
   },
   useTranslation: () => ({
     t: (key) => key,
+    i18n: {
+      language: 'ca',
+      changeLanguage: () => Promise.resolve(),
+    },
   }),
 }))
 
-vi.mock('./components/LanguageSwitcher', () => ({
+vi.mock('./components/common/LanguageSwitcher', () => ({
   default: () => <div data-testid="language-switcher" />,
 }))
+
+vi.mock('./navigation/AppNavigator', () => {
+  const React = require('react');
+  return {
+    default: () => React.createElement('div', null,
+      React.createElement('h1', null, 'app.title'),
+      React.createElement('p', null, 'app.apiBaseUrl'),
+      React.createElement('div', { 'data-testid': 'language-switcher' })
+    )
+  }
+})
 
 test('renders the mobile app shell and API base URL label', () => {
   render(<App />)
@@ -23,3 +38,4 @@ test('renders the mobile app shell and API base URL label', () => {
   expect(screen.getByText('app.apiBaseUrl')).toBeInTheDocument()
   expect(screen.getByTestId('language-switcher')).toBeInTheDocument()
 })
+

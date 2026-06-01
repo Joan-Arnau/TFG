@@ -4,10 +4,10 @@
     "slug": "promorural-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/hero.png",
+    "icon": "./src/assets/hero.jpg",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./src/assets/hero.png",
+      "image": "./src/assets/hero.jpg",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -19,7 +19,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/hero.png",
+        "foregroundImage": "./src/assets/hero.jpg",
         "backgroundColor": "#ffffff"
       }
     }

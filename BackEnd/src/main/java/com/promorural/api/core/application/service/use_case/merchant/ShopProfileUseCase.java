@@ -4,7 +4,6 @@ import com.promorural.api.core.application.dto.guest.CategoryResponse;
 import com.promorural.api.core.application.dto.merchant.shop.ShopMerchantResponse;
 import com.promorural.api.core.application.dto.merchant.shop.ShopUpdateRequest;
 import com.promorural.api.core.application.mapper.ShopMapper;
-import com.promorural.api.core.application.port.FileStoragePort;
 import com.promorural.api.core.domain.entity.Category;
 import com.promorural.api.core.domain.entity.CategoryType;
 import com.promorural.api.core.domain.entity.Shop;
@@ -13,7 +12,6 @@ import com.promorural.api.core.domain.exception.BadRequestException;
 import com.promorural.api.core.domain.exception.ResourceNotFoundException;
 import com.promorural.api.core.domain.repository.CategoryRepository;
 import com.promorural.api.core.domain.repository.ShopRepository;
-import com.promorural.api.core.domain.repository.UploadFileRepository;
 import com.promorural.api.core.domain.repository.UserRepository;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -33,23 +31,17 @@ public class ShopProfileUseCase {
     private final ShopRepository shopRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
-    private final UploadFileRepository uploadFileRepository;
-    private final FileStoragePort fileStorageService;
     private final GeometryFactory geometryFactory;
 
     public ShopProfileUseCase(
             ShopRepository shopRepository,
             UserRepository userRepository,
             CategoryRepository categoryRepository,
-            UploadFileRepository uploadFileRepository,
-            FileStoragePort fileStorageService,
             GeometryFactory geometryFactory
     ) {
         this.shopRepository = shopRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
-        this.uploadFileRepository = uploadFileRepository;
-        this.fileStorageService = fileStorageService;
         this.geometryFactory = geometryFactory;
     }
 

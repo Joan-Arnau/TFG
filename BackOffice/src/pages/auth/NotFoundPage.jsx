@@ -18,8 +18,8 @@ const NotFoundPage = () => {
   return (
     <div className="auth-page">
       <div className="auth-card" style={{ textAlign: 'center', padding: '2.5rem 2rem' }}>
-        <div style={{ fontSize: '3rem', marginBottom: '1rem', color: '#3b82f6' }}>
-          🔍
+        <div style={{ fontSize: '3rem', marginBottom: '1.5rem', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+          <span style={{ border: '3px solid #3b82f6', borderRadius: '50%', width: '64px', height: '64px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '2.5rem', color: '#3b82f6' }}>?</span>
         </div>
         <h2 style={{ fontSize: '1.75rem', fontWeight: 'bold', color: '#1e293b', margin: '0 0 0.5rem' }}>
           {t('notfound.title', 'Pàgina No Trobada')}
