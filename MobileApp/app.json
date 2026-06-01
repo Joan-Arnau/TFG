@@ -1,13 +1,13 @@
 {
   "expo": {
     "name": "PromoRural",
-    "slug": "promorural-mobile",
+    "slug": "promorural",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/hero.jpg",
+    "icon": "./src/assets/hero.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./src/assets/hero.jpg",
+      "image": "./src/assets/hero.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -15,13 +15,24 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.execucioprova.promorural",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/hero.jpg",
+        "foregroundImage": "./src/assets/hero.png",
         "backgroundColor": "#ffffff"
+      },
+      "package": "com.execucioprova.promorural"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "088dbbac-e481-4bd7-9912-3fde456a7078"
       }
-    }
+    },
+    "owner": "execucio-prova"
   }
 }
