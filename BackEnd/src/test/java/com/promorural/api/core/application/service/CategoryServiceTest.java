@@ -15,7 +15,6 @@ import com.promorural.api.core.domain.exception.ResourceNotFoundException;
 import com.promorural.api.core.domain.repository.CategoryRepository;
 import com.promorural.api.core.application.service.use_case.admin.CategoryUseCase;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,19 +33,18 @@ class CategoryServiceTest {
     private CategoryUseCase categoryService;
 
     @Test
-    @SuppressWarnings("null")
     void createCategoryPersistsMappedEntity() {
         Category saved = new Category();
         saved.setName(Map.of("ca", "Botigues"));
         saved.setType(CategoryType.SHOP);
-        when(categoryRepository.save(any(Category.class))).thenReturn(Objects.requireNonNull(saved));
+        when(categoryRepository.save(any(Category.class))).thenReturn(saved);
 
         CategoryAdminResponse response = categoryService.createCategory(
                 new CategoryRequest(Map.of("ca", "Botigues"), "SHOP"));
 
         ArgumentCaptor<Category> captor = ArgumentCaptor.forClass(Category.class);
         verify(categoryRepository).save(captor.capture());
-        Category captured = Objects.requireNonNull(captor.getValue());
+        Category captured = captor.getValue();
         assertThat(captured.getName()).containsEntry("ca", "Botigues");
         assertThat(captured.getType()).isEqualTo(CategoryType.SHOP);
         assertThat(response.name()).containsEntry("ca", "Botigues");

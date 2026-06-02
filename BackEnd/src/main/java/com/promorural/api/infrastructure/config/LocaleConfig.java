@@ -1,7 +1,7 @@
 package com.promorural.api.infrastructure.config;
 
 import java.util.Locale;
-import java.util.Objects;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
@@ -26,10 +26,9 @@ public class LocaleConfig implements WebMvcConfigurer {
     public LocaleResolver localeResolver() {
         AcceptHeaderLocaleResolver resolver = new AcceptHeaderLocaleResolver();
         resolver.setDefaultLocale(Locale.of(appProperties.defaultLanguage()));
-        resolver.setSupportedLocales(Objects.requireNonNull(appProperties.supportedLanguages().stream()
+        resolver.setSupportedLocales(appProperties.supportedLanguages().stream()
             .map(Locale::of)
-            .toList()
-        ));
+            .toList());
         return resolver;
     }
 

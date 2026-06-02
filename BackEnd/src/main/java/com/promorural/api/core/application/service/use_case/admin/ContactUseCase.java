@@ -51,7 +51,6 @@ public class ContactUseCase {
         return mapToResponse(savedContact);
     }
 
-    @SuppressWarnings("null")
     public ContactResponse update(Long id, ContactUpdateRequest request) {
         if (id == null) {
             throw new BadRequestException("Contact ID cannot be null");
@@ -67,7 +66,7 @@ public class ContactUseCase {
         if (request.serviceName() != null) { contact.setServiceName(request.serviceName()); }
         if (request.phoneNumber() != null) { contact.setPhoneNumber(request.phoneNumber()); }
         if (request.iconName() != null) { contact.setIconName(request.iconName()); }
-        Contact updatedContact = Objects.requireNonNull(contactRepository.save(contact));
+        Contact updatedContact = contactRepository.save(contact);
         return mapToResponse(updatedContact);
     }
 

@@ -8,7 +8,6 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
 
 @Service
 @Transactional
@@ -23,11 +22,10 @@ public class MunicipalityBrandingUseCase {
         this.geometryFactory = geometryFactory;
     }
 
-    @SuppressWarnings("null")
     public void updateConfig(ConfigUpdateRequest request) {
         MunicipalityConfig config = municipalityConfigRepository.findFirstByOrderByIdAsc()
             .orElseThrow(() -> new ResourceNotFoundException("Municipality configuration not found"));
         request.updateEntity(config, geometryFactory);
-        Objects.requireNonNull(municipalityConfigRepository.save(config));
+        municipalityConfigRepository.save(config);
     }
 }

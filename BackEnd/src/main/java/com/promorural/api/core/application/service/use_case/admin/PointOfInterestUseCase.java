@@ -54,7 +54,6 @@ public class PointOfInterestUseCase {
         return PointOfInterestMapper.toGuestResponse(savedPoi);
     }
 
-    @SuppressWarnings("null")
     public PointOfInterestResponse update(Long id, PointOfInterestUpdateRequest request) {
         if (id == null) {
             throw new BadRequestException("Point of Interest ID cannot be null");
@@ -68,7 +67,7 @@ public class PointOfInterestUseCase {
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + categoryId));
         }
         request.updateEntity(poi, category, geometryFactory);
-        PointOfInterest updatedPoi = Objects.requireNonNull(pointOfInterestRepository.save(poi));
+        PointOfInterest updatedPoi = pointOfInterestRepository.save(poi);
         return PointOfInterestMapper.toGuestResponse(updatedPoi);
     }
 

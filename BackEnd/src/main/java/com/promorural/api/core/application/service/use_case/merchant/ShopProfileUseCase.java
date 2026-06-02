@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @Transactional
@@ -52,7 +51,6 @@ public class ShopProfileUseCase {
         return ShopMapper.toMerchantResponse(shop);
     }
 
-    @SuppressWarnings("null")
     public ShopMerchantResponse updateMyShop(ShopUpdateRequest request) {
         User currentUser = getCurrentUser();
         Shop shop = shopRepository.findByOwnerUsername(currentUser.getUsername())
@@ -79,7 +77,7 @@ public class ShopProfileUseCase {
                 category,
                 location
         );
-        Shop savedShop = Objects.requireNonNull(shopRepository.save(shop));
+        Shop savedShop = shopRepository.save(shop);
         return ShopMapper.toMerchantResponse(savedShop);
     }
 
