@@ -62,6 +62,7 @@
     "eyebrow": "Merchant area",
     "heroTitle": "Manage your shop",
     "heroDescription": "Update the profile, publish promotions and manage the image gallery from one place.",
+    "profile": "Profile",
     "profileTitle": "Profile",
     "profileSubtitle": "My shop profile",
     "editProfile": "Edit profile",
@@ -131,7 +132,12 @@
     },
     "stats": {
       "label": "Administration statistics",
-      "pendingShops": "Pending shops"
+      "pendingShops": "Pending shops",
+      "activeShops": "Active shops",
+      "categoriesCount": "Total Categories",
+      "announcementsCount": "Published announcements",
+      "eventsCount": "Events",
+      "poisCount": "Points of interest"
     },
     "shops": {
       "pendingTitle": "Shops pending moderation",

@@ -1,4 +1,4 @@
-const DateTimePicker = ({ selected, onChange, showTimeSelect }) => {
+const DateTimePicker = ({ selected, onChange, showTimeSelect, min, max }) => {
   const handleChange = (e) => {
     const value = e.target.value;
     if (value) {
@@ -24,8 +24,8 @@ const DateTimePicker = ({ selected, onChange, showTimeSelect }) => {
       className="form-input"
       value={selected ? formatDateTime(selected) : ''}
       onChange={handleChange}
-      min="1000-01-01"
-      max="9999-12-31"
+      min={min || "1000-01-01"}
+      max={max || "9999-12-31"}
     />
   );
 };

@@ -62,6 +62,7 @@
     "eyebrow": "Espacio del comerciante",
     "heroTitle": "Gestiona tu comercio",
     "heroDescription": "Actualiza el perfil, publica promociones y gestiona la galería de imágenes desde un solo lugar.",
+    "profile": "Perfil",
     "profileTitle": "Perfil",
     "profileSubtitle": "Mi perfil de tienda",
     "editProfile": "Editar perfil",
@@ -131,7 +132,12 @@
     },
     "stats": {
       "label": "Estadísticas de administración",
-      "pendingShops": "Comercios pendientes"
+      "pendingShops": "Comercios pendientes",
+      "activeShops": "Comercios activos",
+      "categoriesCount": "Categorías Totales",
+      "announcementsCount": "Comunicados publicados",
+      "eventsCount": "Eventos",
+      "poisCount": "Puntos de interés"
     },
     "shops": {
       "pendingTitle": "Comercios pendientes de moderación",

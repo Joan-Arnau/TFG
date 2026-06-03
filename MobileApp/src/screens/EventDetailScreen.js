@@ -39,14 +39,31 @@ const EventDetailScreen = ({ route, navigation }) => {
     }];
   }, [event]);
 
-  const formatDate = (dateString) => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    return date.toLocaleDateString(i18n.language === 'ca' ? 'ca-ES' : i18n.language, { 
+
+
+  const formatEventDates = (startsAt, endsAt) => {
+    if (!startsAt) return '';
+    const startDateObj = new Date(startsAt);
+    const startStr = startDateObj.toLocaleDateString(i18n.language === 'ca' ? 'ca-ES' : i18n.language, { 
       day: '2-digit', 
       month: 'long', 
       year: 'numeric'
     });
+    
+    if (!endsAt) return startStr;
+    
+    const endDateObj = new Date(endsAt);
+    const endStr = endDateObj.toLocaleDateString(i18n.language === 'ca' ? 'ca-ES' : i18n.language, { 
+      day: '2-digit', 
+      month: 'long', 
+      year: 'numeric'
+    });
+    
+    if (startDateObj.toDateString() === endDateObj.toDateString()) {
+      return startStr;
+    }
+    
+    return `${startStr} - ${endStr}`;
   };
 
   const formatTime = (dateString) => {
@@ -65,18 +82,27 @@ const EventDetailScreen = ({ route, navigation }) => {
       )}
       
       <View style={styles.detailContent}>
-        {event.isFestival && (
-          <View style={styles.detailFestivalBadge}>
-            <Ionicons name="sparkles" size={14} color="#FFF" />
-            <Text style={styles.detailFestivalText}>{t('dashboard.events')}</Text>
-          </View>
-        )}
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: 12 }}>
+          {event.categoryName ? (
+            <View style={[styles.categoryBadge, { marginTop: 0, marginRight: 8, paddingVertical: 4, paddingHorizontal: 10 }]}>
+              <Ionicons name="pricetag-outline" size={12} color="#495057" />
+              <Text style={styles.categoryText}>{event.categoryName}</Text>
+            </View>
+          ) : null}
+
+          {event.isFestival ? (
+            <View style={[styles.categoryBadge, { backgroundColor: '#FEF3C7', borderColor: '#FDE68A', borderWidth: 1, marginTop: 0, paddingVertical: 4, paddingHorizontal: 10 }]}>
+              <Ionicons name="ribbon-outline" size={12} color="#D97706" />
+              <Text style={[styles.categoryText, { color: '#D97706' }]}>{t('event.festival')}</Text>
+            </View>
+          ) : null}
+        </View>
 
         <Text style={styles.detailTitle}>{event.title}</Text>
 
         <View style={styles.detailDateRow}>
           <Ionicons name="calendar-outline" size={18} color={theme.primaryColor} />
-          <Text style={styles.detailDateText}>{formatDate(event.startsAt)}</Text>
+          <Text style={styles.detailDateText}>{formatEventDates(event.startsAt, event.endsAt)}</Text>
         </View>
 
         <View style={styles.detailDateRow}>

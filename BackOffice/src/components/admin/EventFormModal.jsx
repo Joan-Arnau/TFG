@@ -12,7 +12,7 @@ import { useCategories } from '../../hooks/common/useCategories';
 
 const EventFormModal = ({ event, onClose, onSave, onUploadImage }) => {
   const { t } = useTranslation();
-  const { categories } = useCategories({ type: 'EVENT' });
+  const { categories } = useCategories('EVENT');
 
   const [title, setTitle] = useState(event?.title || { ca: '', es: '', en: '' });
   const [description, setDescription] = useState(event?.description || { ca: '', es: '', en: '' });
@@ -81,15 +81,39 @@ const EventFormModal = ({ event, onClose, onSave, onUploadImage }) => {
     return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}${offsetSign}${offsetHours}${offsetMins}`;
   };
 
+  const formatDateToLocalString = (date) => {
+    if (!date) return '';
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+
   const validateForm = () => {
     const errors = {};
 
-    if (!title.ca.trim() && !title.es.trim() && !title.en.trim()) errors.title = t('event.title.notnull');
-    if (!description.ca.trim() && !description.es.trim() && !description.en.trim()) errors.description = t('event.description.notnull');
-    if (!categoryId) errors.categoryId = t('event.category.notnull');
-    if (!startDate) errors.startDate = t('event.startDate.notnull');
-    if (startDate && endDate && endDate.getTime() <= startDate.getTime()) errors.endDate = t('validation.date.range');
-    if ((latitude !== null && longitude === null) || (latitude === null && longitude !== null)) errors.location = t('validation.location.pair');
+    if (!title.ca.trim() && !title.es.trim() && !title.en.trim()) {
+      errors.title = t('validation.event.title.required', 'El títol és obligatori en tots els idiomes.');
+    }
+    if (!description.ca.trim() && !description.es.trim() && !description.en.trim()) {
+      errors.description = t('validation.event.description.required', 'La descripció és obligatòria en tots els idiomes.');
+    }
+    if (!categoryId) {
+      errors.categoryId = t('validation.event.category.required', 'La categoria és obligatòria.');
+    }
+    if (!startDate) {
+      errors.startDate = t('validation.event.startDate.required', 'La data d\'inici és obligatòria.');
+    } else if (!event && startDate.getTime() < new Date().getTime()) {
+      errors.startDate = t('validation.event.startDate.past', 'La data d\'inici no pot ser anterior a l\'actual.');
+    }
+    if (startDate && endDate && endDate.getTime() <= startDate.getTime()) {
+      errors.endDate = t('validation.date.range', 'La data de fi ha de ser posterior a la data d\'inici.');
+    }
+    if ((latitude !== null && longitude === null) || (latitude === null && longitude !== null)) {
+      errors.location = t('validation.location.pair', 'La latitud i la longitud s\'han d\'informar juntes.');
+    }
     
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
@@ -143,13 +167,13 @@ const EventFormModal = ({ event, onClose, onSave, onUploadImage }) => {
 
           <div className="form-group">
             <label className="form-label">{t('admin.events.startDate', 'Data d\'inici')}</label>
-            <DateTimePicker selected={startDate} onChange={setStartDate} showTimeSelect />
+            <DateTimePicker selected={startDate} onChange={setStartDate} showTimeSelect min={!event ? formatDateToLocalString(new Date()) : undefined} />
             {validationErrors.startDate && <p className="error-message">{validationErrors.startDate}</p>}
           </div>
 
           <div className="form-group">
             <label className="form-label">{t('admin.events.endDate', 'Data de fi')}</label>
-            <DateTimePicker selected={endDate} onChange={setEndDate} showTimeSelect />
+            <DateTimePicker selected={endDate} onChange={setEndDate} showTimeSelect min={startDate ? formatDateToLocalString(startDate) : (!event ? formatDateToLocalString(new Date()) : undefined)} />
             {validationErrors.endDate && <p className="error-message">{validationErrors.endDate}</p>}
           </div>
 

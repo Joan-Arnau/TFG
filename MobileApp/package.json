@@ -9,9 +9,9 @@
     "test": "vitest",
     "test:run": "vitest run",
     "preview": "vite preview",
-    "start": "expo start",
-    "android": "expo run:android",
-    "ios": "expo run:ios",
+    "start": "expo start --go",
+    "android": "expo start --android --go",
+    "ios": "expo start --ios",
     "lint": "eslint ."
   },
   "dependencies": {

@@ -93,10 +93,21 @@ export const getShopDetailStyles = (theme) => StyleSheet.create({
     fontWeight: 'bold',
     color: '#212529',
   },
+  promoDescription: {
+    fontSize: 13,
+    color: '#495057',
+    marginTop: 4,
+  },
+  promoImage: {
+    width: '100%',
+    height: 100,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
   promoDate: {
     fontSize: 12,
     color: '#6C757D',
-    marginTop: 4,
+    marginTop: 6,
   },
   addressBox: {
     flexDirection: 'row',

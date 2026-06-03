@@ -62,6 +62,7 @@
     "eyebrow": "Espai del comerciant",
     "heroTitle": "Gestiona el teu comerç",
     "heroDescription": "Actualitza el perfil, publica promocions i gestiona la galeria d'imatges des d'un sol lloc.",
+    "profile": "Perfil",
     "profileTitle": "Perfil",
     "profileSubtitle": "El meu perfil de botiga",
     "editProfile": "Editar perfil",
@@ -131,7 +132,12 @@
     },
     "stats": {
       "label": "Estadístiques d'administració",
-      "pendingShops": "Comerços pendents"
+      "pendingShops": "Comerços pendents",
+      "activeShops": "Comerços actius",
+      "categoriesCount": "Categories Totals",
+      "announcementsCount": "Comunicats publicats",
+      "eventsCount": "Esdeveniments",
+      "poisCount": "Punts d'interès"
     },
     "shops": {
       "pendingTitle": "Comerços pendents de moderació",

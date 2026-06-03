@@ -90,6 +90,10 @@ public class PromotionUseCase {
             throw new AccessDeniedException("Promotion does not belong to this merchant.");
         }
 
+        if (promotion.getStartsAt() != null && request.startsAt() != null && !promotion.getStartsAt().isEqual(request.startsAt())) {
+            throw new BadRequestException("Cannot change start date of a promotion");
+        }
+
         request.applyToEntity(promotion, shop);
         Promotion saved = promotionRepository.save(promotion);
         return mapToResponse(saved);

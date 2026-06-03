@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
 import { IconButton } from '../components/ui/Button';
+import { Card } from '../components/ui/Card';
 import { useShopDetail } from '../hooks/useShopDetail';
 import { useLocation } from '../hooks/useLocation';
 import { calculateDistance, formatDistance } from '../utils/locationUtils';
@@ -14,7 +15,7 @@ import OSMMap from '../components/ui/OSMMap';
 
 const ShopDetailScreen = ({ navigation, route }) => {
   const { id } = route.params;
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const theme = useTheme();
   const commonStyles = getCommonStyles(theme);
   const styles = getShopDetailStyles(theme);
@@ -55,6 +56,16 @@ const ShopDetailScreen = ({ navigation, route }) => {
       const cleanPhone = shop.phoneNumber.replace(/\s+/g, '');
       Linking.openURL(`whatsapp://send?phone=${cleanPhone}`);
     }
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString(i18n.language === 'ca' ? 'ca-ES' : i18n.language, { 
+      day: '2-digit', 
+      month: 'long', 
+      year: 'numeric'
+    });
   };
 
   if (loading) {
@@ -103,6 +114,28 @@ const ShopDetailScreen = ({ navigation, route }) => {
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.gallery}>
               {shop.images.map((image, index) => (
                 <Image key={index} source={{ uri: image }} style={styles.galleryImage} />
+              ))}
+            </ScrollView>
+          </View>
+        )}
+
+        {shop.promotions && shop.promotions.length > 0 && (
+          <View style={styles.section}>
+            <Text style={commonStyles.sectionTitle}>{t('shop.promotions')}</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.promoScroll}>
+              {shop.promotions.map((promo) => (
+                <Card key={promo.id} style={styles.promoCard}>
+                  {promo.imageUrl ? (
+                    <Image source={{ uri: promo.imageUrl }} style={styles.promoImage} />
+                  ) : null}
+                  <Text style={styles.promoTitle} numberOfLines={2}>{promo.title}</Text>
+                  {promo.description ? (
+                    <Text style={styles.promoDescription} numberOfLines={3}>{promo.description}</Text>
+                  ) : null}
+                  <Text style={styles.promoDate}>
+                    {t('shop.valid_until')} {formatDate(promo.endsAt)}
+                  </Text>
+                </Card>
               ))}
             </ScrollView>
           </View>

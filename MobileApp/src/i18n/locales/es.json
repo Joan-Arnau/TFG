@@ -33,6 +33,7 @@
     "address": "¿Dónde estamos?",
     "contact": "Contacta con nosotros",
     "distance": "Distancia",
+    "valid_until": "Válido hasta el",
     "search": "Busca un comercio...",
     "no_results": "No se han encontrado comercios",
     "error_loading": "Se ha producido un error al cargar la información. Inténtalo de nuevo más tarde.",

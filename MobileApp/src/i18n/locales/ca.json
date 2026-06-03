@@ -36,6 +36,7 @@
     "address": "On som?",
     "contact": "Contacta amb nosaltres",
     "distance": "Distància",
+    "valid_until": "Vàlid fins al",
     "search": "Cerca un comerç...",
     "no_results": "No s'han trobat comerços",
     "error_loading": "S'ha produït un error en carregar la informació. Torna-ho a provar més tard.",

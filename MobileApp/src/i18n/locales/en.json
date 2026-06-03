@@ -32,6 +32,8 @@
     "promotions": "Active Promotions",
     "address": "Where are we?",
     "contact": "Contact us",
+    "distance": "Distance",
+    "valid_until": "Valid until",
     "search": "Search a shop...",
     "no_results": "No shops found",
     "error_loading": "An error occurred while loading. Please try again later.",
