@@ -48,6 +48,9 @@ export const shopService = {
     const r = await httpClient.put(MERCHANT_API.MY_SHOP, data);
     return r.data;
   },
+  deleteMyShop: async () => {
+    await httpClient.delete(MERCHANT_API.MY_SHOP);
+  },
   getImages: async () => {
     const r = await httpClient.get(MERCHANT_API.IMAGES);
     return r.data;

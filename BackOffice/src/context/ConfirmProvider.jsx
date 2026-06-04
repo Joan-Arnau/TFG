@@ -9,7 +9,16 @@ export const ConfirmProvider = ({ children }) => {
 
   const confirm = useCallback((keyOrMessage, defaultMessage = 'Are you sure?', customTitle = null) => {
     return new Promise((resolve) => {
-      const message = typeof keyOrMessage === 'string' && keyOrMessage ? t(keyOrMessage, defaultMessage) : defaultMessage;
+      let message;
+      if (typeof keyOrMessage === 'string' && keyOrMessage) {
+        if (typeof defaultMessage === 'object' && defaultMessage !== null) {
+          message = t(keyOrMessage, defaultMessage);
+        } else {
+          message = t(keyOrMessage, { defaultValue: defaultMessage });
+        }
+      } else {
+        message = defaultMessage;
+      }
       
       setConfig({
         title: customTitle || t('app.confirmTitle', 'Confirmation'),

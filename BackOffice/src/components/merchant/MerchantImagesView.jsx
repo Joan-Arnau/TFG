@@ -47,7 +47,7 @@ const MerchantImagesView = ({ t, images, onUpload, onSave, onDelete, uploading, 
                 <img src={getImageSrc(img)} alt={img.filename || `Image ${img.id}`} />
               ) : null}
               <div className="merchant-image-meta">
-                <span>{img.filename || img.imageUrl || img.url || `Image ${img.id}`}</span>
+                <span>{img.filename || `${t('merchant.imageText', 'Image')} ${img.id}`}</span>
                 <Button variant="danger" onClick={() => onDelete(img.id)}>{t('merchant.delete', 'Delete')}</Button>
               </div>
             </Card>

@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, View, Text, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import DashboardScreen from '../screens/DashboardScreen';
 import ShopDirectoryScreen from '../screens/ShopDirectoryScreen';
@@ -50,8 +50,19 @@ const AppNavigator = () => {
         name={ROUTES.DASHBOARD} 
         component={DashboardScreen} 
         options={({ navigation }) => ({ 
-          title: 'PromoRural',
-          headerTitleStyle: { color: '#212529', fontWeight: 'bold' },
+          headerTitle: () => (
+            <View style={{ flexDirection: 'row', alignItems: 'center', flexShrink: 1 }}>
+              {theme.logoUrl ? (
+                <Image 
+                  source={{ uri: theme.logoUrl }} 
+                  style={{ width: 28, height: 28, marginRight: 8, resizeMode: 'contain' }} 
+                />
+              ) : null}
+              <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#212529' }} numberOfLines={1}>
+                {theme.municipalityName}
+              </Text>
+            </View>
+          ),
           headerRight: () => (
             <TouchableOpacity onPress={() => navigation.navigate(ROUTES.SETTINGS)}>
               <Ionicons name="settings-outline" size={24} color="#333" />

@@ -22,6 +22,7 @@ const MerchantProfileView = ({
   onSubmit,
   onLocalizedChange,
   onFieldChange,
+  onDelete,
   error,
   success
  }) => {
@@ -51,48 +52,60 @@ const MerchantProfileView = ({
       />
 
       {!isEditing ? (
-        <div className="merchant-readonly-grid">
-          {shop.headerImageUrl && (
-            <Card className="merchant-summary-card merchant-summary-card--full" style={{ padding: 0, overflow: 'hidden' }}>
-              <div className="merchant-profile-banner" style={{ width: '100%', height: '240px', overflow: 'hidden', position: 'relative' }}>
-                <img 
-                  src={shop.headerImageUrl} 
-                  alt={shop.name?.[language] || "Banner"} 
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                />
-              </div>
+        <>
+          <div className="merchant-readonly-grid">
+            {shop.headerImageUrl && (
+              <Card className="merchant-summary-card merchant-summary-card--full" style={{ padding: 0, overflow: 'hidden' }}>
+                <div className="merchant-profile-banner" style={{ width: '100%', height: '240px', overflow: 'hidden', position: 'relative' }}>
+                  <img 
+                    src={shop.headerImageUrl} 
+                    alt={shop.name?.[language] || "Banner"} 
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                  />
+                </div>
+              </Card>
+            )}
+            <Card className="merchant-summary-card">
+              <h4>{t('merchant.shopName', 'Shop name')}</h4>
+              {supportedLanguageCodes.map((lang) => (
+                <p key={lang}><strong>{t(`language.${lang}`, lang.toUpperCase())}:</strong> {shop.name?.[lang] || '-'}</p>
+              ))}
             </Card>
-          )}
-          <Card className="merchant-summary-card">
-            <h4>{t('merchant.shopName', 'Shop name')}</h4>
-            {supportedLanguageCodes.map((lang) => (
-              <p key={lang}><strong>{t(`language.${lang}`, lang.toUpperCase())}:</strong> {shop.name?.[lang] || '-'}</p>
-            ))}
+            <Card className="merchant-summary-card">
+              <h4>{t('merchant.descriptionLabel', 'Description')}</h4>
+              {supportedLanguageCodes.map((lang) => (
+                <p key={lang}><strong>{t(`language.${lang}`, lang.toUpperCase())}:</strong> {shop.description?.[lang] || '-'}</p>
+              ))}
+            </Card>
+            <Card className="merchant-summary-card">
+              <h4>{t('merchant.categoryLabel', 'Category')}</h4>
+              <p>{categoryName || '-'}</p>
+            </Card>
+            <Card className="merchant-summary-card merchant-summary-card--full">
+              <h4>{t('merchant.locationLabel', 'Location')}</h4>
+              <LocationSelector 
+                latitude={shop.latitude} 
+                longitude={shop.longitude} 
+                isEditing={false}
+              />
+            </Card>
+            <Card className="merchant-summary-card">
+              <h4>{t('merchant.contactData', 'Contact data')}</h4>
+              <p><strong>{t('merchant.address', 'Address')}:</strong> {shop.address || '-'}</p>
+              <p><strong>{t('merchant.phoneNumber', 'Phone number')}:</strong> {shop.phoneNumber || '-'}</p>
+            </Card>
+          </div>
+
+          <Card className="merchant-danger-zone-card" style={{ marginTop: '24px', border: '1px solid rgb(239, 68, 68)', background: 'rgba(239, 68, 68, 0.04)', padding: '20px' }}>
+            <h4 style={{ color: 'rgb(239, 68, 68)', margin: '0 0 8px 0', fontSize: '1.1rem', fontWeight: 600 }}>{t('merchant.dangerZone', 'Zona de perill')}</h4>
+            <p style={{ margin: '0 0 16px 0', fontSize: '0.9rem', color: '#555555' }}>
+              {t('merchant.deleteInstructions', "Si dones de baixa el comerç, s'esborraran permanentment totes les dades del perfil públic, promocions i fitxers físics del disc. Aquesta acció no es pot desfer i el teu compte d'accés també serà eliminat.")}
+            </p>
+            <Button variant="danger" onClick={onDelete} style={{ background: 'rgb(239, 68, 68)', color: '#ffffff', border: 'none', padding: '0.5rem 1rem' }}>
+              {t('merchant.deregisterAction', 'Donar de baixa el comerç')}
+            </Button>
           </Card>
-          <Card className="merchant-summary-card">
-            <h4>{t('merchant.descriptionLabel', 'Description')}</h4>
-            {supportedLanguageCodes.map((lang) => (
-              <p key={lang}><strong>{t(`language.${lang}`, lang.toUpperCase())}:</strong> {shop.description?.[lang] || '-'}</p>
-            ))}
-          </Card>
-          <Card className="merchant-summary-card">
-            <h4>{t('merchant.categoryLabel', 'Category')}</h4>
-            <p>{categoryName || '-'}</p>
-          </Card>
-          <Card className="merchant-summary-card merchant-summary-card--full">
-            <h4>{t('merchant.locationLabel', 'Location')}</h4>
-            <LocationSelector 
-              latitude={shop.latitude} 
-              longitude={shop.longitude} 
-              isEditing={false}
-            />
-          </Card>
-          <Card className="merchant-summary-card">
-            <h4>{t('merchant.contactData', 'Contact data')}</h4>
-            <p><strong>{t('merchant.address', 'Address')}:</strong> {shop.address || '-'}</p>
-            <p><strong>{t('merchant.phoneNumber', 'Phone number')}:</strong> {shop.phoneNumber || '-'}</p>
-          </Card>
-        </div>
+        </>
       ) : (
         <form className="merchant-form" onSubmit={(event) => {
           event.preventDefault();

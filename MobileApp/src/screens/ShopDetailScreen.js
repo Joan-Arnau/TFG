@@ -45,6 +45,17 @@ const ShopDetailScreen = ({ navigation, route }) => {
     }];
   }, [shop]);
 
+  // Exclude promotion images from the shop gallery
+  const filteredGalleryImages = useMemo(() => {
+    if (!shop?.images) return [];
+    const promoUrls = shop.promotions ? shop.promotions.map((p) => p.imageUrl).filter(Boolean) : [];
+    return shop.images.filter((image) => {
+      const isFromPromoFolder = image && (image.includes('/promotions/') || image.includes('/uploads/promotions/'));
+      const isUsedInPromo = promoUrls.includes(image);
+      return !isFromPromoFolder && !isUsedInPromo;
+    });
+  }, [shop]);
+
   const handleCall = () => {
     if (shop.phoneNumber) {
       Linking.openURL(`tel:${shop.phoneNumber}`);
@@ -108,11 +119,11 @@ const ShopDetailScreen = ({ navigation, route }) => {
         
         <Text style={styles.description}>{shop.description}</Text>
 
-        {shop.images && shop.images.length > 0 && (
+        {filteredGalleryImages && filteredGalleryImages.length > 0 && (
           <View style={styles.section}>
             <Text style={commonStyles.sectionTitle}>{t('shop.gallery')}</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.gallery}>
-              {shop.images.map((image, index) => (
+              {filteredGalleryImages.map((image, index) => (
                 <Image key={index} source={{ uri: image }} style={styles.galleryImage} />
               ))}
             </ScrollView>

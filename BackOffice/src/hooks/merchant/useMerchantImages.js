@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { shopService } from '../../api/services/shopService';
+import { promotionService } from '../../api/services/promotionService';
 import useConfirm from '../common/useConfirm';
 
 export function useMerchantImages() {
@@ -20,18 +21,29 @@ export function useMerchantImages() {
     };
   }, [pendingPreviewUrl]);
 
+  const filterPromotionImages = useCallback((imagesList, promotionsList) => {
+    return (imagesList || []).filter((img) => {
+      const isFromPromoFolder = img.imageUrl && (img.imageUrl.includes('/promotions/') || img.imageUrl.includes('/uploads/promotions/'));
+      const isUsedInPromo = (promotionsList || []).some((p) => p.imageUrl === img.imageUrl);
+      return !isFromPromoFolder && !isUsedInPromo;
+    });
+  }, []);
+
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const i = await shopService.getImages();
-      setImages(i || []);
+      const [imagesData, promotionsData] = await Promise.all([
+        shopService.getImages(),
+        promotionService.getAll().catch(() => [])
+      ]);
+      setImages(filterPromotionImages(imagesData, promotionsData));
       setError(null);
     } catch (error) {
       setError(error);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [filterPromotionImages]);
 
   useEffect(() => {
     let mounted = true;
@@ -39,9 +51,12 @@ export function useMerchantImages() {
       if (!mounted) return;
       setLoading(true);
       try {
-        const i = await shopService.getImages();
+        const [imagesData, promotionsData] = await Promise.all([
+          shopService.getImages(),
+          promotionService.getAll().catch(() => [])
+        ]);
         if (mounted) {
-          setImages(i || []);
+          setImages(filterPromotionImages(imagesData, promotionsData));
           setError(null);
         }
       } catch (error) {
@@ -53,7 +68,7 @@ export function useMerchantImages() {
 
     void fetchImages();
     return () => { mounted = false; };
-  }, []);
+  }, [filterPromotionImages]);
 
   const stageUpload = useCallback(async (file) => {
     if (!file) return '';

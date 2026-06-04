@@ -19,6 +19,8 @@ import com.promorural.api.core.domain.repository.UploadFileRepository;
 import com.promorural.api.core.application.port.EmailSender;
 import com.promorural.api.core.application.port.EmailTemplateRenderer;
 import com.promorural.api.core.application.service.EmailSubjectResolver;
+import com.promorural.api.core.application.port.FileStoragePort;
+import com.promorural.api.core.domain.entity.ProductImage;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -45,16 +47,18 @@ public class ShopModerationUseCase {
     private final EmailSender emailService;
     private final EmailTemplateRenderer emailTemplateService;
     private final EmailSubjectResolver emailSubjectResolver;
+    private final FileStoragePort fileStorageService;
 
     public ShopModerationUseCase(
             ShopRepository shopRepository,
             CategoryRepository categoryRepository,
             GeometryFactory geometryFactory,
             PromotionRepository promotionRepository,
-                UploadFileRepository uploadFileRepository,
-                EmailSender emailService,
+            UploadFileRepository uploadFileRepository,
+            EmailSender emailService,
             EmailTemplateRenderer emailTemplateService,
-            EmailSubjectResolver emailSubjectResolver
+            EmailSubjectResolver emailSubjectResolver,
+            FileStoragePort fileStorageService
     ) {
         this.shopRepository = shopRepository;
         this.categoryRepository = categoryRepository;
@@ -64,6 +68,7 @@ public class ShopModerationUseCase {
         this.emailService = emailService;
         this.emailTemplateService = emailTemplateService;
         this.emailSubjectResolver = emailSubjectResolver;
+        this.fileStorageService = fileStorageService;
     }
 
     public List<ShopModerationResponse> getPendingShops() {
@@ -118,12 +123,57 @@ public class ShopModerationUseCase {
         Shop shop = shopRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Shop not found with ID: " + id));
 
-        // Delete promotions associated with the shop
+        // Delete physical files on disk first
+        // 1. Shop header image
+        if (shop.getHeaderImageUrl() != null && !shop.getHeaderImageUrl().isEmpty()) {
+            try {
+                fileStorageService.deleteFile(shop.getHeaderImageUrl());
+            } catch (Exception e) {
+                log.error("Failed to delete shop header image file on disk: {}", e.getMessage());
+            }
+        }
+
+        // 2. Product images
+        if (shop.getImages() != null) {
+            for (ProductImage img : shop.getImages()) {
+                if (img.getImageUrl() != null && !img.getImageUrl().isEmpty()) {
+                    try {
+                        fileStorageService.deleteFile(img.getImageUrl());
+                    } catch (Exception e) {
+                        log.error("Failed to delete product image file on disk: {}", e.getMessage());
+                    }
+                }
+            }
+        }
+
+        // 3. Promotions images
         List<Promotion> promotions = promotionRepository.findByShopId(shop.getId());
+        for (Promotion p : promotions) {
+            if (p.getImageUrl() != null && !p.getImageUrl().isEmpty()) {
+                try {
+                    fileStorageService.deleteFile(p.getImageUrl());
+                } catch (Exception e) {
+                    log.error("Failed to delete promotion image file on disk: {}", e.getMessage());
+                }
+            }
+        }
+
+        // 4. Uploaded files (generic shop files)
+        List<UploadFile> uploadFiles = uploadFileRepository.findByShopId(shop.getId());
+        for (UploadFile uf : uploadFiles) {
+            if (uf.getUrl() != null && !uf.getUrl().isEmpty()) {
+                try {
+                    fileStorageService.deleteFile(uf.getUrl());
+                } catch (Exception e) {
+                    log.error("Failed to delete uploaded file on disk: {}", e.getMessage());
+                }
+            }
+        }
+
+        // Delete promotions associated with the shop from DB
         promotionRepository.deleteAll(promotions);
 
-        // Delete uploaded files associated with the shop
-        List<UploadFile> uploadFiles = uploadFileRepository.findByShopId(shop.getId());
+        // Delete uploaded files associated with the shop from DB
         uploadFileRepository.deleteAll(uploadFiles);
 
         // Finally delete the shop

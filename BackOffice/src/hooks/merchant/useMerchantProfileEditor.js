@@ -5,6 +5,7 @@ import { categoryService } from '../../api/services/categoryService';
 import useConfirm from '../common/useConfirm';
 import { useMerchantProfile } from './useMerchantProfile';
 import { shopService } from '../../api/services/shopService';
+import { useAuth } from '../../context/AuthContext';
 
 
 const emptyLocalized = { ca: '', es: '', en: '' };
@@ -32,6 +33,7 @@ const normalizeNameMap = (value) => buildLocalizedMap(value);
 export function useMerchantProfileEditor() {
   const { t } = useTranslation();
   const confirm = useConfirm();
+  const { logout } = useAuth();
   const { shop, loading, error, success, save, setError } = useMerchantProfile();
   const [isEditing, setIsEditing] = useState(false);
   const [draft, setDraft] = useState(createDraft(null));
@@ -135,6 +137,26 @@ export function useMerchantProfileEditor() {
     };
   }, []);
 
+  const deleteProfile = useCallback(async () => {
+    const shopName = shop ? (getLocalizedDraft(shop.name)?.ca || shop.name?.es || shop.name?.en || '') : '';
+    const confirmed = await confirm(
+      'merchant.confirmDelete',
+      {
+        name: shopName,
+        defaultValue: `Segur que vols donar de baixa el comerç "${shopName}"? Aquesta acció és irreversible i eliminarà permanentment totes les teves dades, imatges, promocions i compte d'usuari.`
+      }
+    );
+    if (!confirmed) return;
+
+    try {
+      setError('');
+      await shopService.deleteMyShop();
+      logout();
+    } catch {
+      setError(t('merchant.deleteError', "No s'ha pogut processar la baixa."));
+    }
+  }, [confirm, shop, setError, t, logout]);
+
   return {
     shop,
     hasShop,
@@ -151,6 +173,7 @@ export function useMerchantProfileEditor() {
     setLocalizedField,
     setField,
     submit,
+    deleteProfile,
   };
 }
 

@@ -19,6 +19,7 @@ const ProfilePage = () => {
     setLocalizedField,
     setField,
     submit,
+    deleteProfile,
   } = useMerchantProfileEditor();
 
   if (loading && !shop) return <div>{t('common.loading', 'Loading...')}</div>;
@@ -39,6 +40,7 @@ const ProfilePage = () => {
       onSubmit={submit}
       onLocalizedChange={setLocalizedField}
       onFieldChange={setField}
+      onDelete={deleteProfile}
       error={error}
       success={success}
     />

@@ -8,24 +8,6 @@ export const getDashboardStyles = () => StyleSheet.create({
   content: {
     padding: 10,
   },
-  header: {
-    paddingVertical: 22,
-    paddingHorizontal: 16,
-    marginBottom: 14,
-    borderRadius: 14,
-    backgroundColor: '#FFFFFF',
-    borderLeftWidth: 6,
-    borderLeftColor: '#35524A',
-  },
-  welcome: {
-    fontSize: 16,
-    color: '#6C757D',
-  },
-  villageName: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#212529',
-  },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -33,6 +15,7 @@ export const getDashboardStyles = () => StyleSheet.create({
   },
   highlightCard: {
     marginTop: 10,
+    marginBottom: 14,
   },
   highlightBadge: {
     alignSelf: 'flex-start',

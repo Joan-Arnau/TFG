@@ -28,25 +28,10 @@ const DashboardScreen = ({ navigation }) => {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <View style={styles.header}>
-        <Text style={styles.welcome}>{t('app.welcome')}</Text>
-        <Text style={styles.villageName}>{theme.municipalityName}</Text>
-      </View>
 
-      <View style={styles.grid}>
-        {menuItems.map((item) => (
-          <GridCard
-            key={item.id}
-            title={item.title}
-            icon={item.icon}
-            color={DASHBOARD_ACCENT}
-            onPress={item.onPress}
-          />
-        ))}
-      </View>
 
       {loading ? (
-        <ActivityIndicator size="small" color={DASHBOARD_ACCENT} />
+        <ActivityIndicator size="small" color={DASHBOARD_ACCENT} style={{ marginBottom: 14 }} />
       ) : featuredItem && (
         <ThemedCard style={styles.highlightCard}>
           <View style={styles.highlightBadge}>
@@ -63,6 +48,18 @@ const DashboardScreen = ({ navigation }) => {
           <Text style={styles.highlightDate}>{featuredItem.subtitle}</Text>
         </ThemedCard>
       )}
+
+      <View style={styles.grid}>
+        {menuItems.map((item) => (
+          <GridCard
+            key={item.id}
+            title={item.title}
+            icon={item.icon}
+            color={DASHBOARD_ACCENT}
+            onPress={item.onPress}
+          />
+        ))}
+      </View>
     </ScrollView>
   );
 };

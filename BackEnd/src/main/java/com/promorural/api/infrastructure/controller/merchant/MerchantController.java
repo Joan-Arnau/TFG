@@ -59,6 +59,12 @@ public class MerchantController {
         return ResponseEntity.ok(shopProfileUseCase.updateMyShop(shopUpdateDto));
     }
 
+    @DeleteMapping("/my-shop")
+    public ResponseEntity<Void> deleteMyShop() {
+        shopProfileUseCase.deleteMyShop();
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/promotions")
     public ResponseEntity<List<PromotionMerchantResponse>> getMyPromotions() {
         return ResponseEntity.ok(promotionUseCase.getMyPromotions());
